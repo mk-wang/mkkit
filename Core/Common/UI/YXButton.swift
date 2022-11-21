@@ -11,18 +11,18 @@ import UIKit
 // MARK: - YXButton
 
 open class YXButton: UIButton {
-    var tapExt = CGSize.zero
-    var onLayout: VoidFunction?
-    var themeTintColor: UIColor?
-    var themeCancellable: AnyCancellable?
+    open var tapExt = CGSize.zero
+    open var onLayout: VoidFunction?
+    open var themeTintColor: UIColor?
+    open var themeCancellable: AnyCancellable?
 
-    enum ButtonState {
+    public enum ButtonState {
         case normal
         case disabled
     }
 
-    var disabledBackgroundColor: UIColor?
-    var defaultBackgroundColor: UIColor? {
+    open var disabledBackgroundColor: UIColor?
+    open var defaultBackgroundColor: UIColor? {
         didSet {
             backgroundColor = defaultBackgroundColor
         }

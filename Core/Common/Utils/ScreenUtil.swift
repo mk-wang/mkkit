@@ -10,12 +10,12 @@ import UIKit
 // MARK: - ScreenUtil
 
 public enum ScreenUtil {
-    static let screenSize: CGSize = UIScreen.main.bounds.size
-    static let screenMin = min(screenSize.width, screenSize.height)
-    static let screenMax = max(screenSize.width, screenSize.height)
-    static let isSmall = screenMin < 321
+    public static let screenSize: CGSize = UIScreen.main.bounds.size
+    public static let screenMin = min(screenSize.width, screenSize.height)
+    public static let screenMax = max(screenSize.width, screenSize.height)
+    public static let isSmall = screenMin < 321
 
-    static let scale = UIScreen.main.scale
+    public static let scale = UIScreen.main.scale
 
     private(set) static var ratio: CGPoint = .zero
     private(set) static var minRatio: CGFloat = 0

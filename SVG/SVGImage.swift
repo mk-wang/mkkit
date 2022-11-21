@@ -11,17 +11,17 @@ import UIKit
 
 // MARK: - SVGImageView
 
-class SVGImageView: UIImageView {
+public class SVGImageView: UIImageView {
     let path: String
     let imageSize: CGSize
     let tintColorBuilder: ((Bool) -> UIColor?)?
 
-    var cancellbale: AnyCancellable?
+    private var cancellbale: AnyCancellable?
 
-    init(path: String,
-         imageSize: CGSize,
-         listenTheme: Bool = false,
-         tintColorBuilder: ((Bool) -> UIColor?)? = nil)
+    public init(path: String,
+                imageSize: CGSize,
+                listenTheme: Bool = false,
+                tintColorBuilder: ((Bool) -> UIColor?)? = nil)
     {
         self.path = path
         self.imageSize = imageSize

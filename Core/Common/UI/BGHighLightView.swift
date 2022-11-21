@@ -10,14 +10,14 @@ import UIKit
 // MARK: - BaseHighLightView
 
 open class BaseHighLightView: UIView {
-    var isHighLighted: Bool = false
+    open var isHighLighted: Bool = false
 
-    var highLightOnTouch: Bool = true
-    var disableHighLightOnEnd: Bool = true
+    open var highLightOnTouch: Bool = true
+    open var disableHighLightOnEnd: Bool = true
 
     fileprivate var keepHighLight = false
 
-    func highLight(for duartion: Double = 0.3) {
+    open func highLight(for duartion: Double = 0.3) {
         isHighLighted = true
         keepHighLight = true
 

@@ -21,7 +21,7 @@ public class AppThemeService {
     private let themeSubject: CurrentValueSubject<AppTheme, Never>
 
     private let darkSubject = CurrentValueSubject<Bool?, Never>(nil)
-    lazy var darkPublisher: AnyPublisher<Bool?, Never> = darkSubject.removeDuplicates().eraseToAnyPublisher()
+    public lazy var darkPublisher: AnyPublisher<Bool?, Never> = darkSubject.removeDuplicates().eraseToAnyPublisher()
 
     public var isDark: Bool? {
         get {

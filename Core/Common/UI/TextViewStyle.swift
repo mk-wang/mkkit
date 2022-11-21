@@ -100,12 +100,12 @@ public struct AppViewStyle {
 
     public let cornerRadius: CGFloat
 
-    init(font: UIFont,
-         textAlignment: NSTextAlignment = .start,
-         cornerRadius: CGFloat = 0,
-         colorBuilder: @escaping () -> UIColor,
-         backgourndColorBuilder: (() -> UIColor)? = nil,
-         hightlightColorBuilder: (() -> UIColor)? = nil)
+    public init(font: UIFont,
+                textAlignment: NSTextAlignment = .start,
+                cornerRadius: CGFloat = 0,
+                colorBuilder: @escaping () -> UIColor,
+                backgourndColorBuilder: (() -> UIColor)? = nil,
+                hightlightColorBuilder: (() -> UIColor)? = nil)
     {
         self.font = font
         self.textAlignment = textAlignment

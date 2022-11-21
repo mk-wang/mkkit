@@ -9,7 +9,7 @@ import Foundation
 import OpenCombine
 import UIKit
 
-extension AppTheme {
+public extension AppTheme {
     private static var service: AppThemeService {
         AppServiceManager.findService(AppThemeService.self)!
     }
@@ -28,7 +28,7 @@ extension AppTheme {
     }
 }
 
-extension AppTheme {
+public extension AppTheme {
     var isDark: Bool? {
         switch self {
         case .light:

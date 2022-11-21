@@ -382,8 +382,8 @@ typedef void (^readTextBlock)(void);
     _formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
     _lock = [NSLock new];
 
-    //如果想在release情况下也能显示控制台打印请把stopPrinting方法注释掉
-    // if you want to see GHConsole at the release mode you will annotating the stopPrinting func below here.
+    // 如果想在release情况下也能显示控制台打印请把stopPrinting方法注释掉
+    //  if you want to see GHConsole at the release mode you will annotating the stopPrinting func below here.
 #ifndef DEBUG
 //    [self stopPrinting];
 #endif
@@ -445,7 +445,7 @@ typedef void (^readTextBlock)(void);
 
     __weak __typeof(self) weakSelf = self;
     if (_isShowConsole && _isFullScreen) {
-        //如果显示的话手机上的控制台开始显示。
+        // 如果显示的话手机上的控制台开始显示。
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.consoleWindow.consoleRootViewController.dataSource = weakSelf.logStingArray;
 
@@ -506,7 +506,7 @@ tap
     [self maximumAnimation];
 }
 
-//全屏
+// 全屏
 - (void)maximumAnimation
 {
     if (!_isFullScreen) {
@@ -528,7 +528,7 @@ tap
 
 - (void)minimizeAnimation
 {
-    //退出全屏
+    // 退出全屏
     [UIView animateWithDuration:0.25
         animations:^{
             [self.consoleWindow minimize];

@@ -25,10 +25,34 @@ public extension UIView {
         view.applySnpConfig()
     }
 
+    func addSnapSubview(_ guide: UILayoutGuide) {
+        addLayoutGuide(guide)
+        guide.applySnpConfig()
+    }
+
     func applySnpConfig() {
         if let config = snpConfig {
             snp.makeConstraints {
                 config(self.superview!, $0)
+            }
+        }
+    }
+}
+
+public extension UILayoutGuide {
+    var snpConfig: SnapKitMaker? {
+        get {
+            getAssociatedObject(&AssociatedKeys.kSnapConfig) as? SnapKitMaker
+        }
+        set {
+            setAssociatedObject(&AssociatedKeys.kSnapConfig, newValue)
+        }
+    }
+
+    func applySnpConfig() {
+        if let config = snpConfig {
+            snp.makeConstraints {
+                config(self.owningView!, $0)
             }
         }
     }
