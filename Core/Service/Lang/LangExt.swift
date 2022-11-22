@@ -8,7 +8,7 @@
 import Foundation
 import OpenCombine
 
-extension Lang {
+public extension Lang {
     private static var service: LangService {
         AppServiceManager.findService(LangService.self)!
     }

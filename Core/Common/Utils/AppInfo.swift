@@ -33,28 +33,24 @@ public extension AppInfo {
 
     static let bundleIdentifier = Bundle.main.bundleIdentifier!
 
-    static var displayName: String? {
-        bundleInfo(for: kCFBundleNameKey as String)
+    static var displayName: String {
+        bundleInfo(for: kCFBundleNameKey as String)!
     }
 
     static var buildNumber: String? {
         bundleInfo(for: kCFBundleVersionKey as String)
     }
 
-    static var fullVersion: String? {
-        guard let version = shortVersion else {
-            return nil
-        }
-
-        var text = "\(version)"
+    static var fullVersion: String {
+        var text = "\(shortVersion)"
         if let buildNumber = Self.buildNumber {
             text += ".\(buildNumber)"
         }
         return text
     }
 
-    static var shortVersion: String? {
-        bundleInfo(for: "CFBundleShortVersionString")
+    static var shortVersion: String {
+        bundleInfo(for: "CFBundleShortVersionString")!
     }
 
     static var systemVersion: String {

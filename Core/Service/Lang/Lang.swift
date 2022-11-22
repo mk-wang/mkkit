@@ -60,8 +60,6 @@ public enum Lang: String {
     }
 }
 
-extension Lang: Codable {}
-
 // MARK: CustomStringConvertible
 
 extension Lang: CustomStringConvertible {
@@ -101,7 +99,7 @@ extension Lang: CustomStringConvertible {
     }
 }
 
-extension Lang {
+public extension Lang {
     var androidName: String {
         switch self {
         case .zh_Hans:
@@ -118,9 +116,46 @@ extension Lang {
     }
 }
 
-// MARK: Equatable
+public extension Lang {
+    var flagEmoji: String {
+        switch self {
+        case .en:
+            return "🇺🇸"
+        case .fr:
+            return "🇫🇷"
+        case .it:
+            return "🇮🇹"
+        case .es:
+            return "🇲🇽"
+        case .de:
+            return "🇩🇪"
+        case .ru:
+            return "🇷🇺"
+        case .ja:
+            return "🇯🇵"
+        case .ko:
+            return "🇰🇷"
+        case .tr:
+            return "🇹🇷"
+        case .ar:
+            return "🇸🇦"
+        case .fa:
+            return "🇮🇷"
+        case .pt_BR:
+            return "🇧🇷"
+        case .zh_Hans:
+            return "🇨🇳"
+        case .zh_Hant:
+            return "🇨🇳"
+        case .id:
+            return "🇮🇩"
+        }
+    }
+}
 
-extension Lang: Equatable {
+// MARK: Equatable, Codable
+
+extension Lang: Equatable, Codable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue == rhs.rawValue
     }

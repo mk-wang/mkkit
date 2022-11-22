@@ -39,6 +39,29 @@ public extension UIView {
     }
 }
 
+public extension UIView {
+    func addSnapScrollView(vertical: Bool, configure: (UIView) -> Void) {
+        let scrollView = UIScrollView()
+        scrollView.snpConfig = { _, make in
+            make.edges.equalToSuperview()
+        }
+        addSnapSubview(scrollView)
+
+        let contentView = UIView()
+        contentView.snpConfig = { _, make in
+            if vertical {
+                make.top.bottom.equalToSuperview()
+                make.left.right.equalTo(scrollView.superview!)
+            } else {
+                make.left.right.equalToSuperview()
+                make.top.bottom.equalTo(scrollView.superview!)
+            }
+        }
+        scrollView.addSnapSubview(contentView)
+        configure(contentView)
+    }
+}
+
 public extension UILayoutGuide {
     var snpConfig: SnapKitMaker? {
         get {

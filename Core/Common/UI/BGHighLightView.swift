@@ -60,12 +60,13 @@ open class BaseHighLightView: UIView {
 
 // MARK: - BGHighLightView
 
-class BGHighLightView: BaseHighLightView {
-    var bgHighLightColor: UIColor?
+open class BGHighLightView: BaseHighLightView {
+    open var bgHighLightColor: UIColor?
+    open var bgColor: UIColor?
 
-    override var isHighLighted: Bool {
+    override open var isHighLighted: Bool {
         didSet {
-            backgroundColor = isHighLighted ? bgHighLightColor : .clear
+            backgroundColor = isHighLighted ? bgHighLightColor : bgColor
             subviews.forEach {
                 Self.updateState(view: $0, isHighLighted: isHighLighted)
             }
@@ -90,11 +91,11 @@ class BGHighLightView: BaseHighLightView {
 
 // MARK: - OverlayHighlightView
 
-class OverlayHighlightView: BaseHighLightView {
-    var overlayColor: UIColor?
+open class OverlayHighlightView: BaseHighLightView {
+    open var overlayColor: UIColor?
     private var overlay: UIView?
 
-    override var isHighLighted: Bool {
+    override open var isHighLighted: Bool {
         didSet {
             overlay?.removeFromSuperview()
             overlay = nil
