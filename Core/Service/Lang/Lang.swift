@@ -126,7 +126,7 @@ public extension Lang {
         case .it:
             return "🇮🇹"
         case .es:
-            return "🇲🇽"
+            return "🇪🇸"
         case .de:
             return "🇩🇪"
         case .ru:
