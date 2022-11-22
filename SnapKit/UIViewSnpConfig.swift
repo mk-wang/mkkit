@@ -40,7 +40,8 @@ public extension UIView {
 }
 
 public extension UIView {
-    func addSnapScrollView(vertical: Bool, configure: (UIView) -> Void) {
+    @discardableResult
+    func addSnapScrollView(vertical: Bool, configure: (UIView) -> Void) -> UIScrollView {
         let scrollView = UIScrollView()
         scrollView.snpConfig = { _, make in
             make.edges.equalToSuperview()
@@ -59,6 +60,7 @@ public extension UIView {
         }
         scrollView.addSnapSubview(contentView)
         configure(contentView)
+        return scrollView
     }
 }
 
