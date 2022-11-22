@@ -8,7 +8,7 @@
 import Foundation
 import YogaKit
 
-extension UIView {
+public extension UIView {
     func fixYGLayout() {
         subviews.forEach {
             let yoga = $0.yoga
@@ -87,13 +87,13 @@ extension UIView {
     }
 }
 
-extension UIView {
+public extension UIView {
     func applySafeAreaInsets() {
         applyYG(padding: safeAreaInsets)
     }
 }
 
-extension YGLayout {
+public extension YGLayout {
     var size: CGSize {
         set {
             width = newValue.width.yg
@@ -121,7 +121,7 @@ public extension FloatingPoint {
     }
 }
 
-extension UIScrollView {
+public extension UIScrollView {
     func ygLayoutVertical(by width: CGFloat? = nil,
                           configure: (UIView) -> Void)
     {

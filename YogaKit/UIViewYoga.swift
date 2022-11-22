@@ -8,7 +8,7 @@
 import UIKit
 import YogaKit
 
-extension UIView {
+public extension UIView {
     enum YGViewBuilder {
         case view(UIView?, YGLayoutConfigurationBlock? = nil)
         case subviews([YGViewBuilder], layoutConfig: YGLayoutConfigurationBlock? = nil)
@@ -68,7 +68,7 @@ extension UIView {
     }
 }
 
-extension UIView {
+public extension UIView {
     class func ygSizedBox(width: CGFloat? = nil, height: CGFloat? = nil) -> UIView {
         let view = UIView()
         view.configureLayout { layout in
