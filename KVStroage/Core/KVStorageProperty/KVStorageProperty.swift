@@ -5,18 +5,25 @@
 import Foundation
 import OpenCombine
 
+// MARK: - AnyOptional
+
 private protocol AnyOptional {
     var isNil: Bool { get }
 }
+
+// MARK: - Optional + AnyOptional
 
 extension Optional: AnyOptional {
     fileprivate var isNil: Bool { self == nil }
 }
 
+// MARK: - KVStorageProperty
+
 @propertyWrapper
 public struct KVStorageProperty<T: Codable> {
     private let storage: KVStorage
     private let subject: CurrentValueSubject<T, Never>
+    var cancellable: AnyCancellable?
 
     /// The key for the value in `KVStorage`.
     public let key: String
@@ -53,6 +60,14 @@ public struct KVStorageProperty<T: Codable> {
 
         let value = storage.object(for: key) ?? wrappedValue
         subject = CurrentValueSubject<T, Never>(value)
+
+        cancellable = subject.sink(receiveValue: { newValue in
+            if (newValue as? AnyOptional)?.isNil ?? false {
+                storage.remove(for: key)
+            } else {
+                storage.set(newValue, for: key)
+            }
+        })
     }
 }
 
