@@ -27,6 +27,10 @@ public extension CGSize {
     func toRect(point: CGPoint = .zero) -> CGRect {
         CGRect(origin: point, size: self)
     }
+
+    var swap: Self {
+        CGSize(height, width)
+    }
 }
 
 public extension CGSize {

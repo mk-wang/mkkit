@@ -73,6 +73,14 @@ open class BGHighLightView: BaseHighLightView {
         }
     }
 
+    override open var backgroundColor: UIColor? {
+        didSet {
+            if !isHighLighted {
+                bgColor = backgroundColor
+            }
+        }
+    }
+
     private static func updateState(view: UIView, isHighLighted: Bool) {
         if let view = view as? UILabel {
             view.isHighlighted = isHighLighted

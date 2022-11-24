@@ -23,6 +23,7 @@ public extension UIView {
         layer.cornerRadius = radius
         layer.masksToBounds = true
         layer.maskedCorners = mask
+
         if let borderColor {
             layer.borderColor = borderColor.cgColor
         }
@@ -138,5 +139,22 @@ public extension UIView {
         var insets = safeAreaInsets
         insets.top = 0
         return bounds.inset(by: insets)
+    }
+}
+
+public extension UIView {
+    class func screenShotSafeView() -> UIView? {
+        let textField = UITextField()
+        textField.isSecureTextEntry = true
+        textField.isUserInteractionEnabled = false
+        guard let safeView = textField.layer.sublayers?.first?.delegate as? UIView else {
+            return nil
+        }
+
+        safeView.removeFromSuperview()
+        let list = safeView.subviews
+        list.forEach { $0.removeFromSuperview() }
+        safeView.translatesAutoresizingMaskIntoConstraints = false
+        return safeView
     }
 }

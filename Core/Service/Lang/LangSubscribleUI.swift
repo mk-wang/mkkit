@@ -10,11 +10,11 @@ import OpenCombine
 
 // MARK: - LangSubscribleUI
 
-protocol LangSubscribleUI: NSObject {
+public protocol LangSubscribleUI: NSObject {
     func langKeyChanged(key: String, text: String?) -> Void
 }
 
-extension LangSubscribleUI {
+public extension LangSubscribleUI {
     func langConfig(key: String, textBuiler: TextBuilder? = nil) {
         textBuilder = textBuiler ?? { $0.tr }
         langKey = key
@@ -65,7 +65,7 @@ extension LangSubscribleUI {
 // MARK: - UILabel + LangSubscribleUI
 
 extension UILabel: LangSubscribleUI {
-    func langKeyChanged(key _: String, text: String?) {
+    public func langKeyChanged(key _: String, text: String?) {
         self.text = text
     }
 }
@@ -73,7 +73,7 @@ extension UILabel: LangSubscribleUI {
 // MARK: - UIButton + LangSubscribleUI
 
 extension UIButton: LangSubscribleUI {
-    func langKeyChanged(key _: String, text: String?) {
+    public func langKeyChanged(key _: String, text: String?) {
         setTitle(text, for: .normal)
     }
 }
