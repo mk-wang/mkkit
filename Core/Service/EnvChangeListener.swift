@@ -9,27 +9,13 @@ import OpenCombine
 import OpenCombineFoundation
 import UIKit
 
-// MARK: - LangChangeListener
-
-protocol LangChangeListener {
-    func onLangChange(lang: Lang?)
-}
-
-extension LangChangeListener where Self: AnyObject {
-    func subjectLangChange() -> AnyCancellable {
-        Lang.publisher.sink { [weak self] lang in
-            self?.onLangChange(lang: lang)
-        }
-    }
-}
-
 // MARK: - ThemeChangeListener
 
-protocol ThemeChangeListener {
+public protocol ThemeChangeListener {
     func onThemeChange(isDark: Bool)
 }
 
-extension ThemeChangeListener where Self: AnyObject {
+public extension ThemeChangeListener where Self: AnyObject {
     func subjectThemeChange() -> AnyCancellable {
         AppTheme.darkPublisher.sink { [weak self] isDark in
             self?.onThemeChange(isDark: isDark ?? false)
@@ -39,7 +25,7 @@ extension ThemeChangeListener where Self: AnyObject {
 
 // MARK: - KeyboardChangeListener
 
-protocol KeyboardChangeListener {
+public protocol KeyboardChangeListener {
     func onKeyboardChange(notification: Notification, hideKeyboard: Bool, keyboardSize: CGSize, duration: Double)
 }
 
@@ -59,7 +45,7 @@ extension KeyboardChangeListener where Self: AnyObject {
     }
 
     // OpenCombine 还不支持 Publishers Merge
-    func subjectKeyboardChange() -> (Set<AnyCancellable>, AnyPublisher<Notification, Never>) {
+    public func subjectKeyboardChange() -> (Set<AnyCancellable>, AnyPublisher<Notification, Never>) {
         var cancellableSet = Set<AnyCancellable>()
 
         let noteSubject = PassthroughSubject<Notification, Never>()

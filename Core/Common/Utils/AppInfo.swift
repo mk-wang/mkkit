@@ -11,19 +11,24 @@ import UIKit
 // MARK: - AppInfo
 
 public enum AppInfo {
-    struct Config {
+    public struct Config {
         let appId: String
         let feedbackMail: String
+        let shareText: String
         let appNameBuiler: () -> String
+
+        static let empty = Config(appId: "", feedbackMail: "", shareText: "", appNameBuiler: { "" })
     }
 
-    static var config = Config(appId: "", feedbackMail: "", appNameBuiler: { "" })
+    public static var config: Config = .empty
 
-    static var appleId: String { config.appId }
+    public static var appleId: String { config.appId }
 
-    static var feedbackMail: String { config.feedbackMail }
+    public static var feedbackMail: String { config.feedbackMail }
 
-    static var appName: String { config.appNameBuiler() }
+    public static var shareText: String { config.shareText }
+
+    public static var appName: String { config.appNameBuiler() }
 }
 
 public extension AppInfo {

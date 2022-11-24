@@ -135,4 +135,10 @@ extension UserDefaultsStorage: KVStorage {
     public func remove(for key: String) {
         storage.removeObject(forKey: key)
     }
+
+    public func removeAll() {
+        let domain = Bundle.main.bundleIdentifier!
+        storage.removePersistentDomain(forName: domain)
+        storage.synchronize()
+    }
 }

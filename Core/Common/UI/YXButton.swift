@@ -77,7 +77,7 @@ open class YXButton: UIButton {
 // MARK: ThemeChangeListener
 
 extension YXButton: ThemeChangeListener {
-    func onThemeChange(isDark _: Bool) {
+    public func onThemeChange(isDark _: Bool) {
         guard !subviews.isEmpty,
               let tintColor = themeTintColor
         else {

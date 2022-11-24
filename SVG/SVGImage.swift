@@ -80,7 +80,7 @@ extension SVGImageView: ThemeChangeListener {
         return nil
     }
 
-    func onThemeChange(isDark _: Bool) {
+    public func onThemeChange(isDark _: Bool) {
         tintColor = makeTintColor()
     }
 }
