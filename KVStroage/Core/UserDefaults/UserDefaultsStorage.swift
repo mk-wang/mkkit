@@ -137,8 +137,9 @@ extension UserDefaultsStorage: KVStorage {
     }
 
     public func removeAll() {
-        let domain = Bundle.main.bundleIdentifier!
+        guard let domain = Bundle.main.bundleIdentifier else {
+            return
+        }
         storage.removePersistentDomain(forName: domain)
-        storage.synchronize()
     }
 }

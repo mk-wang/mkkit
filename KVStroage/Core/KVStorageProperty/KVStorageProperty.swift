@@ -35,11 +35,6 @@ public struct KVStorageProperty<T: Codable> {
         }
 
         set {
-            if (newValue as? AnyOptional)?.isNil ?? false {
-                storage.remove(for: key)
-            } else {
-                storage.set(newValue, for: key)
-            }
             subject.value = newValue
         }
     }
