@@ -20,7 +20,9 @@ extension UIView {
             switch builder {
             case let .view(subView, config):
                 view = subView
-                view?.snpConfig = config
+                if let config {
+                    view?.addSnpConfig(config)
+                }
             case let .builder(viewBuilder):
                 view = viewBuilder(self)
             }
@@ -35,8 +37,9 @@ extension UIView {
                      snpConfig: SnapKitMaker? = nil)
     {
         self.init()
-
-        self.snpConfig = snpConfig
+        if let snpConfig {
+            addSnpConfig(snpConfig)
+        }
 
         addSnapSubviews(snpBuilders)
     }

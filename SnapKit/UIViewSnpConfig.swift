@@ -11,15 +11,6 @@ import UIKit
 public typealias SnapKitMaker = (UIView, SnapKit.ConstraintMaker) -> Void
 
 public extension UIView {
-    var snpConfig: SnapKitMaker? {
-        get {
-            getAssociatedObject(&AssociatedKeys.kSnapConfig) as? SnapKitMaker
-        }
-        set {
-            setAssociatedObject(&AssociatedKeys.kSnapConfig, newValue)
-        }
-    }
-
     func addSnapSubview(_ view: UIView) {
         addSubview(view)
         view.applySnpConfig()
@@ -30,10 +21,24 @@ public extension UIView {
         guide.applySnpConfig()
     }
 
-    func applySnpConfig() {
-        if let config = snpConfig {
-            snp.makeConstraints {
-                config(self.superview!, $0)
+    func addSnpConfig(_ config: @escaping SnapKitMaker) {
+        var list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray
+        if list == nil {
+            list = NSMutableArray()
+            setAssociatedObject(&AssociatedKeys.kSnapConfig, list)
+        }
+        list?.add(config)
+    }
+
+    private func applySnpConfig() {
+        guard let list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray else {
+            return
+        }
+        for item in list {
+            if let config = item as? SnapKitMaker {
+                snp.makeConstraints {
+                    config(self.superview!, $0)
+                }
             }
         }
     }
@@ -43,13 +48,13 @@ public extension UIView {
     @discardableResult
     func addSnapScrollView(vertical: Bool, configure: (UIView) -> Void) -> UIScrollView {
         let scrollView = UIScrollView()
-        scrollView.snpConfig = { _, make in
+        scrollView.addSnpConfig { _, make in
             make.edges.equalToSuperview()
         }
         addSnapSubview(scrollView)
 
         let contentView = UIView()
-        contentView.snpConfig = { _, make in
+        contentView.addSnpConfig { _, make in
             if vertical {
                 make.top.bottom.equalToSuperview()
                 make.left.right.equalTo(scrollView.superview!)
