@@ -5,12 +5,43 @@
 //  Created by MK on 2022/3/29.
 //
 
+import Async
 import UIKit
 
 // MARK: - BaseHighLightView
 
 open class BaseHighLightView: UIView {
-    open var isHighLighted: Bool = false
+    private var blockObx: AsyncBlock<Void, Any>?
+    private var highLightedDate: Date?
+    
+    open var isHighLighted: Bool = false {
+        didSet {
+            blockObx?.cancel()
+
+            if isHighLighted {
+                highLightedDate = Date()
+                updateHighlightStateUI(highLighted: true)
+            } else {
+                let cb: VoidFunction = { [weak self] in
+                    self?.updateHighlightStateUI(highLighted: false)
+                }
+                if let date = highLightedDate {
+                    let interval = minHighLightDruation + date.timeIntervalSinceNow
+                    if interval > 0 {
+                        blockObx = Async.main(after: interval, cb)
+                    } else {
+                        cb()
+                    }
+                } else {
+                    cb()
+                }
+            }
+        }
+    }
+
+    open func updateHighlightStateUI(highLighted _: Bool) {}
+
+    open var minHighLightDruation: TimeInterval = 0.1
 
     open var highLightOnTouch: Bool = true
     open var disableHighLightOnEnd: Bool = true
@@ -64,12 +95,10 @@ open class BGHighLightView: BaseHighLightView {
     open var bgHighLightColor: UIColor?
     open var bgColor: UIColor?
 
-    override open var isHighLighted: Bool {
-        didSet {
-            backgroundColor = isHighLighted ? bgHighLightColor : bgColor
-            subviews.forEach {
-                Self.updateState(view: $0, isHighLighted: isHighLighted)
-            }
+    override open func updateHighlightStateUI(highLighted: Bool) {
+        backgroundColor = highLighted ? bgHighLightColor : bgColor
+        subviews.forEach {
+            Self.updateState(view: $0, isHighLighted: highLighted)
         }
     }
 
@@ -103,18 +132,16 @@ open class OverlayHighlightView: BaseHighLightView {
     open var overlayColor: UIColor?
     private var overlay: UIView?
 
-    override open var isHighLighted: Bool {
-        didSet {
-            overlay?.removeFromSuperview()
-            overlay = nil
+    override open func updateHighlightStateUI(highLighted: Bool) {
+        overlay?.removeFromSuperview()
+        overlay = nil
 
-            if isHighLighted {
-                let overlay = UIView(frame: bounds)
-                overlay.backgroundColor = overlayColor
-                addSubview(overlay)
+        if highLighted {
+            let overlay = UIView(frame: bounds)
+            overlay.backgroundColor = overlayColor
+            addSubview(overlay)
 
-                self.overlay = overlay
-            }
+            self.overlay = overlay
         }
     }
 }
@@ -125,14 +152,12 @@ class ScaleHighlightView: BaseHighLightView {
     var animateDuration: Double = 0.3
     var target: CGFloat = 0.9
 
-    override var isHighLighted: Bool {
-        didSet {
-            let from = isHighLighted ? 1.0 : target
-            let to = isHighLighted ? target : 1.0
-            transform = CGAffineTransform(scaleX: from, y: from)
-            UIView.animate(withDuration: animateDuration, delay: 0.0, options: .curveLinear, animations: {
-                self.transform = CGAffineTransform(scaleX: to, y: to)
-            }, completion: nil)
-        }
+    override open func updateHighlightStateUI(highLighted: Bool) {
+        let from = highLighted ? 1.0 : target
+        let to = highLighted ? target : 1.0
+        transform = CGAffineTransform(scaleX: from, y: from)
+        UIView.animate(withDuration: animateDuration, delay: 0.0, options: .curveLinear, animations: {
+            self.transform = CGAffineTransform(scaleX: to, y: to)
+        }, completion: nil)
     }
 }
