@@ -28,7 +28,7 @@ extension UIView {
             }
 
             if let view {
-                self.addSnapSubview(view)
+                self.addSnpSubview(view)
             }
         }
     }

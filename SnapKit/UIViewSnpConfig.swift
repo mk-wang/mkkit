@@ -11,12 +11,12 @@ import UIKit
 public typealias SnapKitMaker = (UIView, SnapKit.ConstraintMaker) -> Void
 
 public extension UIView {
-    func addSnapSubview(_ view: UIView) {
+    func addSnpSubview(_ view: UIView) {
         addSubview(view)
         view.applySnpConfig()
     }
 
-    func addSnapSubview(_ guide: UILayoutGuide) {
+    func addSnpSubview(_ guide: UILayoutGuide) {
         addLayoutGuide(guide)
         guide.applySnpConfig()
     }
@@ -46,12 +46,12 @@ public extension UIView {
 
 public extension UIView {
     @discardableResult
-    func addSnapScrollView(vertical: Bool, configure: (UIView) -> Void) -> UIScrollView {
+    func addSnpScrollView(vertical: Bool, configure: (UIView) -> Void) -> UIScrollView {
         let scrollView = UIScrollView()
         scrollView.addSnpConfig { _, make in
             make.edges.equalToSuperview()
         }
-        addSnapSubview(scrollView)
+        addSnpSubview(scrollView)
 
         let contentView = UIView()
         contentView.addSnpConfig { _, make in
@@ -63,7 +63,7 @@ public extension UIView {
                 make.top.bottom.equalTo(scrollView.superview!)
             }
         }
-        scrollView.addSnapSubview(contentView)
+        scrollView.addSnpSubview(contentView)
         configure(contentView)
         return scrollView
     }
