@@ -23,11 +23,11 @@ public enum Lang: String {
     case ar
     case fa
     case ro
+    case id
     case pt_BR = "pt-BR"
-    case pt_pt = "pt-PT"
+    case pt_PT = "pt-PT"
     case zh_Hans = "zh-Hans"
     case zh_Hant = "zh-Hant"
-    case id = "in_ID"
 
     private static var configs = [Lang: Bundle]()
 
@@ -102,7 +102,7 @@ extension Lang: CustomStringConvertible {
             return "Español (México)"
         case .ro:
             return "Român"
-        case .pt_pt:
+        case .pt_PT:
             return "Português (Portugal)"
         }
     }
@@ -162,7 +162,7 @@ public extension Lang {
             return "🇲🇽"
         case .ro:
             return "🇷🇴"
-        case .pt_pt:
+        case .pt_PT:
             return "🇵🇹"
         }
     }
