@@ -11,9 +11,9 @@ import UIKit
 // MARK: - BaseHighLightView
 
 open class BaseHighLightView: UIView {
-    private var blockObx: AsyncBlock<Void, Any>?
+    private var blockObx: AsyncBlock<Void, Void>?
     private var highLightedDate: Date?
-    
+
     open var isHighLighted: Bool = false {
         didSet {
             blockObx?.cancel()

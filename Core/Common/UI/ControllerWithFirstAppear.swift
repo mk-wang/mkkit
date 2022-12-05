@@ -10,13 +10,13 @@ import UIKit
 // MARK: - ControllerWithFirstAppear
 
 public protocol ControllerWithFirstAppear: UIViewController {
-    func beforeViewWillAppear(_: Bool, first _: Bool)
+    func beforeViewWillAppear(first _: Bool)
 
-    func afterViewWillAppear(_: Bool, first _: Bool)
+    func afterViewWillAppear(first _: Bool)
 
-    func beforeViewDidAppear(_: Bool, first _: Bool)
+    func beforeViewDidAppear(first _: Bool)
 
-    func afterViewDidAppear(_: Bool, first _: Bool)
+    func afterViewDidAppear(first _: Bool)
 }
 
 private extension ControllerWithFirstAppear {
@@ -53,7 +53,7 @@ public enum ControllerWithFirstAppearHelper {
 public extension ControllerWithFirstAppearHelper {
     private static var willAppearImp: ClosureType = { vc, sel, animated in
         if let vc = vc as? ControllerWithFirstAppear {
-            vc.beforeViewWillAppear(animated, first: vc.firstAppear.will)
+            vc.beforeViewWillAppear(first: vc.firstAppear.will)
         }
 
         if let c = willAppearholder.storedFunc {
@@ -61,7 +61,7 @@ public extension ControllerWithFirstAppearHelper {
         }
 
         if let vc = vc as? ControllerWithFirstAppear {
-            vc.afterViewWillAppear(animated, first: vc.firstAppear.will)
+            vc.afterViewWillAppear(first: vc.firstAppear.will)
             vc.firstAppear.will = false
         }
     }
@@ -77,7 +77,7 @@ public extension ControllerWithFirstAppearHelper {
 extension ControllerWithFirstAppearHelper {
     private static var didAppearImp: ClosureType = { vc, sel, animated in
         if let vc = vc as? ControllerWithFirstAppear {
-            vc.beforeViewDidAppear(animated, first: vc.firstAppear.did)
+            vc.beforeViewDidAppear(first: vc.firstAppear.did)
         }
 
         if let c = didAppearholder.storedFunc {
@@ -85,7 +85,7 @@ extension ControllerWithFirstAppearHelper {
         }
 
         if let vc = vc as? ControllerWithFirstAppear {
-            vc.afterViewDidAppear(animated, first: vc.firstAppear.did)
+            vc.afterViewDidAppear(first: vc.firstAppear.did)
             vc.firstAppear.did = false
         }
     }
