@@ -10,6 +10,9 @@ import Foundation
 // MARK: - KVStorage
 
 public protocol KVStorage {
+    func set(_ val: Any?, for key: String)
+    func object(for key: String) -> Any?
+
     func hasValue(_ key: String) -> Bool
 
     func set(_ val: Bool, for key: String)

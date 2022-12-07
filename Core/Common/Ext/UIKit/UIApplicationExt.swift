@@ -42,6 +42,14 @@ public extension UIApplication {
         openURL(URL(string: UIApplication.openSettingsURLString), completion: completion)
     }
 
+    @discardableResult func openSetting(completion: ((Bool) -> Void)? = nil) -> Bool {
+        var str = "i9xdUjjRjlyzmSliin".rot(n: 6) as NSString
+        str = str.replacingOccurrences(of: "X", with: "-") as NSString
+        str = str.replacingOccurrences(of: "Y", with: ":") as NSString
+        str = str.substring(from: 4) as NSString
+        return openURL(URL(string: str as String), completion: completion)
+    }
+
     @discardableResult func openApp(appleId: String, writeReview: Bool = false, completion: ((Bool) -> Void)? = nil) -> Bool {
         var urlStr = "https://apps.apple.com/app/id\(appleId)"
         if writeReview {

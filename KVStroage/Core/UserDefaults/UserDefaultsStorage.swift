@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - UserDefaultsStorage
+
 open class UserDefaultsStorage {
     private let storage: UserDefaults
 
@@ -15,7 +17,17 @@ open class UserDefaultsStorage {
     }
 }
 
+// MARK: KVStorage
+
 extension UserDefaultsStorage: KVStorage {
+    public func set(_ val: Any?, for key: String) {
+        storage.set(val, forKey: key)
+    }
+
+    public func object(for key: String) -> Any? {
+        storage.object(forKey: key)
+    }
+
     public func set(_ val: Date, for key: String) {
         storage.set(val, forKey: key)
     }
