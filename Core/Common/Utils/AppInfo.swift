@@ -18,6 +18,18 @@ public enum AppInfo {
         let appNameBuiler: () -> String
 
         static let empty = Config(appId: "", feedbackMail: "", shareText: "", appNameBuiler: { "" })
+
+        public init(
+            appId: String,
+            feedbackMail: String,
+            shareText: String,
+            appNameBuiler: @escaping () -> String
+        ) {
+            self.appId = appId
+            self.feedbackMail = feedbackMail
+            self.shareText = shareText
+            self.appNameBuiler = appNameBuiler
+        }
     }
 
     public static var config: Config = .empty

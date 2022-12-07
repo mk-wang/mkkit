@@ -31,7 +31,7 @@ public enum Lang: String {
 
     private static var configs = [Lang: Bundle]()
 
-    var bundle: Bundle {
+    public var bundle: Bundle {
         if let bundle = Self.configs[self] {
             return bundle
         }
@@ -49,7 +49,7 @@ public enum Lang: String {
         return langBundle
     }
 
-    var short: String {
+    public var short: String {
         switch self {
         case .zh_Hans:
             return "zh"

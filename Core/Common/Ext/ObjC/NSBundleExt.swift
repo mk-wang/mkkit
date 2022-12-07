@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Bundle {
+public extension Bundle {
     class var base: Bundle? {
         let main = Self.main
         guard let path = main.path(forResource: "Base", ofType: "lproj"), let bundle = Bundle(path: path) else {
