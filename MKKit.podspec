@@ -16,6 +16,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'Core' do |ss|
     ss.source_files = 'Core/**/*.{h,m,c,swift,hpp}'
+    ss.resources = 'Core/**/*.bundle'
     ss.dependency 'OpenCombine'
     ss.dependency 'OpenCombineFoundation'
     ss.dependency 'FluentDarkModeKit'
