@@ -14,20 +14,20 @@ public enum AppInfo {
     public struct Config {
         let appId: String
         let feedbackMail: String
-        let shareText: String
+        let shareTextBuilder: () -> String
         let appNameBuiler: () -> String
 
-        static let empty = Config(appId: "", feedbackMail: "", shareText: "", appNameBuiler: { "" })
+        static let empty = Config(appId: "", feedbackMail: "", shareTextBuilder: { "" }, appNameBuiler: { "" })
 
         public init(
             appId: String,
             feedbackMail: String,
-            shareText: String,
+            shareTextBuilder: @escaping () -> String,
             appNameBuiler: @escaping () -> String
         ) {
             self.appId = appId
             self.feedbackMail = feedbackMail
-            self.shareText = shareText
+            self.shareTextBuilder = shareTextBuilder
             self.appNameBuiler = appNameBuiler
         }
     }
@@ -38,7 +38,7 @@ public enum AppInfo {
 
     public static var feedbackMail: String { config.feedbackMail }
 
-    public static var shareText: String { config.shareText }
+    public static var shareText: String { config.shareTextBuilder() }
 
     public static var appName: String { config.appNameBuiler() }
 }
