@@ -8,39 +8,74 @@
 import SnapKit
 import UIKit
 
-extension UIView {
-    enum SnpViewBuilder {
-        case view(UIView?, SnapKitMaker? = nil)
-        case builder((UIView?) -> UIView?)
+public extension UIView {
+    enum SnpStackDirection {
+        case vertical
+        case horizontal
+        case ltrHorizontal
     }
 
-    func addSnapSubviews(_ builders: [SnpViewBuilder]) {
-        builders.forEach { builder in
-            var view: UIView?
-            switch builder {
-            case let .view(subView, config):
-                view = subView
-                if let config {
-                    view?.addSnpConfig(config)
-                }
-            case let .builder(viewBuilder):
-                view = viewBuilder(self)
-            }
-
-            if let view {
-                self.addSnpSubview(view)
-            }
-        }
+    enum SnpStackViewBuilder {
+        case space(CGFloat)
+        case view(UIView?)
+        case builder((UIView, UIView?) -> UIView?)
     }
 
-    convenience init(snpBuilders: [SnpViewBuilder],
-                     snpConfig: SnapKitMaker? = nil)
+    func addSnpStackSubviews(_ direction: SnpStackDirection,
+                             buidlers: [SnpStackViewBuilder])
     {
-        self.init()
-        if let snpConfig {
-            addSnpConfig(snpConfig)
-        }
+        var last: UIView?
+        for builder in buidlers {
+            var subview: UIView?
 
-        addSnapSubviews(snpBuilders)
+            switch builder {
+            case let .space(size):
+                subview = UIView()
+                subview?.addSnpConfig { _, make in
+                    if direction == .vertical {
+                        make.width.equalTo(0)
+                        make.centerX.equalToSuperview()
+                        make.height.equalTo(size)
+                    } else {
+                        make.height.equalTo(0)
+                        make.centerY.equalToSuperview()
+                        make.width.equalTo(size)
+                    }
+                }
+            case let .view(aView):
+                subview = aView
+            case let .builder(cb):
+                subview = cb(self, last)
+            }
+
+            if let subview {
+                subview.addSnpConfig { _, make in
+                    if direction == .vertical {
+                        if let last {
+                            make.top.equalTo(last.snp.bottom)
+                        } else {
+                            make.top.equalToSuperview()
+                        }
+                    } else if direction == .horizontal {
+                        if let last {
+                            make.leading.equalTo(last.snp.trailing)
+                        } else {
+                            make.leading.equalToSuperview()
+                        }
+                    } else {
+                        if let last {
+                            make.left.equalTo(last.snp.right)
+                        } else {
+                            make.left.equalToSuperview()
+                        }
+                    }
+                }
+                addSnpSubview(subview)
+                last = subview
+            }
+        }
+        last?.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+        }
     }
 }
