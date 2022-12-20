@@ -1,6 +1,6 @@
 //
 //  LangRTL.swift
-//  YogaWorkout
+//
 //
 //  Created by MK on 2021/9/3.
 //

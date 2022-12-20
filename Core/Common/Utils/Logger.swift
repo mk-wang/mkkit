@@ -66,12 +66,12 @@ open class Logger {
             line: line)
     }
 
-    func log(level: Level,
-             message: String,
-             tag: String?,
-             function: String,
-             file: String,
-             line: UInt)
+    public func log(level: Level,
+                    message: String,
+                    tag: String?,
+                    function: String,
+                    file: String,
+                    line: UInt)
     {
         guard level.rawValue >= Level.default.rawValue else {
             return

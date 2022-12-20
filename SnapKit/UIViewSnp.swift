@@ -75,7 +75,13 @@ public extension UIView {
             }
         }
         last?.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
+            if direction == .vertical {
+                make.bottom.equalToSuperview()
+            } else if direction == .horizontal {
+                make.trailing.equalToSuperview()
+            } else {
+                make.right.equalToSuperview()
+            }
         }
     }
 }

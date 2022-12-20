@@ -20,6 +20,7 @@ public class SVGImageView: UIImageView {
 
     public init(path: String,
                 imageSize: CGSize,
+                langFlip: Bool = false,
                 listenTheme: Bool = false,
                 tintColorBuilder: ((Bool) -> UIColor?)? = nil)
     {
@@ -38,6 +39,11 @@ public class SVGImageView: UIImageView {
             image = image?.withRenderingMode(.alwaysTemplate)
             tintColor = color
         }
+
+        if langFlip {
+            image = image?.langFlip
+        }
+
         self.image = image
         backgroundColor = .clear
     }

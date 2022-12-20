@@ -329,6 +329,17 @@ typedef void (^readTextBlock)(void);
     return _instance;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self != nil) {
+        _formatter = [[NSDateFormatter alloc] init];
+        _formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+        _lock = [NSLock new];
+    }
+    return self;
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -378,9 +389,6 @@ typedef void (^readTextBlock)(void);
     _isFullScreen = NO;
     _isShowConsole = YES;
     self.consoleWindow.hidden = NO;
-    _formatter = [[NSDateFormatter alloc] init];
-    _formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-    _lock = [NSLock new];
 
     // 如果想在release情况下也能显示控制台打印请把stopPrinting方法注释掉
     //  if you want to see GHConsole at the release mode you will annotating the stopPrinting func below here.
