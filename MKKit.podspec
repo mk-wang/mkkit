@@ -5,9 +5,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
     MKKit desc
   DESC
-  s.homepage         = "http://www.mupdf.com/"
-  s.license          = { :type => "Affero GNU GPL v3", :file => 'COPYING' }
-  s.author           = "Artifex Software Inc"
+  s.homepage         = "http://www.xxx.com/"
+  s.license          = { :type => "MIT", :file => 'COPYING' }
+  s.author           = "MK"
   s.source           = { :git => "https://github.com/ArtifexSoftware/mupdf.git", :tag => s.version.to_s }
 
   s.platform     = :ios, '11.0'

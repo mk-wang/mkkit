@@ -158,3 +158,19 @@ public extension UIView {
         return safeView
     }
 }
+
+public extension UIView {
+    var respondingViewController: UIViewController? {
+        var responder = next
+
+        while responder != nil {
+            if let vc = responder as? UIViewController {
+                return vc
+            } else {
+                responder = responder?.next
+            }
+        }
+
+        return nil
+    }
+}
