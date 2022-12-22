@@ -169,6 +169,18 @@ public extension UIView {
 }
 
 public extension UIView {
+    func findFirstSuperView<T: UIView>(_: T.Type) -> T? {
+        var superView: UIView? = superview
+        while superView != nil {
+            if let scroll = superView as? T {
+                return scroll
+            }
+            superView = superView?.superview
+        }
+
+        return nil
+    }
+
     var respondingViewController: UIViewController? {
         var responder = next
 
