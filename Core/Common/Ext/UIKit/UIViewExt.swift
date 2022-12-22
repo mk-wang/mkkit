@@ -96,6 +96,15 @@ public extension UIView {
         animation.values = [translation, -translation]
         layer.add(animation, forKey: "shake")
     }
+
+    func applyTransform(withScale scale: CGFloat, anchorPoint: CGPoint) {
+        layer.anchorPoint = anchorPoint
+        let scale = scale != 0 ? scale : CGFloat.leastNonzeroMagnitude
+        let revertScale = 1 / scale
+        let xPadding = revertScale * (anchorPoint.x - 0.5) * bounds.width
+        let yPadding = revertScale * (anchorPoint.y - 0.5) * bounds.height
+        transform = CGAffineTransform(scaleX: scale, y: scale).translatedBy(x: xPadding, y: yPadding)
+    }
 }
 
 public extension UIView {
