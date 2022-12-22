@@ -115,14 +115,14 @@ public func shortFileName(_ file: String) -> String {
 public func formatMessage(level: Logger.Level,
                           message: String,
                           tag: String?,
-                          function: String,
+                          function _: String,
                           file: String,
                           line: UInt) -> String
 {
     let file = shortFileName(file)
     let tagInfo = tag == nil || tag!.isEmpty ? "" : ": \(tag!)"
 //    return "[\(level)\(tagInfo)] \(function) \(message)"
-    return "[\(level)\(tagInfo)] \(file)#\(line) \(function) \(message)"
+    return "[\(level)\(tagInfo)] \(file)#\(line) \(message)"
 }
 
 // MARK: - Printer

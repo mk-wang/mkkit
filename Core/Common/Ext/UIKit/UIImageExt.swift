@@ -51,21 +51,27 @@ public extension UIImage {
         return UIImage(cgImage: image, scale: scale, orientation: imageOrientation)
     }
 
+    func scaled(to scale: CGFloat, opaque: Bool = false) -> UIImage? {
+        let toWidth = size.width * scale
+        let toHeight = size.height * scale
+        return scaled(toWidth: toWidth, toHeight: toHeight, opaque: opaque)
+    }
+
     func scaled(toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
         let scale = toHeight / size.height
         let newWidth = size.width * scale
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: newWidth, height: toHeight), opaque, self.scale)
-        draw(in: CGRect(x: 0, y: 0, width: newWidth, height: toHeight))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage
+        return scaled(toWidth: newWidth, toHeight: toHeight, opaque: opaque)
     }
 
     func scaled(toWidth: CGFloat, opaque: Bool = false) -> UIImage? {
         let scale = toWidth / size.width
         let newHeight = size.height * scale
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: toWidth, height: newHeight), opaque, self.scale)
-        draw(in: CGRect(x: 0, y: 0, width: toWidth, height: newHeight))
+        return scaled(toWidth: toWidth, toHeight: newHeight, opaque: opaque)
+    }
+
+    func scaled(toWidth: CGFloat, toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: toWidth, height: toHeight), opaque, scale)
+        draw(in: CGRect(x: 0, y: 0, width: toWidth, height: toHeight))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage

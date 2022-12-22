@@ -46,8 +46,8 @@ public extension UIView {
 
 public extension UIView {
     @discardableResult
-    func addSnpScrollView(vertical: Bool, configure: (UIView) -> Void) -> UIScrollView {
-        let scrollView = UIScrollView()
+    func addSnpScrollView(vertical: Bool, configure: (UIView) -> Void, scrollBuilder: (() -> UIScrollView)? = nil) -> UIScrollView {
+        let scrollView = scrollBuilder == nil ? UIScrollView() : scrollBuilder!()
         scrollView.addSnpConfig { _, make in
             make.edges.equalToSuperview()
         }
