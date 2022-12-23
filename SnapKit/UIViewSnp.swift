@@ -16,7 +16,7 @@ public extension UIView {
     }
 
     enum SnpStackViewBuilder {
-        case space(CGFloat)
+        case space(CGFloat? = nil)
         case view(UIView?)
         case builder((UIView, UIView?) -> UIView?)
     }
@@ -35,11 +35,15 @@ public extension UIView {
                     if direction == .vertical {
                         make.width.equalTo(0)
                         make.centerX.equalToSuperview()
-                        make.height.equalTo(size)
+                        if let size {
+                            make.height.equalTo(size)
+                        }
                     } else {
                         make.height.equalTo(0)
                         make.centerY.equalToSuperview()
-                        make.width.equalTo(size)
+                        if let size {
+                            make.width.equalTo(size)
+                        }
                     }
                 }
             case let .view(aView):
