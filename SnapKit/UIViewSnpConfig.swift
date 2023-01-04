@@ -30,6 +30,11 @@ public extension UIView {
         list?.add(config)
     }
 
+    func cleanSnpConfigs() {
+        var list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray
+        list?.removeAllObjects()
+    }
+
     private func applySnpConfig() {
         guard let list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray else {
             return
