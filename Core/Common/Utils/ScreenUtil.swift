@@ -21,8 +21,8 @@ public enum ScreenUtil {
     private(set) static var minRatio: CGFloat = 0
 }
 
-extension ScreenUtil {
-    private(set) static var designSize: CGSize = .zero {
+public extension ScreenUtil {
+    internal private(set) static var designSize: CGSize = .zero {
         didSet {
             ratio.x = screenSize.width / designSize.width
             ratio.y = screenSize.height / designSize.height
@@ -33,7 +33,11 @@ extension ScreenUtil {
 
     private(set) static var window: UIWindow!
 
-    public static func setup(window: UIWindow, designSize: CGSize) {
+    static var rootViewController: UIViewController? {
+        window.rootViewController
+    }
+
+    static func setup(window: UIWindow, designSize: CGSize) {
         self.window = window
         self.designSize = designSize
     }

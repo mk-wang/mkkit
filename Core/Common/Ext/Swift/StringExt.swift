@@ -32,6 +32,10 @@ public extension String {
         data(using: .utf8, allowLossyConversion: true)
     }
 
+    var utf8Base64Str: String? {
+        utf8Data?.base64EncodedString()
+    }
+
     var jsonObject: Any? {
         utf8Data?.jsonObject
     }

@@ -170,14 +170,29 @@ public extension UIView {
 
 public extension UIView {
     func findFirstSuperView<T: UIView>(_: T.Type) -> T? {
-        var superView: UIView? = superview
-        while superView != nil {
-            if let scroll = superView as? T {
-                return scroll
+        var aView: UIView? = superview
+
+        while aView != nil {
+            if let find = aView as? T {
+                return find
             }
-            superView = superView?.superview
+            aView = aView?.superview
         }
 
+        return nil
+    }
+
+    func findFirstSuperViewBy(name: String) -> UIView? {
+        guard let clz = NSClassFromString(name) else {
+            return nil
+        }
+        var aView: UIView? = superview
+        while aView != nil {
+            if aView?.isKind(of: clz) ?? false {
+                return aView
+            }
+            aView = aView?.superview
+        }
         return nil
     }
 
