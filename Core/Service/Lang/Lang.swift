@@ -36,15 +36,24 @@ public enum Lang: String {
             return bundle
         }
 
-        var langBundle: Bundle!
-        if let path = Bundle.main.path(forResource: rawValue, ofType: "lproj"),
-           let bundle = Bundle(path: path)
-        {
-            langBundle = bundle
+        if let bundle = porjBundle(for: rawValue) {
+            Self.configs[self] = bundle
+            return bundle
         }
 
-        Self.configs[self] = langBundle
-        return langBundle
+        let altertName = rawValue.replacingOccurrences(of: "-", with: "_")
+        if altertName != rawValue, let bundle = porjBundle(for: altertName) {
+            Self.configs[self] = bundle
+            return bundle
+        }
+        return nil
+    }
+
+    private func porjBundle(for name: String) -> Bundle? {
+        if let path = Bundle.main.path(forResource: name, ofType: "lproj") {
+            return Bundle(path: path)
+        }
+        return nil
     }
 
     public var short: String {
