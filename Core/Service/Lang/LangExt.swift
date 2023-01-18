@@ -48,10 +48,19 @@ extension LangService: AppSerivce {
 
 public extension String {
     var tr: String {
-        var text = Lang.current.bundle.translate(for: self)
-        if text == nil, Lang.current != Lang.default {
-            text = Lang.default.bundle.translate(for: self)
+        let currentBundle = Lang.current.bundle
+
+        if let text = currentBundle?.translate(for: self) {
+            return text
         }
-        return text ?? self
+
+        let defaultBundle = Lang.default.bundle
+        if currentBundle != defaultBundle {
+            if let text = defaultBundle?.translate(for: self) {
+                return text
+            }
+        }
+
+        return self
     }
 }

@@ -27,6 +27,7 @@ public class SVGImageView: UIImageView {
         self.path = path
         self.imageSize = imageSize
         self.tintColorBuilder = tintColorBuilder
+
         super.init(frame: CGRect(size: imageSize))
 
         if listenTheme, tintColorBuilder != nil {

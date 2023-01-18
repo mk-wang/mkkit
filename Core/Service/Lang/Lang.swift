@@ -31,7 +31,7 @@ public enum Lang: String {
 
     private static var configs = [Lang: Bundle]()
 
-    public var bundle: Bundle {
+    public var bundle: Bundle? {
         if let bundle = Self.configs[self] {
             return bundle
         }
@@ -41,8 +41,6 @@ public enum Lang: String {
            let bundle = Bundle(path: path)
         {
             langBundle = bundle
-        } else {
-            assertionFailure("\(rawValue) Bundle is not found")
         }
 
         Self.configs[self] = langBundle
