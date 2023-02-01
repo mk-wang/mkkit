@@ -62,6 +62,18 @@ public extension UILabel {
     }
 }
 
+public extension TextViewLabel {
+    convenience init(text: String, style: TextViewStyle) {
+        self.init()
+        self.text = text
+        font = style.font
+        textColor = style.color
+        textAlignment = style.textAlignment
+        backgroundColor = style.backgroundColor
+        layer.cornerRadius = style.cornerRadius
+    }
+}
+
 public extension UIButton {
     convenience init(type: UIButton.ButtonType, style: ButtonViewStyle) {
         self.init(type: type)
