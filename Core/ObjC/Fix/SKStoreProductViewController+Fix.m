@@ -3,7 +3,7 @@
 //  MKKit
 //
 //  Created by MK on 2023/2/1.
-//  patch for iOS 15.7.*, except 15.7.1
+//  patch for iOS 15.7.*, except for 15.7.1
 // https://stackoverflow.com/questions/72907240/skstoreproductviewcontroller-crashes-for-unrecognized-selector-named-scenediscon
 //  https://www.jianshu.com/p/c24718152473
 
