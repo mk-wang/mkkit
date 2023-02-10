@@ -53,6 +53,13 @@ Pod::Spec.new do |s|
     ss.source_files = 'IGListSwiftKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'IGListKit'
   end
+  
+  s.subspec 'IAP' do |ss|
+    ss.source_files = 'IAP/**/*.{h,m,c,swift,hpp}'
+    ss.frameworks = "CryptoKit"
+    ss.dependency 'SwiftyStoreKit'
+  end
+
   s.subspec 'YogaKit' do |ss|
     ss.source_files = 'YogaKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'YogaKit'
