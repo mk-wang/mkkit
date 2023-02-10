@@ -9,6 +9,15 @@ import SnapKit
 import UIKit
 
 public extension UIView {
+    convenience init(direction: SnpStackDirection,
+                     buidlers: [SnpStackViewBuilder])
+    {
+        self.init(frame: .zero)
+        addSnpStackSubviews(direction, buidlers: buidlers)
+    }
+}
+
+public extension UIView {
     enum SnpStackDirection {
         case vertical
         case horizontal
@@ -18,6 +27,7 @@ public extension UIView {
     enum SnpStackViewBuilder {
         case space(CGFloat? = nil)
         case view(UIView?)
+        case tight(UIView?)
         case builder((UIView, UIView?) -> UIView?)
     }
 
@@ -48,6 +58,9 @@ public extension UIView {
                 }
             case let .view(aView):
                 subview = aView
+            case let .tight(aView):
+                subview = aView
+                subview?.compressionLayout(for: direction == .vertical ? .vertical : .horizontal)
             case let .builder(cb):
                 subview = cb(self, last)
             }
