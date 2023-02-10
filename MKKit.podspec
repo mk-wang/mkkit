@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, '11.0'
 
-  s.default_subspecs = 'Core', 'SVG', 'KVStroage', 'InjectionIII', 'SnapKit'
+  s.default_subspecs = 'Core', 'SVG', 'KVStroage', 'InjectionIII'
 
   s.subspec 'Core' do |ss|
     ss.source_files = 'Core/**/*.{h,m,c,swift,hpp}'
