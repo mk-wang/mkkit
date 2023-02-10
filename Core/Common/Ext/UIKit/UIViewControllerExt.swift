@@ -8,6 +8,10 @@
 import UIKit
 
 public extension UIViewController {
+    var isUILoaded: Bool {
+        isViewLoaded && view.window != nil
+    }
+
     var safeAreaRect: CGRect {
         view.bounds.inset(by: view.safeAreaInsets)
     }

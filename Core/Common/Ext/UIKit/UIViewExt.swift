@@ -8,13 +8,23 @@
 import UIKit
 
 public extension UIView {
+    var isEmptySubview: Bool {
+        subviews.isEmpty
+    }
+
+    var isEmptyBounds: Bool {
+        bounds.size == .zero
+    }
+
     func removeSubviews() {
         let list = subviews
         for view in list {
             view.removeFromSuperview()
         }
     }
+}
 
+public extension UIView {
     func corner(radius: CGFloat,
                 mask: CACornerMask = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner],
                 borderColor: UIColor? = nil,
@@ -208,5 +218,12 @@ public extension UIView {
         }
 
         return nil
+    }
+}
+
+public extension UIView {
+    func compressionLayout(for axis: NSLayoutConstraint.Axis) {
+        setContentHuggingPriority(.required, for: axis)
+        setContentCompressionResistancePriority(.required, for: axis)
     }
 }
