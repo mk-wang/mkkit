@@ -91,3 +91,45 @@ extension YXButton: ThemeChangeListener {
         }
     }
 }
+
+public extension YXButton {
+    static func makeButton(type: UIButton.ButtonType = .custom,
+                           size: CGSize,
+                           style: ButtonViewStyle? = nil,
+                           image originImage: UIImage? = nil,
+                           path: String? = nil,
+                           langFlip: Bool = false,
+                           tintColor: UIColor? = nil) -> YXButton
+    {
+        let btn = style == nil ? YXButton(type: type) : YXButton(type: type, style: style!)
+        btn.tapExt = CGSize(10, 10)
+
+        var image = originImage
+        if image == nil, let path {
+            image = svgImage(path: path,
+                             size: size)
+        }
+
+        if image != nil, langFlip {
+            image = image?.langFlip
+        }
+
+        if let image {
+            do {
+                var normal = image
+                if let color = tintColor {
+                    normal = normal.tint(color: color)
+                }
+                btn.setImage(normal, for: .normal)
+            }
+
+            if let color = style?.hilightColor {
+                var highlighted = image
+                highlighted = highlighted.tint(color: color)
+                btn.setImage(highlighted, for: .highlighted)
+            }
+        }
+
+        return btn
+    }
+}

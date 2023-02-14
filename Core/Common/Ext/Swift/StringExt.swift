@@ -65,6 +65,57 @@ public extension String {
         let underlineAttribute = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue]
         return NSAttributedString(string: self, attributes: underlineAttribute)
     }
+
+    func makeAttrByTag(openTag: String,
+                       closeTag: String,
+                       attrs: [NSAttributedString.Key: Any],
+                       tagAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
+    {
+        let mStr = NSMutableAttributedString()
+        guard let startRange = range(of: openTag), let endRange = range(of: closeTag) else {
+            mStr.append(NSAttributedString(string: self, attributes: attrs))
+            return mStr
+        }
+        let start = String(self[..<startRange.lowerBound])
+        if start.isNotEmpty {
+            mStr.append(NSAttributedString(string: start, attributes: attrs))
+        }
+
+        let boldText = String(self[startRange.upperBound ..< endRange.lowerBound])
+        if boldText.isNotEmpty {
+            mStr.append(NSAttributedString(string: boldText, attributes: tagAttrs))
+        }
+        let end = String(self[endRange.upperBound...])
+        if end.isNotEmpty {
+            mStr.append(NSAttributedString(string: end, attributes: attrs))
+        }
+        return mStr
+    }
+
+    func makeAttrByTag(tag: String,
+                       attrs: [NSAttributedString.Key: Any],
+                       tagAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
+    {
+        let mStr = NSMutableAttributedString()
+        guard let startRange = range(of: "<\(tag)>"), let endRange = range(of: "</\(tag)>") else {
+            mStr.append(NSAttributedString(string: self, attributes: attrs))
+            return mStr
+        }
+        let start = String(self[..<startRange.lowerBound])
+        if start.isNotEmpty {
+            mStr.append(NSAttributedString(string: start, attributes: attrs))
+        }
+
+        let boldText = String(self[startRange.upperBound ..< endRange.lowerBound])
+        if boldText.isNotEmpty {
+            mStr.append(NSAttributedString(string: boldText, attributes: tagAttrs))
+        }
+        let end = String(self[endRange.upperBound...])
+        if end.isNotEmpty {
+            mStr.append(NSAttributedString(string: end, attributes: attrs))
+        }
+        return mStr
+    }
 }
 
 extension String {

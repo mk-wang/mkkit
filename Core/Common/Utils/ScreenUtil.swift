@@ -82,8 +82,12 @@ public extension ScreenUtil {
 }
 
 public extension ScreenUtil {
+    static func bottomHeight(safeArea h1: CGFloat, normal h2: CGFloat) -> CGFloat {
+        bottomSafeArea > 1 ? h1 : h2
+    }
+
     static func bottomSafeAreaOr(height: CGFloat) -> CGFloat {
-        bottomSafeArea > 1 ? bottomSafeArea : height
+        bottomHeight(safeArea: bottomSafeArea, normal: height)
     }
 
     static func bottomSafeAreaMax(height: CGFloat) -> CGFloat {
