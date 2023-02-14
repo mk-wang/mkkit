@@ -28,20 +28,20 @@ public extension UIView {
         case space(CGFloat? = nil)
         case view(UIView?)
         case tight(UIView?)
-        case builder((UIView, UIView?) -> UIView?)
+        case builder((UIView, SnpLayoutObject?) -> UIView?)
     }
 
     func addSnpStackSubviews(_ direction: SnpStackDirection,
                              buidlers: [SnpStackViewBuilder])
     {
-        var last: UIView?
+        var lastObject: SnpLayoutObject?
         for builder in buidlers {
-            var subview: UIView?
+            var snpObject: SnpLayoutObject?
 
             switch builder {
             case let .space(size):
-                subview = UIView()
-                subview?.addSnpConfig { _, make in
+                snpObject = UILayoutGuide()
+                snpObject?.addSnpConfig { _, make in
                     if direction == .vertical {
                         make.width.equalTo(0)
                         make.centerX.equalToSuperview()
@@ -57,41 +57,41 @@ public extension UIView {
                     }
                 }
             case let .view(aView):
-                subview = aView
+                snpObject = aView
             case let .tight(aView):
-                subview = aView
-                subview?.compressionLayout(for: direction == .vertical ? .vertical : .horizontal)
+                aView?.compressionLayout(for: direction == .vertical ? .vertical : .horizontal)
+                snpObject = aView
             case let .builder(cb):
-                subview = cb(self, last)
+                snpObject = cb(self, lastObject)
             }
 
-            if let subview {
-                subview.addSnpConfig { _, make in
+            if let snpObject {
+                snpObject.addSnpConfig { _, make in
                     if direction == .vertical {
-                        if let last {
-                            make.top.equalTo(last.snp.bottom)
+                        if let lastObject {
+                            make.top.equalTo(lastObject.snpDSL.bottom)
                         } else {
                             make.top.equalToSuperview()
                         }
                     } else if direction == .horizontal {
-                        if let last {
-                            make.leading.equalTo(last.snp.trailing)
+                        if let lastObject {
+                            make.leading.equalTo(lastObject.snpDSL.trailing)
                         } else {
                             make.leading.equalToSuperview()
                         }
                     } else {
-                        if let last {
-                            make.left.equalTo(last.snp.right)
+                        if let lastObject {
+                            make.left.equalTo(lastObject.snpDSL.right)
                         } else {
                             make.left.equalToSuperview()
                         }
                     }
                 }
-                addSnpSubview(subview)
-                last = subview
+                addSnpObject(snpObject)
+                lastObject = snpObject
             }
         }
-        last?.snp.makeConstraints { make in
+        lastObject?.makeConstraints { make in
             if direction == .vertical {
                 make.bottom.equalToSuperview()
             } else if direction == .horizontal {
@@ -100,5 +100,34 @@ public extension UIView {
                 make.right.equalToSuperview()
             }
         }
+    }
+}
+
+public extension UIView {
+    @discardableResult
+    func addSnpScrollView(vertical: Bool,
+                          configure: (UIView) -> Void,
+                          scrollBuilder: (() -> UIScrollView)? = nil) -> UIScrollView
+    {
+        let scrollView = scrollBuilder?() ?? UIScrollView()
+        scrollView.addSnpConfig { _, make in
+            make.edges.equalToSuperview()
+        }
+        addSnpSubview(scrollView)
+
+        let contentView = UIView()
+        contentView.addSnpConfig { [unowned self] _, make in
+            if vertical {
+                make.top.bottom.equalToSuperview()
+                make.left.right.equalTo(self)
+
+            } else {
+                make.left.right.equalToSuperview()
+                make.top.bottom.equalTo(self)
+            }
+        }
+        scrollView.addSnpSubview(contentView)
+        configure(contentView)
+        return scrollView
     }
 }
