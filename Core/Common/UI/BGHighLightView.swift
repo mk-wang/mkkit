@@ -27,7 +27,7 @@ open class BaseHighLightView: UIView {
                 if let date = highLightedDate {
                     let interval = minHighLightDruation + date.timeIntervalSinceNow
                     if interval > 0 {
-                        blockTimer = SwiftTimer(interval: .milliseconds(Int(interval*1000)),
+                        blockTimer = SwiftTimer(interval: .milliseconds(Int(interval * 1000)),
                                                 handler: { _ in
                                                     cb()
                                                 })
