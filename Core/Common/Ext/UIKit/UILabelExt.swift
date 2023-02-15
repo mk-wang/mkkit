@@ -18,7 +18,9 @@ public extension UILabel {
         self.text = text
         self.font = font
     }
+}
 
+public extension UILabel {
     var requiredHeight: CGFloat {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: CGFloat.greatestFiniteMagnitude))
         label.numberOfLines = 0
@@ -29,9 +31,18 @@ public extension UILabel {
         label.sizeToFit()
         return label.frame.height
     }
-}
 
-public extension UILabel {
+    var visibleLines: Int {
+        let maxSize = CGSize(width: frame.size.width, height: CGFloat(Float.infinity))
+        let charSize = font.lineHeight
+        let text = (text ?? "") as NSString
+        let textSize = text.boundingRect(with: maxSize,
+                                         options: .usesLineFragmentOrigin,
+                                         attributes: [NSAttributedString.Key.font: font], context: nil)
+        let linesRoundedUp = Int(ceil(textSize.height / charSize))
+        return linesRoundedUp
+    }
+
     func highlight(searchedText: String?, color: UIColor) {
         guard let txtLabel = text, let searchedText else {
             return
