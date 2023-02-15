@@ -70,12 +70,6 @@ extension AppThemeService: AppSerivce {
 
     public func initAfterWindow(window: UIWindow) {
         darkConfig(window: window)
-
-        do {
-            let appearance = UITabBarItem.appearance()
-            let offset: CGFloat = window.safeAreaInsets.bottom > 0 ? -4 : -6
-            appearance.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: offset)
-        }
     }
 
     public func onExit() {}

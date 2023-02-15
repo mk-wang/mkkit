@@ -12,14 +12,20 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, '11.0'
 
-  s.default_subspecs = 'Core', 'SVG', 'KVStroage', 'InjectionIII'
+  s.default_subspecs = 'Core', 'SVG', 'Theme', 'KVStroage', 'InjectionIII'
 
   s.subspec 'Core' do |ss|
     ss.source_files = 'Core/**/*.{h,m,c,swift,hpp}'
     ss.resources = 'Core/**/*.bundle'
     ss.dependency 'OpenCombine'
     ss.dependency 'OpenCombineFoundation'
+  end
+
+  s.subspec 'Theme' do |ss|
+    ss.source_files = 'Theme/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'MKKit/Core'
     ss.dependency 'FluentDarkModeKit'
+    ss.dependency 'OpenCombine'
   end
 
   s.subspec 'SVG' do |ss|
