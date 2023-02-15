@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.homepage         = "http://www.xxx.com/"
   s.license          = { :type => "MIT", :file => 'COPYING' }
   s.author           = "MK"
-  s.source           = { :git => "https://github.com/ArtifexSoftware/mupdf.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/mk-wang/mkkit.git", :tag => s.version.to_s }
 
   s.platform     = :ios, '11.0'
 
