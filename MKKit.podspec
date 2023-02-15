@@ -20,7 +20,6 @@ Pod::Spec.new do |s|
     ss.dependency 'OpenCombine'
     ss.dependency 'OpenCombineFoundation'
     ss.dependency 'FluentDarkModeKit'
-    ss.dependency 'AsyncSwift'
   end
 
   s.subspec 'SVG' do |ss|

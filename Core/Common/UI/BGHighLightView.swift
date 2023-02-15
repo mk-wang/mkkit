@@ -5,18 +5,17 @@
 //  Created by MK on 2022/3/29.
 //
 
-import Async
 import UIKit
 
 // MARK: - BaseHighLightView
 
 open class BaseHighLightView: UIView {
-    private var blockObx: AsyncBlock<Void, Void>?
+    private var blockTimer: SwiftTimer?
     private var highLightedDate: Date?
 
     open var isHighLighted: Bool = false {
         didSet {
-            blockObx?.cancel()
+            blockTimer = nil
 
             if isHighLighted {
                 highLightedDate = Date()
@@ -28,7 +27,10 @@ open class BaseHighLightView: UIView {
                 if let date = highLightedDate {
                     let interval = minHighLightDruation + date.timeIntervalSinceNow
                     if interval > 0 {
-                        blockObx = Async.main(after: interval, cb)
+                        blockTimer = SwiftTimer(interval: .seconds(Int(interval)),
+                                                handler: { _ in
+                                                    cb()
+                                                })
                     } else {
                         cb()
                     }
