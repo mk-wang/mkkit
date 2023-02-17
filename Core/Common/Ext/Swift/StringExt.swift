@@ -62,8 +62,12 @@ public extension String {
 
 public extension String {
     var underline: NSAttributedString {
-        let underlineAttribute = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue]
-        return NSAttributedString(string: self, attributes: underlineAttribute)
+        attributedString(range: startIndex ..< endIndex,
+                         attrs: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue])
+    }
+
+    func attributedString(range: Range<Self.Index>, attrs: [NSAttributedString.Key: Any]) -> NSAttributedString {
+        NSAttributedString(string: String(self[range]), attributes: attrs)
     }
 
     func makeAttrByTags(normal: [NSAttributedString.Key: Any],
@@ -86,21 +90,29 @@ public extension String {
                 }
             }
 
-            if let startRange, let tag, let endRange = range(of: "</\(tag)>", range: searchRange) {
-                let start = String(self[searchRange.lowerBound ..< startRange.lowerBound])
-                if !start.isEmpty {
-                    mStr.append(NSAttributedString(string: start, attributes: normal))
+            if let startRange,
+               let tag,
+               let endRange = range(of: "</\(tag)>", range: searchRange),
+               let attrs = tagAttrs[tag]
+            {
+                let start = attributedString(range: searchRange.lowerBound ..< startRange.lowerBound,
+                                             attrs: normal)
+                if start.length > 0 {
+                    mStr.append(start)
                 }
 
-                let tagText = String(self[startRange.upperBound ..< endRange.lowerBound])
-                if tagText.isEmpty {
-                    mStr.append(NSAttributedString(string: tagText, attributes: tagAttrs[tag]))
+                let tagText = attributedString(range: startRange.upperBound ..< endRange.lowerBound,
+                                               attrs: attrs)
+                if tagText.length > 0 {
+                    mStr.append(tagText)
                 }
 
                 searchRange = endRange.upperBound ..< endIndex
             } else {
-                let text = String(self[searchRange])
-                mStr.append(NSAttributedString(string: text, attributes: normal))
+                let text = attributedString(range: searchRange, attrs: normal)
+                if text.length > 0 {
+                    mStr.append(text)
+                }
                 break
             }
         }
