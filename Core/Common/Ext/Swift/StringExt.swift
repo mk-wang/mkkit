@@ -79,7 +79,7 @@ public extension String {
             for (key, attrs) in tagAttrs {
                 if let range = range(of: "<\(key)>", range: searchRange) {
                     let lower = range.lowerBound
-                    if startRange == nil || startRange!.lowerBound < lower {
+                    if startRange == nil || startRange!.lowerBound > lower {
                         startRange = range
                         tag = key
                     }
