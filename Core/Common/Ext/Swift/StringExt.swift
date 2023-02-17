@@ -70,7 +70,7 @@ public extension String {
                         tagAttrs: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString
     {
         let mStr = NSMutableAttributedString()
-        var searchRange = Range(uncheckedBounds: (lower: startIndex, upper: endIndex))
+        var searchRange = startIndex ..< endIndex
 
         while !searchRange.isEmpty {
             var startRange: Range<Self.Index>?
@@ -88,16 +88,16 @@ public extension String {
 
             if let startRange, let tag, let endRange = range(of: "</\(tag)>", range: searchRange) {
                 let start = String(self[searchRange.lowerBound ..< startRange.lowerBound])
-                if start.isNotEmpty {
+                if !start.isEmpty {
                     mStr.append(NSAttributedString(string: start, attributes: normal))
                 }
 
                 let tagText = String(self[startRange.upperBound ..< endRange.lowerBound])
-                if tagText.isNotEmpty {
+                if tagText.isEmpty {
                     mStr.append(NSAttributedString(string: tagText, attributes: tagAttrs[tag]))
                 }
 
-                searchRange = Range(uncheckedBounds: (lower: endRange.upperBound, upper: endIndex))
+                searchRange = endRange.upperBound ..< endIndex
             } else {
                 let text = String(self[searchRange])
                 mStr.append(NSAttributedString(string: text, attributes: normal))
