@@ -112,7 +112,8 @@ public extension String {
         }
         let end = String(self[endRange.upperBound...])
         if end.isNotEmpty {
-            mStr.append(NSAttributedString(string: end, attributes: attrs))
+            let nextStr = end.makeAttrByTag(tag: tag, attrs: attrs, tagAttrs: tagAttrs)
+            mStr.append(nextStr)
         }
         return mStr
     }
