@@ -74,42 +74,43 @@ public extension String {
                         tagAttrs: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString
     {
         let mStr = NSMutableAttributedString()
-        var searchRange = startIndex ..< endIndex
+        var search = startIndex ..< endIndex
 
-        while !searchRange.isEmpty {
-            var startRange: Range<Self.Index>?
+        while !search.isEmpty {
             var tag: String?
+            var start: Range<Self.Index>?
 
             for (key, attrs) in tagAttrs {
-                if let range = range(of: "<\(key)>", range: searchRange) {
-                    let lower = range.lowerBound
-                    if startRange == nil || startRange!.lowerBound > lower {
-                        startRange = range
+                if let found = range(of: "<\(key)>", range: search) {
+                    let lower = found.lowerBound
+                    if start == nil || start!.lowerBound > lower {
+                        start = found
                         tag = key
                     }
                 }
             }
 
-            if let startRange,
-               let tag,
-               let endRange = range(of: "</\(tag)>", range: searchRange),
+            if let tag,
+               let start,
+               let end = range(of: "</\(tag)>", range: search),
                let attrs = tagAttrs[tag]
             {
-                let start = attributedString(range: searchRange.lowerBound ..< startRange.lowerBound,
-                                             attrs: normal)
-                if start.length > 0 {
-                    mStr.append(start)
+                var text = attributedString(range: search.lowerBound ..< start.lowerBound,
+                                            attrs: normal)
+                if text.length > 0 {
+                    mStr.append(text)
                 }
 
-                let tagText = attributedString(range: startRange.upperBound ..< endRange.lowerBound,
-                                               attrs: attrs)
-                if tagText.length > 0 {
-                    mStr.append(tagText)
+                text = attributedString(range: start.upperBound ..< end.lowerBound,
+                                        attrs: attrs)
+                if text.length > 0 {
+                    mStr.append(text)
                 }
 
-                searchRange = endRange.upperBound ..< endIndex
+                search = end.upperBound ..< endIndex
             } else {
-                let text = attributedString(range: searchRange, attrs: normal)
+                let text = attributedString(range: search,
+                                            attrs: normal)
                 if text.length > 0 {
                     mStr.append(text)
                 }
