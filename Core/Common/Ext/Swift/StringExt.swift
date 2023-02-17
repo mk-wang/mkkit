@@ -66,56 +66,54 @@ public extension String {
         return NSAttributedString(string: self, attributes: underlineAttribute)
     }
 
-    func makeAttrByTag(openTag: String,
-                       closeTag: String,
-                       attrs: [NSAttributedString.Key: Any],
-                       tagAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
+    func makeAttrByTags(normal: [NSAttributedString.Key: Any],
+                        tagAttrs: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString
     {
         let mStr = NSMutableAttributedString()
-        guard let startRange = range(of: openTag), let endRange = range(of: closeTag) else {
-            mStr.append(NSAttributedString(string: self, attributes: attrs))
-            return mStr
-        }
-        let start = String(self[..<startRange.lowerBound])
-        if start.isNotEmpty {
-            mStr.append(NSAttributedString(string: start, attributes: attrs))
+        var searchRange = Range(uncheckedBounds: (lower: startIndex, upper: endIndex))
+
+        while !searchRange.isEmpty {
+            var startRange: Range<Self.Index>?
+            var tag: String?
+
+            for (key, attrs) in tagAttrs {
+                if let range = range(of: "<\(key)>", range: searchRange) {
+                    let lower = range.lowerBound
+                    if startRange == nil || startRange!.lowerBound < lower {
+                        startRange = range
+                        tag = key
+                    }
+                }
+            }
+
+            if let startRange, let tag, let endRange = range(of: "</\(tag)>", range: searchRange) {
+                let start = String(self[searchRange.lowerBound ..< startRange.lowerBound])
+                if start.isNotEmpty {
+                    mStr.append(NSAttributedString(string: start, attributes: normal))
+                }
+
+                let tagText = String(self[startRange.upperBound ..< endRange.lowerBound])
+                if tagText.isNotEmpty {
+                    mStr.append(NSAttributedString(string: tagText, attributes: tagAttrs[tag]))
+                }
+
+                searchRange = Range(uncheckedBounds: (lower: endRange.upperBound, upper: endIndex))
+            } else {
+                let text = String(self[searchRange])
+                mStr.append(NSAttributedString(string: text, attributes: normal))
+                break
+            }
         }
 
-        let boldText = String(self[startRange.upperBound ..< endRange.lowerBound])
-        if boldText.isNotEmpty {
-            mStr.append(NSAttributedString(string: boldText, attributes: tagAttrs))
-        }
-        let end = String(self[endRange.upperBound...])
-        if end.isNotEmpty {
-            mStr.append(NSAttributedString(string: end, attributes: attrs))
-        }
         return mStr
     }
 
-    func makeAttrByTag(tag: String,
-                       attrs: [NSAttributedString.Key: Any],
+    func makeAttrByTag(normal: [NSAttributedString.Key: Any],
+                       tag: String,
                        tagAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
     {
-        let mStr = NSMutableAttributedString()
-        guard let startRange = range(of: "<\(tag)>"), let endRange = range(of: "</\(tag)>") else {
-            mStr.append(NSAttributedString(string: self, attributes: attrs))
-            return mStr
-        }
-        let start = String(self[..<startRange.lowerBound])
-        if start.isNotEmpty {
-            mStr.append(NSAttributedString(string: start, attributes: attrs))
-        }
-
-        let boldText = String(self[startRange.upperBound ..< endRange.lowerBound])
-        if boldText.isNotEmpty {
-            mStr.append(NSAttributedString(string: boldText, attributes: tagAttrs))
-        }
-        let end = String(self[endRange.upperBound...])
-        if end.isNotEmpty {
-            let nextStr = end.makeAttrByTag(tag: tag, attrs: attrs, tagAttrs: tagAttrs)
-            mStr.append(nextStr)
-        }
-        return mStr
+        makeAttrByTags(normal: normal,
+                       tagAttrs: [tag: tagAttrs])
     }
 }
 
