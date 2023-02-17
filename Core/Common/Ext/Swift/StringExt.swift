@@ -82,18 +82,17 @@ public extension String {
 
             for (key, attrs) in tagAttrs {
                 if let found = range(of: "<\(key)>", range: search) {
-                    let lower = found.lowerBound
-                    if start == nil || start!.lowerBound > lower {
-                        start = found
+                    if start == nil || start!.lowerBound > found.lowerBound {
                         tag = key
+                        start = found
                     }
                 }
             }
 
             if let tag,
                let start,
-               let end = range(of: "</\(tag)>", range: search),
-               let attrs = tagAttrs[tag]
+               let attrs = tagAttrs[tag],
+               let end = range(of: "</\(tag)>", range: search)
             {
                 var text = attributedString(range: search.lowerBound ..< start.lowerBound,
                                             attrs: normal)
