@@ -26,7 +26,7 @@ open class YXModalView: UIView {
     var willShowCallback: YXModalViewCallback?
     var didShowCompletion: YXModalViewCallback?
 
-    private lazy var touchView: UIView = {
+    public private(set) lazy var bgTouchView: UIView = {
         let view = UIView()
         view.frame = self.bounds
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -38,9 +38,9 @@ open class YXModalView: UIView {
         super.init(frame: frame)
 
         let gesture = UITapGestureRecognizer(target: self, action: #selector(hide))
-        touchView.addGestureRecognizer(gesture)
+        bgTouchView.addGestureRecognizer(gesture)
 
-        addSubview(touchView)
+        addSubview(bgTouchView)
     }
 
     @available(*, unavailable)
@@ -109,7 +109,7 @@ private extension YXModalView {
             var rect = contentView.frame
             rect.origin.y = selfSize.height
             contentView.frame = rect
-            touchView.alpha = hideAlpha
+            bgTouchView.alpha = hideAlpha
         }
     }
 
@@ -120,7 +120,7 @@ private extension YXModalView {
         let selfSize = bounds.size
 
         if style == .bottom {
-            touchView.alpha = 1
+            bgTouchView.alpha = 1
             var rect = contentView.frame
             rect.origin.y = selfSize.height - rect.height
             contentView.frame = rect
@@ -133,7 +133,7 @@ private extension YXModalView {
         }
 
         if style == .bottom {
-            touchView.alpha = hideAlpha
+            bgTouchView.alpha = hideAlpha
             var rect = contentView.frame
             rect.origin.y = bounds.height
             contentView.frame = rect
