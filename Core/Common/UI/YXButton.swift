@@ -18,34 +18,50 @@ open class YXButton: UIButton {
 
     public enum ButtonState {
         case normal
+        case highlighted
         case disabled
     }
 
     open var disabledBackgroundColor: UIColor?
+    open var highlightedBackgroundColor: UIColor?
     open var defaultBackgroundColor: UIColor? {
         didSet {
             backgroundColor = defaultBackgroundColor
         }
     }
 
+    override open var isHighlighted: Bool {
+        didSet {
+            checkBackgroundColor()
+        }
+    }
+
     override open var isEnabled: Bool {
         didSet {
-            if isEnabled {
-                if let color = defaultBackgroundColor {
-                    backgroundColor = color
-                }
-            } else {
-                if let color = disabledBackgroundColor {
-                    backgroundColor = color
-                }
+            checkBackgroundColor()
+        }
+    }
+
+    func checkBackgroundColor() {
+        if isEnabled {
+            if isHighlighted, let highlightedBackgroundColor {
+                backgroundColor = highlightedBackgroundColor
+            } else if !isHighlighted, let defaultBackgroundColor {
+                backgroundColor = defaultBackgroundColor
+            }
+        } else {
+            if let disabledBackgroundColor {
+                backgroundColor = disabledBackgroundColor
             }
         }
     }
 
-    func setBackgroundColor(_ color: UIColor?, for state: ButtonState) {
+    public func setBackgroundColor(_ color: UIColor?, for state: ButtonState) {
         switch state {
         case .disabled:
             disabledBackgroundColor = color
+        case .highlighted:
+            highlightedBackgroundColor = color
         case .normal:
             defaultBackgroundColor = color
         }
@@ -123,7 +139,7 @@ public extension YXButton {
                 btn.setImage(normal, for: .normal)
             }
 
-            if let color = style?.hilightColor {
+            if let color = style?.highlightedBackgroundColor {
                 var highlighted = image
                 highlighted = highlighted.tint(color: color)
                 btn.setImage(highlighted, for: .highlighted)

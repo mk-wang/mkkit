@@ -34,7 +34,11 @@ public protocol TextViewStyle {
 // MARK: - ButtonViewStyle
 
 public protocol ButtonViewStyle: TextViewStyle {
-    var hilightColor: UIColor? {
+    var highlightedTextColor: UIColor? {
+        get
+    }
+
+    var highlightedBackgroundColor: UIColor? {
         get
     }
 }
@@ -85,8 +89,12 @@ public extension UIButton {
         backgroundColor = style.backgroundColor
         layer.cornerRadius = style.cornerRadius
 
-        if let color = style.hilightColor {
+        if let color = style.highlightedTextColor {
             setTitleColor(color, for: .highlighted)
+        }
+        if let btn = self as? YXButton {
+            btn.setBackgroundColor(style.highlightedBackgroundColor, for: .highlighted)
+            btn.setBackgroundColor(style.backgroundColor, for: .normal)
         }
     }
 }
@@ -109,6 +117,7 @@ public struct AppViewStyle {
     let colorBuilder: () -> UIColor
     let backgourndColorBuilder: (() -> UIColor)?
     let hightlightColorBuilder: (() -> UIColor)?
+    let hightlightTextColorBuilder: (() -> UIColor)?
 
     public let cornerRadius: CGFloat
 
@@ -117,7 +126,8 @@ public struct AppViewStyle {
                 cornerRadius: CGFloat = 0,
                 colorBuilder: @escaping () -> UIColor,
                 backgourndColorBuilder: (() -> UIColor)? = nil,
-                hightlightColorBuilder: (() -> UIColor)? = nil)
+                hightlightColorBuilder: (() -> UIColor)? = nil,
+                hightlightTextColorBuilder: (() -> UIColor)? = nil)
     {
         self.font = font
         self.textAlignment = textAlignment
@@ -125,6 +135,7 @@ public struct AppViewStyle {
         self.colorBuilder = colorBuilder
         self.backgourndColorBuilder = backgourndColorBuilder
         self.hightlightColorBuilder = hightlightColorBuilder
+        self.hightlightTextColorBuilder = hightlightTextColorBuilder
     }
 }
 
@@ -136,16 +147,14 @@ extension AppViewStyle: ButtonViewStyle {
     }
 
     public var backgroundColor: UIColor {
-        guard let builder = backgourndColorBuilder else {
-            return .clear
-        }
-        return builder()
+        backgourndColorBuilder == nil ? .clear : backgourndColorBuilder!()
     }
 
-    public var hilightColor: UIColor? {
-        guard let builder = hightlightColorBuilder else {
-            return nil
-        }
-        return builder()
+    public var highlightedTextColor: UIColor? {
+        hightlightTextColorBuilder?()
+    }
+
+    public var highlightedBackgroundColor: UIColor? {
+        hightlightColorBuilder?()
     }
 }
