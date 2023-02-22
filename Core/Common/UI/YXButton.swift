@@ -112,14 +112,14 @@ public extension YXButton {
     static func makeButton(type: UIButton.ButtonType = .custom,
                            size: CGSize,
                            style: ButtonViewStyle? = nil,
+                           tapExt: CGSize = .square(10),
                            image originImage: UIImage? = nil,
                            path: String? = nil,
                            langFlip: Bool = false,
                            tintColor: UIColor? = nil) -> YXButton
     {
         let btn = style == nil ? YXButton(type: type) : YXButton(type: type, style: style!)
-        btn.tapExt = CGSize(10, 10)
-
+        btn.tapExt = tapExt
         var image = originImage
         if image == nil, let path {
             image = svgImage(path: path,
