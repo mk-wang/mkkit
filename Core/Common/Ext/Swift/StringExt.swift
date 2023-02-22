@@ -61,9 +61,24 @@ public extension String {
 }
 
 public extension String {
-    var underline: NSAttributedString {
+    var singleUnderline: NSAttributedString {
         attributedString(range: startIndex ..< endIndex,
-                         attrs: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue])
+                         attrs: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+    }
+
+    var thickUnderline: NSAttributedString {
+        attributedString(range: startIndex ..< endIndex,
+                         attrs: [.underlineStyle: NSUnderlineStyle.thick.rawValue])
+    }
+
+    var singleStruckthrough: NSAttributedString {
+        attributedString(range: startIndex ..< endIndex,
+                         attrs: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+    }
+
+    var thickStruckthrough: NSAttributedString {
+        attributedString(range: startIndex ..< endIndex,
+                         attrs: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue])
     }
 
     func attributedString(range: Range<Self.Index>, attrs: [NSAttributedString.Key: Any]) -> NSAttributedString {

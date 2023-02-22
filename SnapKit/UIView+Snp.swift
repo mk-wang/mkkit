@@ -40,7 +40,11 @@ public extension UIView {
 
             switch builder {
             case let .space(size):
-                snpObject = UILayoutGuide()
+                #if DEBUG
+                    snpObject = UIView()
+                #else
+                    snpObject = UILayoutGuide()
+                #endif
                 snpObject?.addSnpConfig { _, make in
                     if direction == .vertical {
                         make.width.equalTo(0)

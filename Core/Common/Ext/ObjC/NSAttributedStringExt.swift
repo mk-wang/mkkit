@@ -31,6 +31,10 @@ public extension NSAttributedString {
         applying(attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
     }
 
+    var struckthrough: NSAttributedString {
+        applying(attributes: [.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)])
+    }
+
     var center: NSAttributedString {
         let style = NSMutableParagraphStyle()
         style.alignment = .center
@@ -51,10 +55,6 @@ public extension NSAttributedString {
             #endif
         }
         return applying(attributes: [.font: UIFont.italicSystemFont(ofSize: pointSize)])
-    }
-
-    var struckthrough: NSAttributedString {
-        applying(attributes: [.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)])
     }
 
     var attributes: [Key: Any] {
