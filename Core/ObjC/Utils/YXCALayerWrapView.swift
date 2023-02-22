@@ -27,10 +27,10 @@ open class YXCALayerWrapView: UIView {
 }
 
 public extension YXCALayerWrapView {
-    class func gradientLayerWrap(colors: [UIColor],
-                                 start: CGPoint,
-                                 end: CGPoint,
-                                 locations: [CGFloat]? = nil)
+    class func gradientLayer(colors: [UIColor],
+                             start: CGPoint,
+                             end: CGPoint,
+                             locations: [CGFloat]? = nil)
         -> YXCALayerWrapView
     {
         let box = YXCALayerWrapView()
@@ -49,9 +49,26 @@ public extension YXCALayerWrapView {
                                      locations: [CGFloat]? = nil)
         -> YXCALayerWrapView
     {
-        Self.gradientLayerWrap(colors: colors,
-                               start: .init(0.5, 0),
-                               end: .init(0.5, 1),
-                               locations: locations)
+        Self.gradientLayer(colors: colors,
+                           start: .init(0.5, 0),
+                           end: .init(0.5, 1),
+                           locations: locations)
+    }
+
+    class func horizontalGradientLayer(colors: [UIColor],
+                                       locations: [CGFloat]? = nil,
+                                       directional: Bool = true)
+        -> YXCALayerWrapView
+    {
+        var start: CGPoint = .init(0, 0.5)
+        var end: CGPoint = .init(1, 0.5)
+        if directional, Lang.current.isRTL {
+            start.x = 1
+            end.x = 0
+        }
+        return Self.gradientLayer(colors: colors,
+                                  start: start,
+                                  end: end,
+                                  locations: locations)
     }
 }
