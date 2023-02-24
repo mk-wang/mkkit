@@ -8,6 +8,10 @@
 import UIKit
 
 public extension UIView {
+    var isReadyToConfig: Bool {
+        !isEmptyBounds && isEmptySubview
+    }
+
     var isEmptySubview: Bool {
         subviews.isEmpty
     }
