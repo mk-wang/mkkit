@@ -10,7 +10,7 @@ import UIKit
 
 public typealias SnapKitConfigure = (UIView?, SnapKit.ConstraintMaker) -> Void
 
-// MARK: - SnpObject
+// MARK: - SnpLayoutObject
 
 public protocol SnpLayoutObject: NSObject {
     var snpDSL: ConstraintAttributesDSL {
@@ -46,9 +46,15 @@ public extension SnpLayoutObject {
             }
         }
     }
+
+    func setSnpAspectRatio(ratio: CGFloat) {
+        addSnpConfig { [unowned self] _, make in
+            make.width.equalTo(self.snpDSL.height).multipliedBy(ratio)
+        }
+    }
 }
 
-// MARK: - UIView + SnpObject
+// MARK: - UIView + SnpLayoutObject
 
 extension UIView: SnpLayoutObject {
     public var snpDSL: SnapKit.ConstraintAttributesDSL {
@@ -72,6 +78,11 @@ public extension UIView {
         view.applySnpConfigs()
     }
 
+    func insertSnpSubview(_ view: UIView, at index: Int) {
+        insertSubview(view, at: index)
+        view.applySnpConfigs()
+    }
+
     func addSnpLayoutGuide(_ guide: UILayoutGuide) {
         addLayoutGuide(guide)
         guide.applySnpConfigs()
@@ -88,7 +99,7 @@ public extension UIView {
     }
 }
 
-// MARK: - UILayoutGuide + SnpObject
+// MARK: - UILayoutGuide + SnpLayoutObject
 
 extension UILayoutGuide: SnpLayoutObject {
     public var snpDSL: SnapKit.ConstraintAttributesDSL {
