@@ -62,6 +62,13 @@ open class BaseHighLightView: UIView {
         }
     }
 
+    public func reset() {
+        isHighLighted = false
+        keepHighLight = false
+        blockTimer = nil
+        updateHighlightStateUI(highLighted: false)
+    }
+
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if highLightOnTouch {
             isHighLighted = true

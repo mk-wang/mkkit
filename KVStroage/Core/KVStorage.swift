@@ -52,8 +52,7 @@ public protocol KVStorage {
     func date(for key: String) -> Date?
 
     // traver
-
-    func allKeys() -> [String]
+    func dumpAll() -> [String: Any]
 
     // delete
     func remove(for key: String) -> Void

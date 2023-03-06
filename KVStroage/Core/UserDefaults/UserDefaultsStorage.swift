@@ -140,8 +140,8 @@ extension UserDefaultsStorage: KVStorage {
         storage.object(forKey: key) as? Date
     }
 
-    public func allKeys() -> [String] {
-        []
+    public func dumpAll() -> [String: Any] {
+        storage.dictionaryRepresentation()
     }
 
     public func remove(for key: String) {

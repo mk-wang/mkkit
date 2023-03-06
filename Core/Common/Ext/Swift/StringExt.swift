@@ -21,7 +21,7 @@ public func rotNumber(_ value: UInt32, n: UInt8) -> UInt32 {
 }
 
 public extension String {
-    func rot(n: UInt8) -> Self {
+    func rot(n: UInt8) -> String {
         String(unicodeScalars.map {
             let value = rotNumber(UInt32($0.value), n: n)
             return Character(Unicode.Scalar(value)!)
@@ -42,6 +42,10 @@ public extension String {
 
     var isNotEmpty: Bool {
         !isEmpty
+    }
+
+    var utf8List: [UInt8] {
+        Array(utf8)
     }
 }
 

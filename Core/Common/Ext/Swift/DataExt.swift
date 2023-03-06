@@ -9,6 +9,13 @@ import CommonCrypto
 import Foundation
 
 public extension Data {
+    static func toHex(buffer: [UInt8], lowerCase: Bool) -> String {
+        let fmt = lowerCase ? "%02x" : "%02X"
+        return buffer.map { String(format: fmt, $0) }.joined()
+    }
+}
+
+public extension Data {
     var md5Buffer: [UInt8] {
         withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> [UInt8] in
             var hash = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
@@ -18,11 +25,11 @@ public extension Data {
     }
 
     var md5: String {
-        md5Buffer.map { String(format: "%02x", $0) }.joined()
+        Self.toHex(buffer: md5Buffer, lowerCase: true)
     }
 
     var MD5: String {
-        md5Buffer.map { String(format: "%02X", $0) }.joined()
+        Self.toHex(buffer: md5Buffer, lowerCase: false)
     }
 }
 
@@ -36,11 +43,11 @@ public extension Data {
     }
 
     var sha256: String {
-        sha256Buffer.map { String(format: "%02x", $0) }.joined()
+        Self.toHex(buffer: sha256Buffer, lowerCase: true)
     }
 
     var SHA256: String {
-        sha256Buffer.map { String(format: "%02X", $0) }.joined()
+        Self.toHex(buffer: sha256Buffer, lowerCase: false)
     }
 }
 

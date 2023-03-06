@@ -44,7 +44,7 @@ public struct KVStorageProperty<T: KVStorageSerializable> {
         let value = storage.getSerializable(for: key) ?? wrappedValue
         subject = CurrentValueSubject<T, Never>(value)
 
-        cancellable = subject.sink(receiveValue: { newValue in
+        cancellable = subject.dropFirst().sink(receiveValue: { newValue in
             storage.saveSerializable(newValue, for: key)
         })
     }
@@ -89,7 +89,7 @@ public struct KVStorageOptionalProperty<T: KVStorageSerializable> {
         let value: T? = storage.getSerializable(for: key)
         subject = CurrentValueSubject<T?, Never>(value)
 
-        cancellable = subject.sink(receiveValue: { newValue in
+        cancellable = subject.dropFirst().sink(receiveValue: { newValue in
             if let newValue {
                 storage.saveSerializable(newValue, for: key)
             } else {

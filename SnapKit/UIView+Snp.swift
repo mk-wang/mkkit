@@ -110,7 +110,7 @@ public extension UIView {
 public extension UIView {
     @discardableResult
     func addSnpScrollView(vertical: Bool,
-                          configure: (UIView) -> Void,
+                          configure: (UIScrollView, UIView) -> Void,
                           scrollBuilder: (() -> UIScrollView)? = nil) -> UIScrollView
     {
         let scrollView = scrollBuilder?() ?? UIScrollView()
@@ -131,7 +131,7 @@ public extension UIView {
             }
         }
         scrollView.addSnpSubview(contentView)
-        configure(contentView)
+        configure(scrollView, contentView)
         return scrollView
     }
 }
