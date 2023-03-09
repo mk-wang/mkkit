@@ -48,7 +48,7 @@ public extension IAPHelper {
 
     static func purchase(productID: String,
                          secret: String,
-                         production: Bool,
+                         production: Bool?,
                          subscription: Bool,
                          quantity: Int = 1,
                          atomically: Bool = true,
@@ -57,8 +57,14 @@ public extension IAPHelper {
         SwiftyStoreKit.purchaseProduct(productID,
                                        quantity: quantity,
                                        atomically: atomically) { purchaseResult in
+
             switch purchaseResult {
             case .success:
+                guard let production else {
+                    completion(true, nil)
+                    return
+                }
+                
                 if subscription {
                     Self.verifySubscription(productID: productID,
                                             secret: secret,
