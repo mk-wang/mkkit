@@ -23,7 +23,7 @@ public extension IAPHelper {
     static func startObserving(completion: @escaping ([ProductTransactionResult]) -> Void) {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             var list = [ProductTransactionResult]()
-            for purchase in purchases {
+            for purchase in purchases { 1
                 let productID = purchase.productId
 
                 switch purchase.transaction.transactionState {
@@ -75,6 +75,10 @@ public extension IAPHelper {
                 completion(false, error)
             }
         }
+    }
+
+    static func restore(completion: @escaping (RestoreResults) -> Void) {
+        SwiftyStoreKit.restorePurchases(completion: completion)
     }
 
     static func restore(productID: String, completion: @escaping (Bool) -> Void) {
