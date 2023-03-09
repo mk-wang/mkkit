@@ -66,7 +66,7 @@ public extension UILabel {
     }
 }
 
-public extension TextViewLabel {
+public extension UITextView {
     convenience init(text: String, style: TextViewStyle) {
         self.init()
         self.text = text
