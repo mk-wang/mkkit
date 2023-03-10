@@ -14,6 +14,14 @@ import SwiftyStoreKit
 
 public enum IAPHelper {}
 
+// MARK: - IAPEnvironment
+
+public enum IAPEnvironment {
+    case production
+    case sandbox
+    case local
+}
+
 public extension IAPHelper {
     struct ProductTransactionResult {
         public let productID: String
@@ -48,7 +56,7 @@ public extension IAPHelper {
 
     static func purchase(productID: String,
                          secret: String,
-                         production: Bool?,
+                         environment: IAPEnvironment,
                          subscription: Bool,
                          quantity: Int = 1,
                          atomically: Bool = true,
@@ -60,20 +68,19 @@ public extension IAPHelper {
 
             switch purchaseResult {
             case .success:
-                guard let production else {
+                guard environment != .local else {
                     completion(true, nil)
                     return
                 }
-                
                 if subscription {
                     Self.verifySubscription(productID: productID,
                                             secret: secret,
-                                            production: production,
+                                            environment: environment,
                                             completion: completion)
                 } else {
                     Self.verifyPurchase(productID: productID,
                                         secret: secret,
-                                        production: production,
+                                        environment: environment,
                                         completion: completion)
                 }
 
@@ -111,10 +118,10 @@ public extension IAPHelper {
 
     static func verifyPurchase(productID: String,
                                secret: String,
-                               production: Bool,
+                               environment: IAPEnvironment,
                                completion: @escaping (Bool, Error?) -> Void)
     {
-        let appleValidator = AppleReceiptValidator(service: production ? .production : .sandbox,
+        let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { verifyResult in
             switch verifyResult {
@@ -138,11 +145,11 @@ public extension IAPHelper {
     static func verifySubscription(productID: String,
                                    secret: String,
                                    validDuration: TimeInterval? = nil,
-                                   production: Bool,
+                                   environment: IAPEnvironment,
                                    completion: @escaping (Bool, Error?) -> Void)
 
     {
-        let appleValidator = AppleReceiptValidator(service: production ? .production : .sandbox,
+        let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
             switch result {
