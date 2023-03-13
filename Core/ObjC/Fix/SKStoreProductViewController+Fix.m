@@ -27,17 +27,15 @@
         return;
     }
 
-    NSString *selName = @"sceneDisconnected:";
-    SEL sel = NSSelectorFromString(selName);
-    Method method1 = class_getInstanceMethod([self class], sel);
-    if (method1 == nil) {
+    SEL sel = NSSelectorFromString(@"sceneDisconnected:");
+    Method method = class_getInstanceMethod([self class], sel);
+    if (method == nil) {
         class_addMethod([self class], sel, (IMP)mk_custom_sceneDisconnected, "v@:@");
     }
 
-    selName = @"appWillTerminate";
-    sel = NSSelectorFromString(selName);
-    Method method2 = class_getInstanceMethod([self class], sel);
-    if (method2 == nil) {
+    sel = NSSelectorFromString(@"appWillTerminate");
+    method = class_getInstanceMethod([self class], sel);
+    if (method == nil) {
         class_addMethod([self class], sel, (IMP)mk_custom_appWillTerminate, "v@");
     }
 }
