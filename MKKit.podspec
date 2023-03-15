@@ -61,7 +61,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'IAP' do |ss|
     ss.source_files = 'IAP/**/*.{h,m,c,swift,hpp}'
-    ss.frameworks = "CryptoKit", "StoreKit"
+    ss.frameworks = "StoreKit"
     ss.dependency 'SwiftyStoreKit'
   end
 

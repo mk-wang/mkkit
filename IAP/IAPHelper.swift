@@ -5,7 +5,6 @@
 //  Created by MK on 2023/2/10.
 //
 
-import CryptoKit
 import Foundation
 import StoreKit
 import SwiftyStoreKit
@@ -23,14 +22,16 @@ public enum IAPEnvironment {
 }
 
 public extension IAPHelper {
-    struct ProductTransactionResult {
-        public let productID: String
-        public let purchased: Bool
+    struct PurchaseResult {
+        public let purchased: Set<String>
+        public let failed: Set<String>
     }
 
-    static func startObserving(completion: @escaping ([ProductTransactionResult]) -> Void) {
+    static func startObserving(completion: @escaping (PurchaseResult) -> Void) {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
-            var list = [ProductTransactionResult]()
+            var failed = Set<String>()
+            var purchased = Set<String>()
+
             for purchase in purchases {
                 let productID = purchase.productId
 
@@ -40,9 +41,9 @@ public extension IAPHelper {
                     if purchase.needsFinishTransaction {
                         SwiftyStoreKit.finishTransaction(purchase.transaction)
                     }
-                    list.append(ProductTransactionResult(productID: productID, purchased: true))
+                    purchased.insert(productID)
                 case .failed:
-                    list.append(ProductTransactionResult(productID: productID, purchased: false))
+                    failed.insert(productID)
                 case .deferred,
                      .purchasing:
                     break
@@ -50,7 +51,9 @@ public extension IAPHelper {
                     break
                 }
             }
-            completion(list)
+
+            let result = PurchaseResult(purchased: purchased, failed: failed)
+            completion(result)
         }
     }
 
@@ -58,6 +61,7 @@ public extension IAPHelper {
                          secret: String,
                          environment: IAPEnvironment,
                          subscription: Bool,
+                         validDuration: TimeInterval? = nil,
                          quantity: Int = 1,
                          atomically: Bool = true,
                          completion: @escaping (Bool, Error?) -> Void)
@@ -75,6 +79,7 @@ public extension IAPHelper {
                 if subscription {
                     Self.verifySubscription(productID: productID,
                                             secret: secret,
+                                            validDuration: validDuration,
                                             environment: environment,
                                             completion: completion)
                 } else {
@@ -147,7 +152,6 @@ public extension IAPHelper {
                                    validDuration: TimeInterval? = nil,
                                    environment: IAPEnvironment,
                                    completion: @escaping (Bool, Error?) -> Void)
-
     {
         let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
@@ -170,6 +174,58 @@ public extension IAPHelper {
                 }
             case let .error(error):
                 completion(false, error)
+            }
+        }
+    }
+
+    static func verifySubscription(products: [String]? = nil,
+                                   subscriptions: [String]? = nil,
+                                   secret: String,
+                                   environment: IAPEnvironment,
+                                   completion: @escaping (PurchaseResult?, Error?) -> Void)
+    {
+        let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
+                                                   sharedSecret: secret)
+        SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
+            switch result {
+            case let .success(receipt):
+                var failed = Set<String>()
+                var purchased = Set<String>()
+
+                if let products {
+                    for id in products {
+                        let purchaseResult = SwiftyStoreKit.verifyPurchase(
+                            productId: id,
+                            inReceipt: receipt
+                        )
+                        switch purchaseResult {
+                        case .purchased:
+                            purchased.insert(id)
+                        case .notPurchased:
+                            failed.insert(id)
+                        }
+                    }
+                }
+
+                if let subscriptions {
+                    for id in subscriptions {
+                        let purchaseResult = SwiftyStoreKit.verifySubscription(ofType: .autoRenewable,
+                                                                               productId: id,
+                                                                               inReceipt: receipt)
+                        switch purchaseResult {
+                        case .purchased:
+                            purchased.insert(id)
+                        case .notPurchased:
+                            failed.insert(id)
+                        case .expired:
+                            failed.insert(id)
+                        }
+                    }
+                }
+                let result = PurchaseResult(purchased: purchased, failed: failed)
+                completion(result, nil)
+            case let .error(error):
+                completion(nil, error)
             }
         }
     }
