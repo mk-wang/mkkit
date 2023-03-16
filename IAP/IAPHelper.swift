@@ -178,15 +178,16 @@ public extension IAPHelper {
         }
     }
 
-    static func verifySubscription(products: [String]? = nil,
-                                   subscriptions: [String]? = nil,
-                                   secret: String,
-                                   environment: IAPEnvironment,
-                                   completion: @escaping (PurchaseResult?, Error?) -> Void)
+    static func verifyPurchase(products: [String]? = nil,
+                               subscriptions: [String]? = nil,
+                               secret: String,
+                               forceRefresh: Bool,
+                               environment: IAPEnvironment,
+                               completion: @escaping (PurchaseResult?, Error?) -> Void)
     {
         let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
-        SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
+        SwiftyStoreKit.verifyReceipt(using: appleValidator, forceRefresh: forceRefresh) { result in
             switch result {
             case let .success(receipt):
                 var failed = Set<String>()
