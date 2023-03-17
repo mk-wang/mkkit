@@ -26,12 +26,15 @@ public extension IAPHelper {
         public let purchased: Set<String>
         public let failed: Set<String>
         public let expired: Set<String>?
+        public let finished: Set<String>?
     }
 
     static func startObserving(completion: @escaping (PurchaseResult) -> Void) {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             var failed = Set<String>()
             var purchased = Set<String>()
+            var finished: Set<String>?
+
             for purchase in purchases {
                 let productID = purchase.productId
 
@@ -40,6 +43,10 @@ public extension IAPHelper {
                      .restored:
                     if purchase.needsFinishTransaction {
                         SwiftyStoreKit.finishTransaction(purchase.transaction)
+                        if finished == nil {
+                            finished = Set()
+                        }
+                        finished?.insert(productID)
                     }
                     purchased.insert(productID)
                 case .failed:
@@ -52,7 +59,7 @@ public extension IAPHelper {
                 }
             }
 
-            let result = PurchaseResult(purchased: purchased, failed: failed, expired: nil)
+            let result = PurchaseResult(purchased: purchased, failed: failed, expired: nil, finished: finished)
             completion(result)
         }
     }
@@ -185,6 +192,11 @@ public extension IAPHelper {
                                environment: IAPEnvironment,
                                completion: @escaping (PurchaseResult?, Error?) -> Void)
     {
+        guard environment != .local else {
+            completion(nil, nil)
+            return
+        }
+
         let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
         SwiftyStoreKit.verifyReceipt(using: appleValidator, forceRefresh: forceRefresh) { result in
@@ -224,7 +236,7 @@ public extension IAPHelper {
                         }
                     }
                 }
-                let result = PurchaseResult(purchased: purchased, failed: failed, expired: expired)
+                let result = PurchaseResult(purchased: purchased, failed: failed, expired: expired, finished: nil)
                 completion(result, nil)
             case let .error(error):
                 completion(nil, error)
