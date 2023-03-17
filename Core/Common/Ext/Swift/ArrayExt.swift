@@ -14,8 +14,4 @@ public extension Array {
         }
         return self[index]
     }
-
-    var isNotEmpty: Bool {
-        !isEmpty
-    }
 }

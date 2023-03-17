@@ -25,13 +25,13 @@ public extension IAPHelper {
     struct PurchaseResult {
         public let purchased: Set<String>
         public let failed: Set<String>
+        public let expired: Set<String>?
     }
 
     static func startObserving(completion: @escaping (PurchaseResult) -> Void) {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             var failed = Set<String>()
             var purchased = Set<String>()
-
             for purchase in purchases {
                 let productID = purchase.productId
 
@@ -52,7 +52,7 @@ public extension IAPHelper {
                 }
             }
 
-            let result = PurchaseResult(purchased: purchased, failed: failed)
+            let result = PurchaseResult(purchased: purchased, failed: failed, expired: nil)
             completion(result)
         }
     }
@@ -192,6 +192,7 @@ public extension IAPHelper {
             case let .success(receipt):
                 var failed = Set<String>()
                 var purchased = Set<String>()
+                var expired = Set<String>()
 
                 if let products {
                     for id in products {
@@ -219,11 +220,11 @@ public extension IAPHelper {
                         case .notPurchased:
                             failed.insert(id)
                         case .expired:
-                            failed.insert(id)
+                            expired.insert(id)
                         }
                     }
                 }
-                let result = PurchaseResult(purchased: purchased, failed: failed)
+                let result = PurchaseResult(purchased: purchased, failed: failed, expired: expired)
                 completion(result, nil)
             case let .error(error):
                 completion(nil, error)

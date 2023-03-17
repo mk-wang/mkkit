@@ -6,9 +6,3 @@
 //
 
 import Foundation
-
-public extension Dictionary {
-    var isNotEmpty: Bool {
-        !isEmpty
-    }
-}
