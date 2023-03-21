@@ -46,7 +46,7 @@ extension LangService: AppSerivce {
     public func onExit() {}
 }
 
-public extension String {
+public extension CustomStringConvertible {
     var tr: String {
         let currentBundle = Lang.current.bundle
 
@@ -61,6 +61,6 @@ public extension String {
             }
         }
 
-        return self
+        return description
     }
 }

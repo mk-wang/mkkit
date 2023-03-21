@@ -16,8 +16,8 @@ public extension Bundle {
         return bundle
     }
 
-    func translate(for key: String) -> String? {
-        let text = NSLocalizedString(key, tableName: nil, bundle: self, value: Self.kNotMatch, comment: "")
+    func translate(for key: CustomStringConvertible) -> String? {
+        let text = NSLocalizedString(key.description, tableName: nil, bundle: self, value: Self.kNotMatch, comment: "")
         return text == Self.kNotMatch ? nil : text
     }
 
