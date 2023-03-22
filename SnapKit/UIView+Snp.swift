@@ -25,7 +25,7 @@ public extension UIView {
     }
 
     enum SnpStackViewBuilder {
-        case space(CGFloat? = nil)
+        case space(CGFloat? = nil, flex: CGFloat = 1)
         case view(UIView?)
         case tight(UIView?)
         case builder((UIView, SnpLayoutObject?) -> UIView?)
@@ -35,12 +35,13 @@ public extension UIView {
                              buidlers: [SnpStackViewBuilder])
     {
         var lastObject: SnpLayoutObject?
+        var firstFlex: (SnpLayoutObject, CGFloat)?
         for builder in buidlers {
             var snpObject: SnpLayoutObject?
 
             switch builder {
-            case let .space(size):
-                #if DEBUG
+            case let .space(size, flex):
+                #if DEBUG // && targetEnvironment(simulator)
                     snpObject = UIView()
                 #else
                     snpObject = UILayoutGuide()
@@ -57,6 +58,19 @@ public extension UIView {
                         make.centerY.equalToSuperview()
                         if let size {
                             make.width.equalTo(size)
+                        }
+                    }
+
+                    if size == nil, flex > 0 {
+                        if let firstFlex {
+                            let amount = flex / firstFlex.1
+                            if direction == .vertical {
+                                make.height.equalTo(firstFlex.0.snpDSL.height).multipliedBy(amount)
+                            } else {
+                                make.width.equalTo(firstFlex.0.snpDSL.width).multipliedBy(amount)
+                            }
+                        } else {
+                            firstFlex = (snpObject!, flex)
                         }
                     }
                 }
