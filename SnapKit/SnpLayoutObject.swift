@@ -48,8 +48,8 @@ public extension SnpLayoutObject {
     }
 
     func addSnpAspectRatio(ratio: CGFloat) {
-        addSnpConfig { [unowned self] _, make in
-            make.width.equalTo(self.snpDSL.height).multipliedBy(ratio)
+        addSnpConfig { [unowned(unsafe) self] _, make in
+            make.width.equalTo(snpDSL.height).multipliedBy(ratio)
         }
     }
 }

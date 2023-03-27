@@ -75,7 +75,8 @@ public extension IAPHelper {
     {
         SwiftyStoreKit.purchaseProduct(productID,
                                        quantity: quantity,
-                                       atomically: atomically) { purchaseResult in
+                                       atomically: atomically)
+        { purchaseResult in
 
             switch purchaseResult {
             case .success:

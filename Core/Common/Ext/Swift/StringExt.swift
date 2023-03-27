@@ -148,7 +148,7 @@ public extension String {
     }
 }
 
-extension String {
+public extension String {
     var md5: String? {
         data(using: .utf8)?.md5
     }

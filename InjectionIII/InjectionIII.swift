@@ -29,7 +29,7 @@ public extension UIApplicationDelegate {
     }
 }
 
-// MARK: - Injectable
+// MARK: - InjectionIII
 
 public protocol InjectionIII {
     typealias Injection = () -> Void

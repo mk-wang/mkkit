@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-// MARK: - Shared
+// MARK: - AppServiceManager
 
 public enum AppServiceManager {}
 

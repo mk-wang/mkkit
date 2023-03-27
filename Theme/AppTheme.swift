@@ -14,6 +14,8 @@ public enum AppTheme: Int8 {
     case dark = 2
 }
 
+// MARK: Codable
+
 extension AppTheme: Codable {}
 
 public extension AppTheme {

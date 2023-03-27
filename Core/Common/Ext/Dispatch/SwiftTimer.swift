@@ -5,16 +5,6 @@
 //  Created by mangofang on 16/8/23.
 //  https://github.com/100mango/SwiftTimer/blob/master/Sources/SwiftTimer.swift
 //
-// 当Timer创建完后，建议调用activate()方法开始运行。如果直接调用resume()也可以开始运行。
-// suspend()的时候，并不会停止当前正在执行的event事件，而是会停止下一次event事件。
-// 当Timer处于suspend的状态时，如果销毁Timer或其所属的控制器，会导致APP奔溃。
-// suspend()和resume()需要成对出现，挂起一次，恢复一次，如果Timer开始运行后，在没有suspend的时候，直接调用resume()，会导致APP崩溃。
-// 使用cancel()的时候，如果Timer处于suspend状态，APP崩溃。
-// 另外需要注意block的循环引用问题。
-//
-// ————————————————
-// 版权声明：本文为CSDN博主「Daniel_Coder」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-// 原文链接：https://blog.csdn.net/guoyongming925/article/details/110224064
 
 import Foundation
 
@@ -144,8 +134,6 @@ public extension SwiftTimer {
 }
 
 // MARK: - SwiftCountDownTimer
-
-// MARK: Count Down
 
 public class SwiftCountDownTimer {
     private let internalTimer: SwiftTimer

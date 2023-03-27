@@ -22,6 +22,8 @@ open class MMKVStorage {
     }
 }
 
+// MARK: KVStorage
+
 extension MMKVStorage: KVStorage {
     public func hasValue(_ key: String) -> Bool {
         storage.contains(key: key)
