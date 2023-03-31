@@ -25,6 +25,7 @@ public extension UICollectionView {
             }
 
             CATransaction.begin()
+            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
             CATransaction.setCompletionBlock(completion)
             self.reloadData()
             CATransaction.commit()

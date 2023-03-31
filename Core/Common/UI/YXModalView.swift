@@ -71,6 +71,8 @@ public extension YXModalView {
         }
 
         frame = superView.bounds
+        autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
         superView.addSubview(self)
 
         layoutIfNeeded()
