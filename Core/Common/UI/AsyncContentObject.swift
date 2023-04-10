@@ -44,7 +44,7 @@ public extension AsyncContentObject {
         }
 
         contentCancellable = publisher.sink(receiveValue: { [weak self] in
-            self?.assignContent($0)
+            self?.assignContent($0 ?? self?.contentPlaceHolder)
         })
     }
 
@@ -76,7 +76,7 @@ extension UIImageView: AsyncContentObject {
 extension UILabel: AsyncContentObject {
     public typealias T = String
     public func assignContent(_ value: String?) {
-        text = value ?? contentPlaceHolder
+        text = value
     }
 }
 
@@ -85,6 +85,6 @@ extension UILabel: AsyncContentObject {
 extension UITextView: AsyncContentObject {
     public typealias T = String
     public func assignContent(_ value: String?) {
-        text = value ?? contentPlaceHolder
+        text = value
     }
 }
