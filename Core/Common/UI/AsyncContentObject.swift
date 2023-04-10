@@ -17,7 +17,7 @@ public protocol AsyncContentObject: NSObject {
 }
 
 public extension AsyncContentObject {
-    var cotentCancellable: AnyCancellable? {
+    var contentCancellable: AnyCancellable? {
         get {
             getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellable
         }
@@ -27,7 +27,7 @@ public extension AsyncContentObject {
         }
     }
 
-    var cotentPlaceHolder: T? {
+    var contentPlaceHolder: T? {
         get {
             getAssociatedObject(&AssociatedKeys.kPlaceHolder) as? T
         }
@@ -38,9 +38,19 @@ public extension AsyncContentObject {
     }
 
     func assignContentPublisher(publisher: AnyPublisher<T?, Never>?) {
-        cotentCancellable = publisher?.sink(receiveValue: { [weak self] in
+        guard let publisher else {
+            assignContent(nil)
+            return
+        }
+
+        contentCancellable = publisher.sink(receiveValue: { [weak self] in
             self?.assignContent($0)
         })
+    }
+
+    func resetContent() {
+        contentCancellable = nil
+        assignContent(nil)
     }
 }
 
@@ -66,7 +76,7 @@ extension UIImageView: AsyncContentObject {
 extension UILabel: AsyncContentObject {
     public typealias T = String
     public func assignContent(_ value: String?) {
-        text = value
+        text = value ?? contentPlaceHolder
     }
 }
 
@@ -75,6 +85,6 @@ extension UILabel: AsyncContentObject {
 extension UITextView: AsyncContentObject {
     public typealias T = String
     public func assignContent(_ value: String?) {
-        text = value
+        text = value ?? contentPlaceHolder
     }
 }

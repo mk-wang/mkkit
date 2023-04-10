@@ -307,3 +307,22 @@ public extension UIImage {
         self.init(cgImage: aCgImage)
     }
 }
+
+public extension UIImage {
+    static func circleWith(size: CGSize, backgroundColor: UIColor) -> UIImage? {
+        defer {
+            UIGraphicsEndImageContext()
+        }
+
+        UIGraphicsBeginImageContextWithOptions(size, false, 1)
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+
+        context.setFillColor(backgroundColor.cgColor)
+        context.setStrokeColor(UIColor.clear.cgColor)
+        context.addEllipse(in: CGRect(origin: .zero, size: size))
+        context.drawPath(using: .fill)
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+}

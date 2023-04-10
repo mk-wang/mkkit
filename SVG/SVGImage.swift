@@ -81,13 +81,17 @@ extension SVGImageView: ThemeChangeListener {
     }
 }
 
-public func svgImage(path: String, size: CGSize) -> UIImage? {
+public func svgImage(path: String, size: CGSize? = nil) -> UIImage? {
     svgImage(url: URL(fileURLWithPath: path), size: size)
 }
 
-public func svgImage(url: URL, size: CGSize) -> UIImage? {
+public func svgImage(url: URL, size: CGSize? = nil) -> UIImage? {
     guard let svgImage = SwiftDraw.SVG(fileURL: url) else {
         return nil
     }
-    return svgImage.rasterize(with: size)
+    if let size {
+        return svgImage.rasterize(with: size)
+    } else {
+        return UIImage(svgImage)
+    }
 }
