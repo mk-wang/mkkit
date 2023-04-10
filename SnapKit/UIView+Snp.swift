@@ -35,7 +35,9 @@ public extension UIView {
                              buidlers: [SnpStackViewBuilder])
     {
         weak var lastObject: SnpLayoutObject?
-        var firstFlex: (SnpLayoutObject, CGFloat)?
+        var flexValue: CGFloat = 1
+        weak var flexObject: SnpLayoutObject?
+
         for builder in buidlers {
             var snpObject: SnpLayoutObject?
 
@@ -46,31 +48,24 @@ public extension UIView {
                 #else
                     snpObject = UILayoutGuide()
                 #endif
-                snpObject?.addSnpConfig { _, make in
-                    if direction == .vertical {
-                        make.width.equalTo(0)
-                        make.centerX.equalToSuperview()
-                        if let size {
-                            make.height.equalTo(size)
-                        }
-                    } else {
-                        make.height.equalTo(0)
-                        make.centerY.equalToSuperview()
-                        if let size {
-                            make.width.equalTo(size)
-                        }
-                    }
 
-                    if size == nil, flex > 0 {
-                        if let firstFlex {
-                            let amount = flex / firstFlex.1
-                            if direction == .vertical {
-                                make.height.equalTo(firstFlex.0.snpDSL.height).multipliedBy(amount)
-                            } else {
-                                make.width.equalTo(firstFlex.0.snpDSL.width).multipliedBy(amount)
-                            }
+                snpObject?.addSnpConfig { [weak snpObject] _, make in
+                    let crossAxis = direction == .vertical ? make.width : make.height
+                    let crossCenter = direction == .vertical ? make.centerX : make.centerY
+
+                    crossAxis.equalTo(0)
+                    crossCenter.equalToSuperview()
+
+                    let mainAxis = direction == .vertical ? make.height : make.width
+                    if let size {
+                        mainAxis.equalTo(size)
+                    } else if flex > 0 {
+                        if let flexObject {
+                            let target = direction == .vertical ? flexObject.snpDSL.height : flexObject.snpDSL.width
+                            mainAxis.equalTo(target).multipliedBy(flex / flexValue)
                         } else {
-                            firstFlex = (snpObject!, flex)
+                            flexObject = snpObject
+                            flexValue = flex
                         }
                     }
                 }
@@ -110,11 +105,12 @@ public extension UIView {
             }
         }
         lastObject?.makeConstraints { make in
-            if direction == .vertical {
+            switch direction {
+            case .vertical:
                 make.bottom.equalToSuperview()
-            } else if direction == .horizontal {
+            case .horizontal:
                 make.trailing.equalToSuperview()
-            } else {
+            case .ltrHorizontal:
                 make.right.equalToSuperview()
             }
         }
