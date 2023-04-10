@@ -34,7 +34,7 @@ public extension UIView {
     func addSnpStackSubviews(_ direction: SnpStackDirection,
                              buidlers: [SnpStackViewBuilder])
     {
-        var lastObject: SnpLayoutObject?
+        weak var lastObject: SnpLayoutObject?
         var firstFlex: (SnpLayoutObject, CGFloat)?
         for builder in buidlers {
             var snpObject: SnpLayoutObject?
@@ -85,22 +85,22 @@ public extension UIView {
 
             if let snpObject {
                 snpObject.addSnpConfig { _, make in
-                    if direction == .vertical {
-                        if let lastObject {
-                            make.top.equalTo(lastObject.snpDSL.bottom)
-                        } else {
-                            make.top.equalToSuperview()
-                        }
-                    } else if direction == .horizontal {
-                        if let lastObject {
-                            make.leading.equalTo(lastObject.snpDSL.trailing)
-                        } else {
-                            make.leading.equalToSuperview()
+                    if let snp = lastObject?.snpDSL {
+                        switch direction {
+                        case .vertical:
+                            make.top.equalTo(snp.bottom)
+                        case .horizontal:
+                            make.leading.equalTo(snp.trailing)
+                        case .ltrHorizontal:
+                            make.left.equalTo(snp.right)
                         }
                     } else {
-                        if let lastObject {
-                            make.left.equalTo(lastObject.snpDSL.right)
-                        } else {
+                        switch direction {
+                        case .vertical:
+                            make.top.equalToSuperview()
+                        case .horizontal:
+                            make.leading.equalToSuperview()
+                        case .ltrHorizontal:
                             make.left.equalToSuperview()
                         }
                     }
