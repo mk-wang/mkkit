@@ -14,4 +14,20 @@ public extension Array {
         }
         return self[index]
     }
+
+    func indexOf(next: Bool, from index: Int) -> Int {
+        var target = index
+        if next {
+            target += 1
+        } else {
+            target -= 1
+        }
+
+        if target >= count {
+            target = 0
+        } else if target < 0 {
+            target = count - 1
+        }
+        return target
+    }
 }
