@@ -41,6 +41,10 @@ public protocol ButtonViewStyle: TextViewStyle {
     var highlightedBackgroundColor: UIColor? {
         get
     }
+
+    var disabledColor: UIColor? {
+        get
+    }
 }
 
 public extension TextViewStyle {
@@ -118,6 +122,7 @@ public struct AppViewStyle {
     let backgourndColorBuilder: (() -> UIColor)?
     let hightlightColorBuilder: (() -> UIColor)?
     let hightlightTextColorBuilder: (() -> UIColor)?
+    let disabledColorBuilder: (() -> UIColor)?
 
     public let cornerRadius: CGFloat
 
@@ -125,6 +130,7 @@ public struct AppViewStyle {
                 textAlignment: NSTextAlignment = .start,
                 cornerRadius: CGFloat = 0,
                 colorBuilder: @escaping () -> UIColor,
+                disabledColorBuilder: (() -> UIColor)? = nil,
                 backgourndColorBuilder: (() -> UIColor)? = nil,
                 hightlightColorBuilder: (() -> UIColor)? = nil,
                 hightlightTextColorBuilder: (() -> UIColor)? = nil)
@@ -133,6 +139,7 @@ public struct AppViewStyle {
         self.textAlignment = textAlignment
         self.cornerRadius = cornerRadius
         self.colorBuilder = colorBuilder
+        self.disabledColorBuilder = disabledColorBuilder
         self.backgourndColorBuilder = backgourndColorBuilder
         self.hightlightColorBuilder = hightlightColorBuilder
         self.hightlightTextColorBuilder = hightlightTextColorBuilder
@@ -148,6 +155,10 @@ extension AppViewStyle: ButtonViewStyle {
 
     public var backgroundColor: UIColor {
         backgourndColorBuilder == nil ? .clear : backgourndColorBuilder!()
+    }
+
+    public var disabledColor: UIColor? {
+        disabledColorBuilder?()
     }
 
     public var highlightedTextColor: UIColor? {

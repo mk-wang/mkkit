@@ -59,6 +59,15 @@ open class YXModalView: UIView {
 public extension YXModalView {
     typealias YXModalViewCallback = (YXModalView?) -> Void
 
+    var touchBGColor: UIColor? {
+        get {
+            bgTouchView.backgroundColor
+        }
+        set {
+            bgTouchView.backgroundColor = newValue
+        }
+    }
+
     func show(_ container: UIView? = nil) {
         guard contentView != nil, let superView = container ?? ScreenUtil.window else {
             return

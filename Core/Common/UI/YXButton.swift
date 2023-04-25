@@ -140,9 +140,13 @@ public extension YXButton {
             }
 
             if let color = style?.highlightedBackgroundColor {
-                var highlighted = image
-                highlighted = highlighted.tint(color: color)
-                btn.setImage(highlighted, for: .highlighted)
+                let tinted = image.tint(color: color)
+                btn.setImage(tinted, for: .highlighted)
+            }
+
+            if let color = style?.disabledColor {
+                let tinted = image.tint(color: color)
+                btn.setImage(tinted, for: .disabled)
             }
         }
 
