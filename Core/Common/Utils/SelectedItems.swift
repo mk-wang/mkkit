@@ -10,42 +10,52 @@ import OpenCombine
 
 open class SelectedItems<T> {
     public let list: [T]
-    private let subject: CurrentValueSubject<Int, Never>
+    private let subject: CurrentValueSubject<Int?, Never>
+    public lazy var selectedIndexPublisher: AnyPublisher<Int?, Never> = subject.removeDuplicates().eraseToAnyPublisher()
 
-    public lazy var selectedIndexPublisher: AnyPublisher<Int, Never> = subject.removeDuplicates().eraseToAnyPublisher()
+    public lazy var selectedItemPublisher: AnyPublisher<T?, Never> = subject.removeDuplicates().map { [weak self] in
+        self?.itemAt(index: $0)
+    }.eraseToAnyPublisher()
 
-    public lazy var selectedItemPublisher: AnyPublisher<T, Never> = {
-        let list = self.list
-        return subject.removeDuplicates().map { idx in
-            list[idx]
-        }.eraseToAnyPublisher()
-    }()
-
-    open var selected: T {
-        list[subject.value]
+    open var selected: T? {
+        itemAt(index: subject.value)
     }
 
-    open var selectedIndex: Int {
+    open var selectedIndex: Int? {
         get {
             subject.value
         }
         set {
             if subject.value != newValue {
                 var index = newValue
-                if index < 0 || index >= list.count {
-                    index = 0
+                if let val = newValue {
+                    if val < 0 || val >= list.count {
+                        index = nil
+                    }
                 }
                 subject.value = index
             }
         }
     }
 
-    public init(selected: Int, list: [T]) {
+    open var isEmpty: Bool {
+        list.isEmpty
+    }
+
+    open var isNotEmpty: Bool {
+        list.isNotEmpty
+    }
+
+    public init(list: [T], selected: Int? = nil) {
         self.list = list
-        var index = selected
-        if index < 0 || index >= list.count {
-            index = 0
+
+        subject = CurrentValueSubject<Int?, Never>(selected)
+    }
+
+    open func itemAt(index: Int?) -> T? {
+        guard let index else {
+            return nil
         }
-        subject = CurrentValueSubject<Int, Never>(index)
+        return list.at(index)
     }
 }
