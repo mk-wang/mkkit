@@ -187,7 +187,7 @@ extension String {
     }
 }
 
-extension StringProtocol {
+public extension StringProtocol {
     func index(of string: some StringProtocol, options: String.CompareOptions = []) -> Index? {
         range(of: string, options: options)?.lowerBound
     }
@@ -212,6 +212,25 @@ extension StringProtocol {
                 index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
         }
         return result
+    }
+}
+
+/// https://stackoverflow.com/questions/28079123/how-to-check-validity-of-url-in-swift
+public extension String {
+    var isValidURL: Bool {
+        let types: NSTextCheckingResult.CheckingType = [.link]
+        let detector = try? NSDataDetector(types: types.rawValue)
+
+        guard detector != nil, self.isNotEmpty else {
+            return false
+        }
+        if detector!.numberOfMatches(in: self,
+                                     options: NSRegularExpression.MatchingOptions(rawValue: 0),
+                                     range: NSMakeRange(0, self.count)) > 0
+        {
+            return true
+        }
+        return false
     }
 }
 

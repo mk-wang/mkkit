@@ -7,12 +7,16 @@
 
 import Foundation
 
-extension URL {
+public extension URL {
     var isDirectory: Bool {
         (try? resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
     }
 
-    public func relativePath(from base: URL) -> String {
+    var fileName: String {
+        deletingPathExtension().lastPathComponent
+    }
+
+    func relativePath(from base: URL) -> String {
         let destComponents = standardized.pathComponents
         let baseComponents = base.standardized.pathComponents
 
@@ -30,7 +34,7 @@ extension URL {
         return relComponents.joined(separator: "/")
     }
 
-    func bookmark(request: Bool) throws -> Data? {
+    internal func bookmark(request: Bool) throws -> Data? {
         let requested = !request && startAccessingSecurityScopedResource()
         defer {
             if requested {

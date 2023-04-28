@@ -40,7 +40,7 @@ public extension String {
     }
 }
 
-extension Data {
+public extension Data {
     func decodeJson<T: Decodable>() throws -> T {
         try JSONDecoder().decode(T.self, from: self)
     }
