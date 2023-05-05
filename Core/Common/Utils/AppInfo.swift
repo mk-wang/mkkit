@@ -82,6 +82,14 @@ public extension AppInfo {
         Locale.current.identifier
     }
 
+    static var localeRegion: String? {
+        if #available(iOS 16, *) {
+            return Locale.current.region?.identifier
+        } else {
+            return Locale.current.regionCode
+        }
+    }
+
     static func bundleInfo(for key: String) -> String? {
         Bundle.main.object(forInfoDictionaryKey: key) as? String
     }

@@ -93,6 +93,10 @@ public extension ScreenUtil {
     static func bottomSafeAreaMax(height: CGFloat) -> CGFloat {
         max(bottomSafeArea, height)
     }
+
+    static func bottomHeight(safeAreaAddition h1: CGFloat, normal h2: CGFloat) -> CGFloat {
+        bottomSafeArea > 1 ? bottomSafeArea + h1 : h2
+    }
 }
 
 public extension FloatingPoint {

@@ -221,12 +221,12 @@ public extension String {
         let types: NSTextCheckingResult.CheckingType = [.link]
         let detector = try? NSDataDetector(types: types.rawValue)
 
-        guard detector != nil, self.isNotEmpty else {
+        guard detector != nil, isNotEmpty else {
             return false
         }
         if detector!.numberOfMatches(in: self,
                                      options: NSRegularExpression.MatchingOptions(rawValue: 0),
-                                     range: NSMakeRange(0, self.count)) > 0
+                                     range: NSMakeRange(0, count)) > 0
         {
             return true
         }

@@ -314,7 +314,7 @@ public extension UIImage {
             UIGraphicsEndImageContext()
         }
 
-        UIGraphicsBeginImageContextWithOptions(size, false, 1)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
