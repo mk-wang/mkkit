@@ -146,6 +146,35 @@ public extension String {
         makeAttrByTags(normal: normal,
                        tagAttrs: [tag: tagAttrs])
     }
+
+    //
+    func makeAttrByFormat(key: String = "%@",
+                          attrs: [NSAttributedString.Key: Any],
+                          param: String,
+                          paramAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
+    {
+        let searchRange = startIndex ..< endIndex
+        guard let found = range(of: key, range: searchRange) else {
+            return attributedString(range: searchRange,
+                                    attrs: attrs)
+        }
+        let mStr = NSMutableAttributedString()
+        if startIndex < found.lowerBound {
+            let text = attributedString(range: startIndex ..< found.lowerBound, attrs: attrs)
+            mStr.append(text)
+        }
+        do {
+            let text = NSAttributedString(string: param, attributes: paramAttrs)
+            mStr.append(text)
+        }
+        if found.upperBound < endIndex {
+            let start = index(found.upperBound, offsetBy: key.count - 1)
+            var range = start ..< endIndex
+            let text = attributedString(range: range, attrs: attrs)
+            mStr.append(text)
+        }
+        return mStr
+    }
 }
 
 public extension String {
