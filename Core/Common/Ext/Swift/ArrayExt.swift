@@ -31,3 +31,13 @@ public extension Array {
         return target
     }
 }
+
+public extension Array where Element: Equatable {
+    func element(next: Bool, by source: Element) -> Element? {
+        guard let index = firstIndex(of: source) else {
+            return nil
+        }
+        let targetIndex = indexOf(next: next, from: index)
+        return at(targetIndex)
+    }
+}
