@@ -66,27 +66,27 @@ public extension String {
 
 public extension String {
     var singleUnderline: NSAttributedString {
-        attributedString(range: startIndex ..< endIndex,
-                         attrs: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+        NSAttributedString(string: self, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
     }
 
     var thickUnderline: NSAttributedString {
-        attributedString(range: startIndex ..< endIndex,
-                         attrs: [.underlineStyle: NSUnderlineStyle.thick.rawValue])
+        NSAttributedString(string: self, attributes: [.underlineStyle: NSUnderlineStyle.thick.rawValue])
     }
 
     var singleStruckthrough: NSAttributedString {
-        attributedString(range: startIndex ..< endIndex,
-                         attrs: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+        NSAttributedString(string: self, attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
     }
 
     var thickStruckthrough: NSAttributedString {
-        attributedString(range: startIndex ..< endIndex,
-                         attrs: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue])
+        NSAttributedString(string: self, attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue])
     }
 
     func attributedString(range: Range<Self.Index>, attrs: [NSAttributedString.Key: Any]) -> NSAttributedString {
         NSAttributedString(string: String(self[range]), attributes: attrs)
+    }
+
+    func attributedString(attrs: [NSAttributedString.Key: Any]) -> NSAttributedString {
+        NSAttributedString(string: self, attributes: attrs)
     }
 
     func makeAttrByTags(normal: [NSAttributedString.Key: Any],
@@ -153,10 +153,8 @@ public extension String {
                           param: String,
                           paramAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
     {
-        let searchRange = startIndex ..< endIndex
-        guard let found = range(of: key, range: searchRange) else {
-            return attributedString(range: searchRange,
-                                    attrs: attrs)
+        guard !key.isEmpty, let found = range(of: key) else {
+            return NSAttributedString(string: self, attributes: attrs)
         }
         let mStr = NSMutableAttributedString()
         if startIndex < found.lowerBound {
