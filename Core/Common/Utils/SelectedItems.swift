@@ -9,13 +9,24 @@ import Foundation
 import OpenCombine
 
 open class SelectedItems<T> {
+    public let removeDuplicates: Bool
     public let list: [T]
-    private let subject: CurrentValueSubject<Int?, Never>
-    public lazy var selectedIndexPublisher: AnyPublisher<Int?, Never> = subject.removeDuplicates().eraseToAnyPublisher()
 
-    public lazy var selectedItemPublisher: AnyPublisher<T?, Never> = subject.removeDuplicates().map { [weak self] in
-        self?.itemAt(index: $0)
-    }.eraseToAnyPublisher()
+    private let subject: CurrentValueSubject<Int?, Never>
+
+    open var selectedIndexPublisher: AnyPublisher<Int?, Never> {
+        if removeDuplicates {
+            return subject.removeDuplicates().eraseToAnyPublisher()
+        } else {
+            return subject.eraseToAnyPublisher()
+        }
+    }
+
+    open var selectedItemPublisher: AnyPublisher<T?, Never> {
+        selectedIndexPublisher.map { [weak self] in
+            self?.itemAt(index: $0)
+        }.eraseToAnyPublisher()
+    }
 
     open var selected: T? {
         itemAt(index: subject.value)
@@ -26,7 +37,7 @@ open class SelectedItems<T> {
             subject.value
         }
         set {
-            if subject.value != newValue {
+            if !removeDuplicates || subject.value != newValue {
                 var index = newValue
                 if let val = newValue {
                     if val < 0 || val >= list.count {
@@ -46,7 +57,8 @@ open class SelectedItems<T> {
         list.isNotEmpty
     }
 
-    public init(list: [T], selected: Int? = nil) {
+    public init(list: [T], removeDuplicates: Bool = true, selected: Int? = nil) {
+        self.removeDuplicates = removeDuplicates
         self.list = list
 
         subject = CurrentValueSubject<Int?, Never>(selected)
