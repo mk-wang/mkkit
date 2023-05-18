@@ -38,6 +38,10 @@ public protocol ButtonViewStyle: TextViewStyle {
         get
     }
 
+    var highlightedImageColor: UIColor? {
+        get
+    }
+
     var highlightedBackgroundColor: UIColor? {
         get
     }
@@ -119,9 +123,12 @@ public struct AppViewStyle {
     public let textAlignment: NSTextAlignment
 
     let colorBuilder: () -> UIColor
+
     let backgourndColorBuilder: (() -> UIColor)?
-    let hightlightColorBuilder: (() -> UIColor)?
-    let hightlightTextColorBuilder: (() -> UIColor)?
+    let highlightTextColorBuilder: (() -> UIColor)?
+    let highlightImageColorBuilder: (() -> UIColor)?
+    let highlightBackgroundColorBuilder: (() -> UIColor)?
+
     let disabledColorBuilder: (() -> UIColor)?
 
     public let cornerRadius: CGFloat
@@ -132,8 +139,9 @@ public struct AppViewStyle {
                 colorBuilder: @escaping () -> UIColor,
                 disabledColorBuilder: (() -> UIColor)? = nil,
                 backgourndColorBuilder: (() -> UIColor)? = nil,
-                hightlightColorBuilder: (() -> UIColor)? = nil,
-                hightlightTextColorBuilder: (() -> UIColor)? = nil)
+                highlightTextColorBuilder: (() -> UIColor)? = nil,
+                highlightImageColorBuilder: (() -> UIColor)? = nil,
+                highlightBackgroundColorBuilder: (() -> UIColor)? = nil)
     {
         self.font = font
         self.textAlignment = textAlignment
@@ -141,8 +149,9 @@ public struct AppViewStyle {
         self.colorBuilder = colorBuilder
         self.disabledColorBuilder = disabledColorBuilder
         self.backgourndColorBuilder = backgourndColorBuilder
-        self.hightlightColorBuilder = hightlightColorBuilder
-        self.hightlightTextColorBuilder = hightlightTextColorBuilder
+        self.highlightBackgroundColorBuilder = highlightBackgroundColorBuilder
+        self.highlightImageColorBuilder = highlightImageColorBuilder
+        self.highlightTextColorBuilder = highlightTextColorBuilder
     }
 }
 
@@ -162,10 +171,14 @@ extension AppViewStyle: ButtonViewStyle {
     }
 
     public var highlightedTextColor: UIColor? {
-        hightlightTextColorBuilder?()
+        highlightTextColorBuilder?()
+    }
+
+    public var highlightedImageColor: UIColor? {
+        highlightImageColorBuilder?()
     }
 
     public var highlightedBackgroundColor: UIColor? {
-        hightlightColorBuilder?()
+        highlightBackgroundColorBuilder?()
     }
 }

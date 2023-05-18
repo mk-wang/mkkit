@@ -139,7 +139,7 @@ public extension YXButton {
                 btn.setImage(normal, for: .normal)
             }
 
-            if let color = style?.highlightedBackgroundColor {
+            if let color = style?.highlightedImageColor {
                 let tinted = image.tint(color: color)
                 btn.setImage(tinted, for: .highlighted)
             }
