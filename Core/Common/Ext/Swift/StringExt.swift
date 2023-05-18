@@ -153,24 +153,22 @@ public extension String {
                           param: String,
                           paramAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
     {
-        guard !key.isEmpty, let found = range(of: key) else {
+        guard !key.isEmpty else {
+            return NSAttributedString(string: self, attributes: attrs)
+        }
+        let parts = components(separatedBy: key)
+        guard parts.count == 2 else {
             return NSAttributedString(string: self, attributes: attrs)
         }
         let mStr = NSMutableAttributedString()
-        if startIndex < found.lowerBound {
-            let text = attributedString(range: startIndex ..< found.lowerBound, attrs: attrs)
-            mStr.append(text)
+        if let text = parts.first, text.isNotEmpty {
+            mStr.append(.init(string: text, attributes: attrs))
         }
-        do {
-            let text = NSAttributedString(string: param, attributes: paramAttrs)
-            mStr.append(text)
+        mStr.append(NSAttributedString(string: param, attributes: paramAttrs))
+        if let text = parts.last, text.isNotEmpty {
+            mStr.append(.init(string: text, attributes: attrs))
         }
-        if found.upperBound < endIndex {
-            let start = index(found.upperBound, offsetBy: key.count - 1)
-            var range = start ..< endIndex
-            let text = attributedString(range: range, attrs: attrs)
-            mStr.append(text)
-        }
+
         return mStr
     }
 }
