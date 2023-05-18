@@ -13,8 +13,13 @@ public extension UIButton {
             imageEdgeInsets.right
         }
         set {
-            imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: newValue)
-            titleEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: 0)
+            if Lang.current.isRTL {
+                titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: newValue)
+                imageEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: 0)
+            } else {
+                imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: newValue)
+                titleEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: 0)
+            }
         }
     }
 }
