@@ -35,7 +35,7 @@ open class YXDragView: UIView {
 
     private(set) var expaneded = false
     private var contentHeightConstraint: NSLayoutConstraint?
-    private var currentContainerHeight: CGFloat?
+    private var dragContentHeight: CGFloat?
 
     override open func layoutSubviews() {
         super.layoutSubviews()
@@ -93,15 +93,21 @@ open class YXDragView: UIView {
         gesture.setTranslation(.zero, in: self)
 
         let state = gesture.state
+
+        guard state != .cancelled else {
+            setContainerHeight(initialHeight, dragEnd: true)
+            return
+        }
+
         guard state == .began || state == .changed || state == .ended else {
             return
         }
 
         var targetHeight: CGFloat?
 
-        let height = (currentContainerHeight ?? targetContainerHeight) - offset
+        let height = (dragContentHeight ?? targetContainerHeight) - offset
         if state == .began {
-            currentContainerHeight = initialHeight
+            dragContentHeight = initialHeight
             targetHeight = height
         } else if state == .changed {
             if height < maximumContainerHeight, height > safeAreaInsets.bottom + 40 {
@@ -148,18 +154,18 @@ open class YXDragView: UIView {
                 initialSpringVelocity: 0.5,
                 options: .curveEaseInOut,
                 animations: { [weak self] in
-                    weakSelf?.updateContainer(height: height)
+                    weakSelf?.updateContent(height: height)
                 }
             )
-            
-            currentContainerHeight = nil
+
+            dragContentHeight = nil
         } else {
-            updateContainer(height: height)
-            currentContainerHeight = height
+            updateContent(height: height)
+            dragContentHeight = height
         }
     }
 
-    func updateContainer(height: CGFloat) {
+    func updateContent(height: CGFloat) {
         contentHeightConstraint?.constant = height
         layoutIfNeeded()
     }
