@@ -44,7 +44,7 @@ public extension ScreenUtil {
 }
 
 public extension ScreenUtil {
-    static let navBarHeight: CGFloat = 44
+    static let navBarHeight: CGFloat = UINavigationBar().intrinsicContentSize.height
 
     static var statusBarHeight: CGFloat {
         var height: CGFloat?
