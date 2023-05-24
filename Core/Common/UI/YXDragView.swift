@@ -85,6 +85,7 @@ open class YXDragView: UIView {
         onClose?()
     }
 
+    // https://github.com/xmhafiz/CustomModalVC/blob/main/HalfScreenPresentation/CustomModalViewController.swift
     @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
         guard let contentView else {
             return
