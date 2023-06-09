@@ -29,8 +29,17 @@ public protocol TextViewStyle {
 
 public extension TextViewStyle {
     var textAttributes: [NSAttributedString.Key: Any] {
-        [NSAttributedString.Key.font: font,
-         NSAttributedString.Key.foregroundColor: color]
+        makeTextAttributes()
+    }
+
+    func makeTextAttributes(paragraphConfigure: ((NSMutableParagraphStyle) -> Void)? = nil) -> [NSAttributedString.Key: Any] {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = textAlignment
+        paragraphConfigure?(paragraph)
+        return [NSAttributedString.Key.font: font,
+                NSAttributedString.Key.foregroundColor: color,
+                NSAttributedString.Key.backgroundColor: backgroundColor,
+                NSAttributedString.Key.paragraphStyle: paragraph]
     }
 }
 

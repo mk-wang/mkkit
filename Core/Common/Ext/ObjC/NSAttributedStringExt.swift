@@ -82,14 +82,9 @@ public extension NSAttributedString {
         applying(attributes: [.foregroundColor: color])
     }
 
-    func applyingParagraph(lineSpacing: CGFloat? = nil, paragraphSpacing: CGFloat? = nil) -> NSAttributedString {
+    func applyingParagraph(configure: (NSMutableParagraphStyle) -> Void) -> NSAttributedString {
         let paragraph = NSMutableParagraphStyle()
-        if let paragraphSpacing {
-            paragraph.paragraphSpacing = paragraphSpacing
-        }
-        if let lineSpacing {
-            paragraph.lineSpacing = lineSpacing
-        }
+        configure(paragraph)
         let attrs = [NSAttributedString.Key.paragraphStyle: paragraph]
         return applying(attributes: attrs)
     }
