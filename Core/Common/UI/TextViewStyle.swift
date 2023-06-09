@@ -31,6 +31,13 @@ public protocol TextViewStyle {
     }
 }
 
+public extension TextViewStyle {
+    var textAttributes: [NSAttributedString.Key: Any] {
+        [NSAttributedString.Key.font: font,
+         NSAttributedString.Key.foregroundColor: color]
+    }
+}
+
 // MARK: - ButtonViewStyle
 
 public protocol ButtonViewStyle: TextViewStyle {
