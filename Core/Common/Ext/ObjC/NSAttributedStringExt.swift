@@ -82,6 +82,18 @@ public extension NSAttributedString {
         applying(attributes: [.foregroundColor: color])
     }
 
+    func applyingParagraph(lineSpacing: CGFloat? = nil, paragraphSpacing: CGFloat? = nil) -> NSAttributedString {
+        let paragraph = NSMutableParagraphStyle()
+        if let paragraphSpacing {
+            paragraph.paragraphSpacing = paragraphSpacing
+        }
+        if let lineSpacing {
+            paragraph.lineSpacing = lineSpacing
+        }
+        let attrs = [NSAttributedString.Key.paragraphStyle: paragraph]
+        return applying(attributes: attrs)
+    }
+
     /// SwifterSwift: Apply attributes to substrings matching a regular expression.
     ///
     /// - Parameters:
