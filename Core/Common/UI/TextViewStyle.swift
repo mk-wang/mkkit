@@ -25,10 +25,6 @@ public protocol TextViewStyle {
     var backgroundColor: UIColor {
         get
     }
-
-    var cornerRadius: CGFloat {
-        get
-    }
 }
 
 public extension TextViewStyle {
@@ -62,10 +58,6 @@ public extension TextViewStyle {
     var backgroundColor: UIColor {
         .clear
     }
-
-    var cornerRadius: CGFloat {
-        0
-    }
 }
 
 public extension UILabel {
@@ -76,7 +68,6 @@ public extension UILabel {
         textColor = style.color
         textAlignment = style.textAlignment
         backgroundColor = style.backgroundColor
-        layer.cornerRadius = style.cornerRadius
         numberOfLines = 0
     }
 }
@@ -89,7 +80,6 @@ public extension UITextView {
         textColor = style.color
         textAlignment = style.textAlignment
         backgroundColor = style.backgroundColor
-        layer.cornerRadius = style.cornerRadius
     }
 }
 
@@ -102,7 +92,6 @@ public extension UIButton {
 
         titleLabel?.textAlignment = style.textAlignment
         backgroundColor = style.backgroundColor
-        layer.cornerRadius = style.cornerRadius
 
         if let color = style.highlightedTextColor {
             setTitleColor(color, for: .highlighted)
@@ -138,11 +127,8 @@ public struct AppViewStyle {
 
     let disabledColorBuilder: (() -> UIColor)?
 
-    public let cornerRadius: CGFloat
-
     public init(font: UIFont,
                 textAlignment: NSTextAlignment = .start,
-                cornerRadius: CGFloat = 0,
                 colorBuilder: @escaping () -> UIColor,
                 disabledColorBuilder: (() -> UIColor)? = nil,
                 backgourndColorBuilder: (() -> UIColor)? = nil,
@@ -152,7 +138,6 @@ public struct AppViewStyle {
     {
         self.font = font
         self.textAlignment = textAlignment
-        self.cornerRadius = cornerRadius
         self.colorBuilder = colorBuilder
         self.disabledColorBuilder = disabledColorBuilder
         self.backgourndColorBuilder = backgourndColorBuilder
