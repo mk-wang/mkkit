@@ -9,16 +9,16 @@ import Foundation
 import OpenCombine
 
 open class ValueSubject<T: Any> {
-    // old , value
+    let retainOld: Bool
+    // old , new
     private let subject: CurrentValueSubject<(T?, T), Never>
-
     open lazy var valuePublisher = subject.map(\.1).eraseToAnyPublisher()
     open var value: T {
         get {
             subject.value.1
         }
         set {
-            let old = subject.value.0
+            let old = retainOld ? subject.value.0 : nil
             subject.value = (old, newValue)
         }
     }
@@ -28,7 +28,8 @@ open class ValueSubject<T: Any> {
         subject.value
     }
 
-    public init(_ value: T) {
+    public init(_ value: T, retainOld: Bool = false) {
+        self.retainOld = retainOld
         subject = CurrentValueSubject((nil, value))
     }
 }
