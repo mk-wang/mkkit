@@ -10,10 +10,10 @@ import UIKit
 
 public extension UIView {
     convenience init(direction: SnpStackDirection,
-                     buidlers: [SnpStackViewBuilder])
+                     builders: [SnpStackViewBuilder])
     {
         self.init(frame: .zero)
-        addSnpStackSubviews(direction, buidlers: buidlers)
+        addSnpStackSubviews(direction, builders: builders)
     }
 }
 
@@ -32,13 +32,13 @@ public extension UIView {
     }
 
     func addSnpStackSubviews(_ direction: SnpStackDirection,
-                             buidlers: [SnpStackViewBuilder])
+                             builders: [SnpStackViewBuilder])
     {
         weak var lastObject: SnpLayoutObject?
         var flexValue: CGFloat = 1
         weak var flexObject: SnpLayoutObject?
 
-        for builder in buidlers {
+        for builder in builders {
             var snpObject: SnpLayoutObject?
 
             switch builder {
