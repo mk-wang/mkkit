@@ -113,11 +113,9 @@ public extension UIButton {
 }
 
 public extension NSAttributedString {
-    convenience init(text: String, style: TextViewStyle) {
+    convenience init(text: String, style: TextViewStyle, paragraphConfigure: ((NSMutableParagraphStyle) -> Void)? = nil) {
         self.init(string: text,
-                  attributes: [NSAttributedString.Key.font: style.font,
-                               NSAttributedString.Key.backgroundColor: style.backgroundColor,
-                               NSAttributedString.Key.foregroundColor: style.color])
+                  attributes: style.makeTextAttributes(paragraphConfigure: paragraphConfigure))
     }
 }
 
