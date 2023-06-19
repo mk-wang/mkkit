@@ -30,6 +30,17 @@ public extension Array {
         }
         return target
     }
+
+    func expand(by sepBuilder: () -> Element) -> [Element] {
+        var list = [Element]()
+        for (index, element) in enumerated() {
+            if index != 0 {
+                list.append(sepBuilder())
+            }
+            list.append(element)
+        }
+        return list
+    }
 }
 
 public extension Array where Element: Equatable {
