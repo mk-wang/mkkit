@@ -8,20 +8,41 @@
 import Foundation
 import IGListKit
 
+// MARK: - IGModelWrap
+
+open class IGModelWrap<T: NSObject>: ListDiffable {
+    let object: T
+
+    public init(object: T) {
+        self.object = object
+    }
+
+    public func diffIdentifier() -> NSObjectProtocol {
+        object
+    }
+
+    public func isEqual(toDiffableObject otherObject: ListDiffable?) -> Bool {
+        guard let other = (otherObject as? Self)?.object else {
+            return false
+        }
+        return object.isEqual(other)
+    }
+}
+
 // MARK: - IGListModelWrap
 
-class IGListModelWrap<Element>: NSObject, ListDiffable {
+open class IGListModelWrap<Element>: NSObject, ListDiffable {
     let list: [Element]
 
-    init(list: [Element]) {
+    public init(list: [Element]) {
         self.list = list
     }
 
-    func diffIdentifier() -> NSObjectProtocol {
+    public func diffIdentifier() -> NSObjectProtocol {
         self
     }
 
-    func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
+    public func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
         isEqual(object)
     }
 
@@ -38,42 +59,58 @@ class IGListModelWrap<Element>: NSObject, ListDiffable {
     }
 }
 
-// MARK: - IGHeightModelWrap
+// MARK: - IGBoxModel
 
-class IGHeightModelWrap: ListDiffable {
-    func diffIdentifier() -> NSObjectProtocol {
-        "IGHeightModelWrap \(height)" as NSString
+protocol IGBoxModel: ListDiffable {
+    var boxHeight: CGFloat {
+        get
     }
 
-    func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
-        guard let other = object as? Self else { return false }
-        return other.height == height
-    }
-
-    let height: CGFloat
-
-    init(height: CGFloat) {
-        self.height = height
+    var boxColor: UIColor? {
+        get
     }
 }
 
-extension IGHeightModelWrap {
+// MARK: - IGBoxModelWrap
+
+public class IGBoxModelWrap: IGBoxModel {
+    let boxHeight: CGFloat
+    let boxColor: UIColor?
+
+    public func diffIdentifier() -> NSObjectProtocol {
+        "IGBoxModelWrap \(boxHeight)" as NSString
+    }
+
+    public func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
+        guard let other = object as? Self else { return false }
+        return other.boxHeight == boxHeight
+    }
+
+    init(boxHeight: CGFloat, boxColor: UIColor?) {
+        self.boxHeight = boxHeight
+        self.boxColor = boxColor
+    }
+}
+
+extension IGBoxModelWrap {
     static func listController(configureBlock: ListSingleSectionCellConfigureBlock? = nil) -> ListSectionController {
         // for header view
         let sizeBlock: ListSingleSectionCellSizeBlock = { model, context in
-            guard let model = model as? Self else {
+            guard let model = model as? Self, let width = context?.containerSize.width else {
                 return .zero
             }
-            return CGSize(width: (context?.containerSize.width)!, height: model.height)
+            return CGSize(width: width, height: model.boxHeight)
         }
 
-        let sectionController = ListSingleSectionController(cellClass: Cell.self,
-                                                            configureBlock: configureBlock ?? {
-                                                                _, _ in
+        let sectionController = ListSingleSectionController(cellClass: BoxCell.self,
+                                                            configureBlock: {
+                                                                model, cell in
+                                                                cell.backgroundColor = (model as? Self)?.boxColor
+                                                                configureBlock?(model, cell)
                                                             },
                                                             sizeBlock: sizeBlock)
         return sectionController
     }
 
-    private class Cell: UICollectionViewCell {}
+    private class BoxCell: UICollectionViewCell {}
 }
