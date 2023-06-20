@@ -11,6 +11,7 @@
 @property (nonatomic, strong) UILabel *indexLabel;
 @property (nonatomic, strong) UIColor *drawColor;
 @property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, assign) BOOL isRTL;
 
 @end
 
@@ -18,14 +19,13 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-
     if (self = [super initWithFrame:frame]) {
-
         _drawColor = [UIColor lightGrayColor];
         _indexLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, frame.size.height, frame.size.height)];
         _indexLabel.textColor = [UIColor whiteColor];
         _indexLabel.textAlignment = NSTextAlignmentCenter;
         _indexLabel.font = [UIFont boldSystemFontOfSize:18];
+        _isRTL = NO;
         [self addSubview:_indexLabel];
     }
     return self;
@@ -33,14 +33,12 @@
 
 - (void)setTextColor:(UIColor *)textColor
 {
-
     _textColor = textColor;
     _indexLabel.textColor = textColor;
 }
 
 - (void)drawRect:(CGRect)rect
 {
-
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 2.0);
     CGContextSetFillColorWithColor(context, _drawColor.CGColor);
@@ -48,9 +46,18 @@
     CGContextFillPath(context);
 }
 
+- (void)setIsRTL:(BOOL)isRTL
+{
+    if (_isRTL != isRTL) {
+        _isRTL = isRTL;
+        CGAffineTransform tranform = _isRTL ? CGAffineTransformMakeScale(-1, 1) : CGAffineTransformIdentity;
+        self.transform = tranform;
+        _indexLabel.transform = tranform;
+    }
+}
+
 - (void)getDrawPath:(CGContextRef)context
 {
-
     CGFloat width = self.bounds.size.width;
     CGFloat height = self.bounds.size.height;
     CGFloat xOffset = self.bounds.size.width * 1 / 4;
@@ -77,7 +84,6 @@
 @property (nonatomic, assign) NSInteger preIndex;
 @property (nonatomic, strong) NSMutableArray *labelArr;
 @property (nonatomic, strong) CustomView *indexDetailView;
-@property (nonatomic, strong) UIImpactFeedbackGenerator *gen API_AVAILABLE(ios(10.0));
 
 @end
 
@@ -85,7 +91,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-
     if (self = [super initWithFrame:frame]) {
         [self initData];
     }
@@ -94,20 +99,10 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-
     if (self = [super initWithCoder:aDecoder]) {
         [self initData];
     }
     return self;
-}
-
-- (UIImpactFeedbackGenerator *)gen
-{
-    if (_gen == nil) {
-        _gen = [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
-        [_gen prepare];
-    }
-    return _gen;
 }
 
 /**
@@ -118,10 +113,14 @@
     _preIndex = -1;
     _sectionHeight = 16;
     _textColor = [UIColor colorWithRed:135 / 255.0 green:135 / 255.0 blue:135 / 255.0 alpha:1];
+    _textFont = [UIFont boldSystemFontOfSize:10.0];
     _selectedTextColor = [UIColor whiteColor];
     _selectedBackgroundColor = [UIColor colorWithRed:54 / 255.0 green:129 / 255.0 blue:228 / 255.0 alpha:1];
     _detailViewDrawColor = [UIColor lightGrayColor];
     _detailViewTextColor = [UIColor whiteColor];
+    _detailViewSize = CGSizeMake(50, 50);
+    _detailViewOffset = 6;
+    _isRTL = NO;
 }
 
 /**
@@ -129,7 +128,6 @@
  */
 - (void)setIndexes:(NSArray *)indexes
 {
-
     // Reset data
     while (self.subviews.count) {
         [self.subviews.lastObject removeFromSuperview];
@@ -138,11 +136,19 @@
     [_labelArr removeAllObjects];
     _preIndex = -1;
 
-    _indexDetailView = [[CustomView alloc] initWithFrame:CGRectMake(-80, 0, 50, 50)];
+    CGFloat offset = 0;
+    if (_isRTL) {
+        offset = self.bounds.size.width + _detailViewOffset;
+    } else {
+        offset = -_detailViewOffset - _detailViewSize.width;
+    }
+    _indexDetailView = [[CustomView alloc] initWithFrame:CGRectMake(offset, 0, _detailViewSize.width, _detailViewSize.height)];
     _indexDetailView.backgroundColor = [UIColor clearColor];
     _indexDetailView.drawColor = _detailViewDrawColor;
     _indexDetailView.textColor = _detailViewTextColor;
     _indexDetailView.alpha = 0;
+    _indexDetailView.isRTL = _isRTL;
+
     [self addSubview:_indexDetailView];
 
     // Recalculate the height
@@ -164,7 +170,7 @@
         UILabel *alphaLabel = [[UILabel alloc] initWithFrame:CGRectMake(x, y, width, height)];
         alphaLabel.textAlignment = NSTextAlignmentCenter;
         alphaLabel.text = [[indexes objectAtIndex:i] uppercaseString];
-        alphaLabel.font = [UIFont boldSystemFontOfSize:10.0];
+        alphaLabel.font = self.textFont;
         alphaLabel.backgroundColor = [UIColor clearColor];
         alphaLabel.textColor = self.textColor;
         alphaLabel.layer.cornerRadius = width * 0.5;
@@ -181,7 +187,6 @@
 
 - (void)setSelectedLabel:(NSInteger)index
 {
-
     _preLabel.backgroundColor = [UIColor clearColor];
     _preLabel.textColor = _textColor;
     UILabel *label = _labelArr[index];
@@ -192,7 +197,6 @@
 
 - (void)toSelectTitle:(CGPoint)touchPoint
 {
-
     if (touchPoint.y <= 0 || touchPoint.y >= self.bounds.size.height) {
         return;
     }
@@ -221,11 +225,6 @@
     _indexDetailView.center = CGPointMake(_indexDetailView.center.x, _sectionHeight * 0.5 + index * _sectionHeight);
     _indexDetailView.indexLabel.text = title;
 
-    // impact
-    if (@available(iOS 10.0, *)) {
-        [self.gen impactOccurred];
-    }
-
     if (_delegate && [_delegate conformsToProtocol:@protocol(TTIndexBarDelegate)]) {
         [_delegate indexDidChanged:self index:index title:title];
     }
@@ -235,7 +234,6 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-
     [super touchesEnded:touches withEvent:event];
 
     _onTouch = NO;
@@ -247,7 +245,6 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-
     [super touchesBegan:touches withEvent:event];
 
     _onTouch = YES;
@@ -260,7 +257,6 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-
     [super touchesMoved:touches withEvent:event];
 
     CGPoint touchPoint = [[[event touchesForView:self] anyObject] locationInView:self];

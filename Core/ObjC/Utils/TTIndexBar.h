@@ -15,8 +15,12 @@
 
 @interface TTIndexBar : UIView
 
+@property (nonatomic, assign) BOOL isRTL;
+
 @property (nonatomic, weak) id<TTIndexBarDelegate> delegate;
+
 @property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic, strong) UIFont *textFont;
 
 /**
  The color of the selected text.
@@ -32,6 +36,9 @@
  When you click on a index, a view that shows the text that is currently clicked appears. This property is used to set the draw color of that view.
  */
 @property (nonatomic, strong) UIColor *detailViewDrawColor;
+
+@property (nonatomic, assign) CGSize detailViewSize;
+@property (nonatomic, assign) CGFloat detailViewOffset;
 
 /**
  This property is used to set the text color of indexDetailView.
