@@ -64,3 +64,9 @@ public extension CustomStringConvertible {
         return description
     }
 }
+
+public extension Lang {
+    static func makeIndex(_ index: Int) -> String {
+        Lang.current.isRTL ? "· " : "\(index). "
+    }
+}
