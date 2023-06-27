@@ -134,7 +134,6 @@ public extension UIView {
             if vertical {
                 make.top.bottom.equalToSuperview()
                 make.left.right.equalTo(self)
-
             } else {
                 make.left.right.equalToSuperview()
                 make.top.bottom.equalTo(self)

@@ -18,7 +18,7 @@ open class ValueSubject<T: Any> {
             subject.value.1
         }
         set {
-            let old = retainOld ? subject.value.0 : nil
+            let old = retainOld ? subject.value.1 : nil
             subject.value = (old, newValue)
         }
     }
