@@ -22,6 +22,11 @@ public extension UIButton {
             }
         }
     }
+
+    func setContentToFill() {
+        contentHorizontalAlignment = .fill
+        contentVerticalAlignment = .fill
+    }
 }
 
 public extension UIButton {
