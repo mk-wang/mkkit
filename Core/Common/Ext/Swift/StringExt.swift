@@ -259,7 +259,37 @@ public extension String {
     }
 }
 
-extension String {
+public extension String {
+    var localizableText: String {
+        var text = self
+        text = text.replacingOccurrences(of: #"\"#, with: #"\\"#)
+        text = text.replacingOccurrences(of: "\n", with: #"\n"#)
+        text = text.replacingOccurrences(of: #"""#, with: #"\""#)
+        return text
+    }
+}
+
+public extension String {
+    var trimmedText: String {
+        trimmingCharacters(in: .whitespaces)
+    }
+
+    var leadingTrimmedText: String {
+        guard let index = firstIndex(where: { !$0.isWhitespace }) else {
+            return ""
+        }
+        return String(self[index...])
+    }
+
+    var trailingTrimmedText: String {
+        guard let index = lastIndex(where: { !$0.isWhitespace }) else {
+            return ""
+        }
+        return String(self[...index])
+    }
+}
+
+public extension String {
     static var rtlSeparator: String {
         "،"
     }

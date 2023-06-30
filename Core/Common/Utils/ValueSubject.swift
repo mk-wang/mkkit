@@ -13,6 +13,7 @@ open class ValueSubject<T: Any> {
     // old , new
     private let subject: CurrentValueSubject<(T?, T), Never>
     open lazy var valuePublisher = subject.map(\.1).eraseToAnyPublisher()
+
     open var value: T {
         get {
             subject.value.1

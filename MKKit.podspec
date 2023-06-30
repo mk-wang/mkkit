@@ -17,6 +17,11 @@ Pod::Spec.new do |s|
   s.subspec 'Core' do |ss|
     ss.source_files = 'Core/**/*.{h,m,c,swift,hpp}'
     ss.resources = 'Core/**/*.bundle'
+    ss.dependency 'MKKit/Combine'
+  end
+
+  s.subspec 'Combine' do |ss|
+    ss.source_files = 'Combine/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'OpenCombine'
     ss.dependency 'OpenCombineFoundation'
   end
