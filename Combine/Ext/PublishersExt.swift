@@ -1,6 +1,5 @@
 //
-//  SwiftTimer.swift
-//  SwiftTimer
+//  PublishersExt.swift
 //
 
 import Foundation
