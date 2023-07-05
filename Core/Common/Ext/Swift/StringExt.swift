@@ -177,6 +177,16 @@ public extension String {
     var md5: String? {
         data(using: .utf8)?.md5
     }
+
+    func scanInteger(_ charSet: CharacterSet = .decimalDigits) -> Int? {
+        var numberString: NSString?
+
+        let scanner = Scanner(string: self)
+        scanner.scanUpToCharacters(from: charSet, into: nil)
+        scanner.scanCharacters(from: charSet, into: &numberString)
+
+        return numberString?.integerValue
+    }
 }
 
 extension String {
