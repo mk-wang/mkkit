@@ -189,8 +189,8 @@ public extension String {
     }
 }
 
-extension String {
-    public func substring(from index: Int) -> String? {
+public extension String {
+    func substring(from index: Int) -> String? {
         if count > index {
             let startIndex = self.index(startIndex, offsetBy: index)
             let subString = self[startIndex ..< endIndex]
@@ -201,7 +201,7 @@ extension String {
         }
     }
 
-    public func substring(to end: Int) -> String {
+    func substring(to end: Int) -> String {
         let limit = min(count, end)
         let endIndex = index(startIndex, offsetBy: limit)
         let subString = self[startIndex ..< endIndex]

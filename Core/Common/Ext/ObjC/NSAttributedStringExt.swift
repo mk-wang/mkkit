@@ -65,6 +65,12 @@ public extension NSAttributedString {
 
 // MARK: - Methods
 
+public extension NSMutableAttributedString {
+    func addAttributes(attributes: [Key: Any]) {
+        addAttributes(attributes, range: NSRange(0 ..< length))
+    }
+}
+
 public extension NSAttributedString {
     /// SwifterSwift: Applies given attributes to the new instance of NSAttributedString initialized with self object.
     ///
