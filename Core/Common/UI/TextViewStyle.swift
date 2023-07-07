@@ -123,10 +123,9 @@ public extension NSAttributedString {
 
 public struct AppViewStyle {
     public let font: UIFont
-    public let textAlignment: NSTextAlignment
 
     let colorBuilder: () -> UIColor
-
+    let textAlignmentBuilder: (() -> NSTextAlignment)?
     let backgourndColorBuilder: (() -> UIColor)?
     let highlightTextColorBuilder: (() -> UIColor)?
     let highlightImageColorBuilder: (() -> UIColor)?
@@ -135,7 +134,7 @@ public struct AppViewStyle {
     let disabledColorBuilder: (() -> UIColor)?
 
     public init(font: UIFont,
-                textAlignment: NSTextAlignment = .start,
+                textAlignmentBuilder: (() -> NSTextAlignment)? = nil,
                 colorBuilder: @escaping () -> UIColor,
                 disabledColorBuilder: (() -> UIColor)? = nil,
                 backgourndColorBuilder: (() -> UIColor)? = nil,
@@ -144,7 +143,7 @@ public struct AppViewStyle {
                 highlightBackgroundColorBuilder: (() -> UIColor)? = nil)
     {
         self.font = font
-        self.textAlignment = textAlignment
+        self.textAlignmentBuilder = textAlignmentBuilder
         self.colorBuilder = colorBuilder
         self.disabledColorBuilder = disabledColorBuilder
         self.backgourndColorBuilder = backgourndColorBuilder
@@ -157,6 +156,10 @@ public struct AppViewStyle {
 // MARK: ButtonViewStyle
 
 extension AppViewStyle: ButtonViewStyle {
+    public var textAlignment: NSTextAlignment {
+        textAlignmentBuilder?() ?? .start
+    }
+
     public var color: UIColor {
         colorBuilder()
     }
