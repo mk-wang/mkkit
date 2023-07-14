@@ -31,7 +31,6 @@ extension MMKVStorage: KVStorage {
 
     public func object(for _: String) -> Any? {
         fatalError("object(for _: String) has not been implemented")
-//        storage.object(of: AnyClass, forKey: key)
     }
 
     public func object<T>(for key: String, of type: T.Type) -> T? where T: AnyObject {
