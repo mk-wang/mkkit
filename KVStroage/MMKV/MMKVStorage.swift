@@ -30,7 +30,7 @@ extension MMKVStorage: KVStorage {
     }
 
     public func object(for _: String) -> Any? {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("object(for _: String) has not been implemented")
 //        storage.object(of: AnyClass, forKey: key)
     }
 
@@ -42,7 +42,7 @@ extension MMKVStorage: KVStorage {
     }
 
     public func dumpAll() -> [String: Any] {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("dumpAll() has not been implemented")
     }
 
     public func removeAll() {
