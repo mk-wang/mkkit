@@ -34,8 +34,11 @@ extension MMKVStorage: KVStorage {
 //        storage.object(of: AnyClass, forKey: key)
     }
 
-    public func object<T>(for key: String, of clz: T.Type) -> T? where T: AnyObject {
-        storage.contains(key: key) ? storage.object(of: clz as! AnyClass, forKey: key) as? T : nil
+    public func object<T>(for key: String, of type: T.Type) -> T? where T: AnyObject {
+        guard let clz = type as? AnyClass, storage.contains(key: key) else {
+            return nil
+        }
+        return  storage.object(of: clz, forKey: key) as? T
     }
 
     public func dumpAll() -> [String: Any] {

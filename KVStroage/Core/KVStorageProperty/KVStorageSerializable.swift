@@ -374,6 +374,8 @@ extension Array: KVStorageSerializable where Element: KVStorageSerializable {
     public static func write(storage: KVStorage, value: [Element.KVValue], key: String) {
         if let object = value as? (NSCoding & NSObjectProtocol) {
             storage.set(object, for: key)
+        } else {
+            fatalError("value must be NSCoding & NSObjectProtocol")
         }
     }
 
@@ -397,6 +399,8 @@ extension Set: KVStorageSerializable where Element: KVStorageSerializable {
     public static func write(storage: KVStorage, value: [Element.KVValue], key: String) {
         if let object = value as? (NSCoding & NSObjectProtocol) {
             storage.set(object, for: key)
+        } else {
+            fatalError("value must be NSCoding & NSObjectProtocol")
         }
     }
 
@@ -420,6 +424,8 @@ extension Dictionary: KVStorageSerializable where Key == String, Value: KVStorag
     public static func write(storage: KVStorage, value: [String: Value.KVValue], key: String) {
         if let object = value as? (NSCoding & NSObjectProtocol) {
             storage.set(object, for: key)
+        } else {
+            fatalError("value must be NSCoding & NSObjectProtocol")
         }
     }
 
