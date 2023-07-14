@@ -27,4 +27,15 @@ extension KVStorage {
     func get(for key: String, default defaultValue: Double) -> Double {
         double(for: key) ?? defaultValue
     }
+
+    func set(_ val: URL, for key: String) {
+        set(val.absoluteString, for: key)
+    }
+
+    func url(for key: String) -> URL? {
+        guard let text = string(for: key) else {
+            return nil
+        }
+        return URL(string: text)
+    }
 }

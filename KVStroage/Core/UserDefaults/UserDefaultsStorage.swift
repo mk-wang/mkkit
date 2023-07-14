@@ -20,12 +20,20 @@ open class UserDefaultsStorage {
 // MARK: KVStorage
 
 extension UserDefaultsStorage: KVStorage {
-    public func set(_ val: Any?, for key: String) {
+    public func hasValue(_ key: String) -> Bool {
+        storage.object(forKey: key) != nil
+    }
+
+    public func set(_ val: (NSCoding & NSObjectProtocol)?, for key: String) {
         storage.set(val, forKey: key)
     }
 
     public func object(for key: String) -> Any? {
         storage.object(forKey: key)
+    }
+
+    public func object<T>(for key: String, of _: T.Type) -> T? where T: AnyObject {
+        storage.object(forKey: key) as? T
     }
 
     public func set(_ val: Date, for key: String) {
@@ -48,15 +56,7 @@ extension UserDefaultsStorage: KVStorage {
         storage.set(NSNumber(value: val), forKey: key)
     }
 
-    public func set(_ val: UInt64, for key: String) {
-        storage.set(NSNumber(value: val), forKey: key)
-    }
-
-    public func set(_ val: Int64, for key: String) {
-        storage.set(NSNumber(value: val), forKey: key)
-    }
-
-    public func set(_ val: Int32, for key: String) {
+    public func set(_ val: Int, for key: String) {
         storage.set(NSNumber(value: val), forKey: key)
     }
 
@@ -64,8 +64,36 @@ extension UserDefaultsStorage: KVStorage {
         storage.set(NSNumber(value: val), forKey: key)
     }
 
-    public func hasValue(_ key: String) -> Bool {
-        storage.object(forKey: key) != nil
+    public func set(_ val: Int16, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: Int32, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: Int64, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: UInt, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: UInt8, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: UInt16, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: UInt32, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
+    }
+
+    public func set(_ val: UInt64, for key: String) {
+        storage.set(NSNumber(value: val), forKey: key)
     }
 
     public func set(_ val: Bool, for key: String) {
@@ -73,59 +101,55 @@ extension UserDefaultsStorage: KVStorage {
     }
 
     public func bool(for key: String) -> Bool? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
+        (storage.object(forKey: key) as? NSNumber)?.boolValue
+    }
 
-        return val.boolValue
+    public func int(for key: String) -> Int? {
+        (storage.object(forKey: key) as? NSNumber)?.intValue
     }
 
     public func int8(for key: String) -> Int8? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
+        (storage.object(forKey: key) as? NSNumber)?.int8Value
+    }
 
-        return val.int8Value
+    public func int16(for key: String) -> Int16? {
+        (storage.object(forKey: key) as? NSNumber)?.int16Value
     }
 
     public func int32(for key: String) -> Int32? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
-
-        return val.int32Value
+        (storage.object(forKey: key) as? NSNumber)?.int32Value
     }
 
     public func int64(for key: String) -> Int64? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
+        (storage.object(forKey: key) as? NSNumber)?.int64Value
+    }
 
-        return val.int64Value
+    public func uint(for key: String) -> UInt? {
+        (storage.object(forKey: key) as? NSNumber)?.uintValue
+    }
+
+    public func uint8(for key: String) -> UInt8? {
+        (storage.object(forKey: key) as? NSNumber)?.uint8Value
+    }
+
+    public func uint16(for key: String) -> UInt16? {
+        (storage.object(forKey: key) as? NSNumber)?.uint16Value
+    }
+
+    public func uint32(for key: String) -> UInt32? {
+        (storage.object(forKey: key) as? NSNumber)?.uint32Value
     }
 
     public func uint64(for key: String) -> UInt64? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
-
-        return val.uint64Value
+        (storage.object(forKey: key) as? NSNumber)?.uint64Value
     }
 
     public func float(for key: String) -> Float? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
-
-        return val.floatValue
+        (storage.object(forKey: key) as? NSNumber)?.floatValue
     }
 
     public func double(for key: String) -> Double? {
-        guard let val = storage.object(forKey: key) as? NSNumber else {
-            return nil
-        }
-
-        return val.doubleValue
+        (storage.object(forKey: key) as? NSNumber)?.doubleValue
     }
 
     public func string(for key: String) -> String? {

@@ -17,14 +17,35 @@ open class MMKVStorage {
         self.storage = storage
     }
 
-    public init(id: String, path _: String?) {
-        storage = MMKV(mmapID: id)!
+    public init(id: String, path: String?) {
+        storage = MMKV(mmapID: id, relativePath: path)!
     }
 }
 
 // MARK: KVStorage
 
 extension MMKVStorage: KVStorage {
+    public func set(_ val: (NSCoding & NSObjectProtocol)?, for key: String) {
+        storage.set(val, forKey: key)
+    }
+
+    public func object(for _: String) -> Any? {
+        fatalError("init(coder:) has not been implemented")
+//        storage.object(of: AnyClass, forKey: key)
+    }
+
+    public func object<T>(for key: String, of clz: T.Type) -> T? where T: AnyObject {
+        storage.contains(key: key) ? storage.object(of: clz as! AnyClass, forKey: key) as? T : nil
+    }
+
+    public func dumpAll() -> [String: Any] {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    public func removeAll() {
+        storage.clearAll()
+    }
+
     public func hasValue(_ key: String) -> Bool {
         storage.contains(key: key)
     }
@@ -39,6 +60,17 @@ extension MMKVStorage: KVStorage {
 
     // MARK: - Int
 
+    public func set(_ val: Int, for key: String) {
+        set(Int64(val), for: key)
+    }
+
+    public func int(for key: String) -> Int? {
+        guard let val = int64(for: key) else {
+            return nil
+        }
+        return Int(val)
+    }
+
     public func set(_ val: Int8, for key: String) {
         set(Int32(val), for: key)
     }
@@ -48,6 +80,17 @@ extension MMKVStorage: KVStorage {
             return nil
         }
         return Int8(val)
+    }
+
+    public func set(_ val: Int16, for key: String) {
+        set(Int32(val), for: key)
+    }
+
+    public func int16(for key: String) -> Int16? {
+        guard let val = int32(for: key) else {
+            return nil
+        }
+        return Int16(val)
     }
 
     public func set(_ val: Int32, for key: String) {
@@ -64,6 +107,47 @@ extension MMKVStorage: KVStorage {
 
     public func int64(for key: String) -> Int64? {
         storage.contains(key: key) ? storage.int64(forKey: key) : nil
+    }
+
+    public func set(_ val: UInt, for key: String) {
+        set(UInt64(val), for: key)
+    }
+
+    public func uint(for key: String) -> UInt? {
+        guard let val = uint64(for: key) else {
+            return nil
+        }
+        return UInt(val)
+    }
+
+    public func set(_ val: UInt8, for key: String) {
+        set(Int32(val), for: key)
+    }
+
+    public func uint8(for key: String) -> UInt8? {
+        guard let val = int32(for: key) else {
+            return nil
+        }
+        return UInt8(val)
+    }
+
+    public func set(_ val: UInt16, for key: String) {
+        set(UInt32(val), for: key)
+    }
+
+    public func uint16(for key: String) -> UInt16? {
+        guard let val = uint32(for: key) else {
+            return nil
+        }
+        return UInt16(val)
+    }
+
+    public func set(_ val: UInt32, for key: String) {
+        storage.set(val, forKey: key)
+    }
+
+    public func uint32(for key: String) -> UInt32? {
+        storage.contains(key: key) ? storage.uint32(forKey: key) : nil
     }
 
     public func set(_ val: UInt64, for key: String) {
@@ -121,7 +205,7 @@ extension MMKVStorage: KVStorage {
     // MARK: - All Keys
 
     public func allKeys() -> [String] {
-        storage.allKeys() as! [String]
+        (storage.allKeys() as? [String]) ?? []
     }
 
     // Delete

@@ -1,6 +1,5 @@
 //
 //  IAPHelper.swift
-//  TVRemote
 //
 //  Created by MK on 2023/2/10.
 //
