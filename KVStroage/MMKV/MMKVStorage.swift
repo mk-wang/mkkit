@@ -37,7 +37,7 @@ extension MMKVStorage: KVStorage {
         guard let clz = type as? AnyClass, storage.contains(key: key) else {
             return nil
         }
-        return  storage.object(of: clz, forKey: key) as? T
+        return storage.object(of: clz, forKey: key) as? T
     }
 
     public func dumpAll() -> [String: Any] {

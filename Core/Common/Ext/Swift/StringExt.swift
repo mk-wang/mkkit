@@ -53,8 +53,10 @@ public extension String {
     func textViewSize(font: UIFont, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
         let attrString = NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
         let drawSize = CGSize(width ?? CGFloat.greatestFiniteMagnitude, height ?? CGFloat.greatestFiniteMagnitude)
+        let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
+
         let boundingRect = attrString.boundingRect(with: drawSize,
-                                                   options: .usesLineFragmentOrigin,
+                                                   options: options,
                                                    context: nil)
 
         //  https://developer.apple.com/documentation/uikit/uifont?language=objc

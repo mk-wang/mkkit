@@ -10,16 +10,23 @@ import UIKit
 // MARK: - BaseHighLightView
 
 open class BaseHighLightView: UIView {
-    private var blockTimer: SwiftTimer?
+    private var highLightTimer: SwiftTimer?
     private var highLightedDate: Date?
+    private var unhighLightTimer: SwiftTimer?
 
     open var isHighLighted: Bool = false {
         didSet {
-            blockTimer = nil
+            unhighLightTimer = nil
+            highLightTimer = nil
 
             if isHighLighted {
                 highLightedDate = Date()
-                updateHighlightStateUI(highLighted: true)
+
+                highLightTimer = SwiftTimer(interval: .fromSeconds(highLightDelay),
+                                            handler: { [weak self] _ in
+                                                self?.updateHighlightStateUI(highLighted: true)
+                                            })
+                highLightTimer?.start()
             } else {
                 let cb: VoidFunction = { [weak self] in
                     self?.updateHighlightStateUI(highLighted: false)
@@ -27,11 +34,11 @@ open class BaseHighLightView: UIView {
                 if let date = highLightedDate {
                     let interval = minHighLightDruation + date.timeIntervalSinceNow
                     if interval > 0 {
-                        blockTimer = SwiftTimer(interval: .milliseconds(Int(interval * 1000)),
-                                                handler: { _ in
-                                                    cb()
-                                                })
-                        blockTimer?.start()
+                        unhighLightTimer = SwiftTimer(interval: .fromSeconds(interval),
+                                                      handler: { _ in
+                                                          cb()
+                                                      })
+                        unhighLightTimer?.start()
                     } else {
                         cb()
                     }
@@ -45,6 +52,7 @@ open class BaseHighLightView: UIView {
     open func updateHighlightStateUI(highLighted _: Bool) {}
 
     open var minHighLightDruation: TimeInterval = 0.1
+    open var highLightDelay: TimeInterval = 0
 
     open var highLightOnTouch: Bool = true
     open var disableHighLightOnEnd: Bool = true
@@ -65,7 +73,8 @@ open class BaseHighLightView: UIView {
     public func reset() {
         isHighLighted = false
         keepHighLight = false
-        blockTimer = nil
+        highLightTimer = nil
+        unhighLightTimer = nil
         updateHighlightStateUI(highLighted: false)
     }
 
@@ -89,6 +98,13 @@ open class BaseHighLightView: UIView {
         if disableHighLightOnEnd, !keepHighLight {
             isHighLighted = false
         }
+
+        if event?.type == .touches,
+           let touch = touches.first,
+           bounds.contains(touch.location(in: self))
+        {
+            onTouchSideUp()
+        }
     }
 
     override open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -99,6 +115,10 @@ open class BaseHighLightView: UIView {
     }
 }
 
+extension BaseHighLightView {
+    @objc open func onTouchSideUp() {}
+}
+
 // MARK: - BGHighLightView
 
 open class BGHighLightView: BaseHighLightView {
@@ -106,7 +126,16 @@ open class BGHighLightView: BaseHighLightView {
     open var bgColor: UIColor?
 
     override open func updateHighlightStateUI(highLighted: Bool) {
-        backgroundColor = highLighted ? bgHighLightColor : bgColor
+        let target = highLighted ? bgHighLightColor : bgColor
+        weak var weakSelf = self
+        UIView.animate(
+            withDuration: 0.1,
+            delay: 0,
+            options: [.beginFromCurrentState, .curveEaseInOut],
+            animations: {
+                weakSelf?.backgroundColor = target
+            }, completion: nil
+        )
         subviews.forEach {
             Self.updateState(view: $0, isHighLighted: highLighted)
         }
@@ -139,20 +168,18 @@ open class BGHighLightView: BaseHighLightView {
 // MARK: - OverlayHighlightView
 
 open class OverlayHighlightView: BaseHighLightView {
-    open var overlayColor: UIColor?
-    private var overlay: UIView?
+    open var overlayColor: UIColor? {
+        didSet {
+            cleanHighlightHandler()
+
+            if let overlayColor {
+                addHighlightHandler(OverlayViewHighlightHandler(overlayColor))
+            }
+        }
+    }
 
     override open func updateHighlightStateUI(highLighted: Bool) {
-        overlay?.removeFromSuperview()
-        overlay = nil
-
-        if highLighted {
-            let overlay = UIView(frame: bounds)
-            overlay.backgroundColor = overlayColor
-            addSubview(overlay)
-
-            self.overlay = overlay
-        }
+        handleHighlightState(highLighted: highLighted)
     }
 }
 

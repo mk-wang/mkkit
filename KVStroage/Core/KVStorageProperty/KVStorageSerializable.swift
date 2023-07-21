@@ -441,3 +441,35 @@ extension Dictionary: KVStorageSerializable where Key == String, Value: KVStorag
         self = kvValue.mapValues { Value(kvValue: $0) }
     }
 }
+
+// MARK: - KVStorageSerializableWrap
+
+public struct KVStorageSerializableWrap<T: KVStorageSerializable> {
+    public let inner: T
+
+    public init(inner: T) {
+        self.inner = inner
+    }
+}
+
+// MARK: KVStorageSerializable
+
+extension KVStorageSerializableWrap: KVStorageSerializable {
+    public static func write(storage: KVStorage, value: T.KVValue, key: String) {
+        T.write(storage: storage, value: value, key: key)
+    }
+
+    public static func read(storage: KVStorage, key: String) -> T.KVValue? {
+        T.read(storage: storage, key: key)
+    }
+
+    public var kvValue: T.KVValue {
+        inner.kvValue
+    }
+
+    public init(kvValue: T.KVValue) {
+        self = .init(inner: T(kvValue: kvValue))
+    }
+
+    public typealias KVValue = T.KVValue
+}

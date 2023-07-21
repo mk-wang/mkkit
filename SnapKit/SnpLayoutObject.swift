@@ -47,6 +47,7 @@ public extension SnpLayoutObject {
         }
     }
 
+    // ratio = width / height
     func addSnpAspectRatio(ratio: CGFloat) {
         addSnpConfig { [unowned(unsafe) self] _, make in
             make.width.equalTo(snpDSL.height).multipliedBy(ratio)
@@ -88,7 +89,7 @@ public extension UIView {
         guide.applySnpConfigs()
     }
 
-    func addSnpObject(_ object: SnpLayoutObject) {
+    internal func addSnpObject(_ object: SnpLayoutObject) {
         if let view = object as? UIView {
             addSnpSubview(view)
         } else if let guide = object as? UILayoutGuide {
