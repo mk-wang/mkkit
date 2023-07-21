@@ -103,7 +103,7 @@ open class BaseHighLightView: UIView {
            let touch = touches.first,
            bounds.contains(touch.location(in: self))
         {
-            onTouchSideUp()
+            onTouchUp()
         }
     }
 
@@ -116,7 +116,7 @@ open class BaseHighLightView: UIView {
 }
 
 extension BaseHighLightView {
-    @objc open func onTouchSideUp() {}
+    @objc open func onTouchUp() {}
 }
 
 // MARK: - BGHighLightView
