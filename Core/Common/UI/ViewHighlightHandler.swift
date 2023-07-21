@@ -15,7 +15,7 @@ public protocol ViewHighlightHandler {
 
 public extension UIView {
     func addHighlightHandler(_ handler: ViewHighlightHandler) {
-        var list = getAssociatedObject(&AssociatedKeys.kHandlers) as? NSMutableArray
+        var list = handlers
         if list == nil {
             list = NSMutableArray()
             setAssociatedObject(&AssociatedKeys.kHandlers, list)
@@ -24,17 +24,19 @@ public extension UIView {
     }
 
     func cleanHighlightHandler() {
-        var list = getAssociatedObject(&AssociatedKeys.kHandlers) as? NSMutableArray
-        list?.removeAllObjects()
+        handlers?.removeAllObjects()
     }
 
     func handleHighlightState(highLighted: Bool) {
-        let list = getAssociatedObject(&AssociatedKeys.kHandlers) as? NSMutableArray
-        list?.forEach { [weak self] in
+        handlers?.forEach { [weak self] in
             if let self, let handler = $0 as? ViewHighlightHandler {
                 handler.updateHighlightState(self, highLighted: highLighted)
             }
         }
+    }
+
+    private var handlers: NSMutableArray? {
+        getAssociatedObject(&AssociatedKeys.kHandlers) as? NSMutableArray
     }
 }
 
@@ -91,7 +93,6 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
     }
 
     public func updateHighlightState(_ view: UIView, highLighted: Bool) {
-        weak var weakSelf = self
         if highLighted {
             overlay?.removeFromSuperview()
             overlay = nil
@@ -100,26 +101,23 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
             overlay.backgroundColor = .clear
             view.addSubview(overlay)
             self.overlay = overlay
+        }
 
-            UIView.animate(
-                withDuration: highlightDuration,
-                delay: 0,
-                options: [.beginFromCurrentState, .curveEaseInOut],
-                animations: {
-                    weakSelf?.overlay?.backgroundColor = weakSelf?.overlayColor
-                }, completion: nil
-            )
-        } else {
-            UIView.animate(
-                withDuration: unHighlightDuration,
-                delay: 0,
-                options: [.beginFromCurrentState, .curveEaseInOut],
-                animations: {
-                    weakSelf?.overlay?.backgroundColor = .clear
-                }, completion: { _ in
+        weak var weakSelf = self
+        let target = highLighted ? overlayColor : .clear
+        UIView.animate(
+            withDuration: highLighted ? highlightDuration : unHighlightDuration,
+            delay: 0,
+            options: [.beginFromCurrentState, .curveEaseInOut],
+            animations: {
+                weakSelf?.overlay?.backgroundColor = target
+            }, completion: { _ in
+                if highLighted {
+                    weakSelf?.overlay?.backgroundColor = target
+                } else {
                     weakSelf?.overlay?.removeFromSuperview()
                 }
-            )
-        }
+            }
+        )
     }
 }
