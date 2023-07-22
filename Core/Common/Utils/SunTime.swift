@@ -138,7 +138,7 @@ private extension SunTime {
             lastDay = true
         }
 
-        var hour = floor(time)
+        let hour = floor(time)
         var hourInt = Int(hour)
 
         let minute = (time - hour) * 60
