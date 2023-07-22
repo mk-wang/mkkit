@@ -49,13 +49,13 @@ private enum AssociatedKeys {
 // MARK: - ScaleViewHighlightHandler
 
 public struct ScaleViewHighlightHandler: ViewHighlightHandler {
-    let scale: CGFloat
-    let highlightDuration: TimeInterval
-    let unHighlightDuration: TimeInterval
+    public let scale: CGFloat
+    public let highlightDuration: TimeInterval
+    public let unHighlightDuration: TimeInterval
 
-    init(scale: CGFloat = 0.90,
-         highlightDuration: TimeInterval = 0.05,
-         unHighlightDuration: TimeInterval = 0.1)
+    public init(scale: CGFloat = 0.90,
+                highlightDuration: TimeInterval = 0.05,
+                unHighlightDuration: TimeInterval = 0.1)
     {
         self.scale = scale
         self.highlightDuration = highlightDuration
@@ -78,10 +78,10 @@ public struct ScaleViewHighlightHandler: ViewHighlightHandler {
 
 open class OverlayViewHighlightHandler: ViewHighlightHandler {
     public let overlayColor: UIColor?
-    private var overlay: UIView?
+    public let highlightDuration: TimeInterval
+    public let unHighlightDuration: TimeInterval
 
-    private let highlightDuration: TimeInterval
-    private let unHighlightDuration: TimeInterval
+    private var overlay: UIView?
 
     public init(_ overlayColor: UIColor? = .black.withAlphaComponent(0.08),
                 highlightDuration: TimeInterval = 0.1,
