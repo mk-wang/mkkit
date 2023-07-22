@@ -13,7 +13,7 @@ public extension UICollectionViewCell {}
 // MARK: - HighlightCollectionViewCell
 
 open class HighlightCollectionViewCell: UICollectionViewCell {
-    open override var isHighlighted: Bool {
+    override open var isHighlighted: Bool {
         didSet {
             handleHighlightState(highLighted: isHighlighted)
         }

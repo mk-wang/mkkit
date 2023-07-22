@@ -203,7 +203,7 @@ public func /= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
 }
 
 public prefix func - (lhs: NSDecimalNumber) -> NSDecimalNumber {
-    lhs * NSDecimalNumber(string: "-1")
+    lhs * (-1).decimalNumber
 }
 
 public prefix func + (lhs: NSDecimalNumber) -> NSDecimalNumber {
