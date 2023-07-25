@@ -11,13 +11,6 @@ import Foundation
 // MARK: - Enums
 
 public extension Date {
-    static var is12Hour: Bool {
-        let locale = Locale.current
-        let fmt = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: locale)
-        let rt = fmt?.contains("a") ?? false
-        return rt
-    }
-
     func add(day: Int) -> Self {
         Date(timeIntervalSince1970: timeIntervalSince1970 + TimeInterval(day * 24 * 60 * 60))
     }

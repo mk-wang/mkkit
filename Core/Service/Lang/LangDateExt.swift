@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Lang {
+public extension Lang {
     static var locale: Locale {
         let current = Lang.current
         let identifier = current.rawValue
