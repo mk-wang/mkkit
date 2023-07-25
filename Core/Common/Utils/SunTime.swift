@@ -5,6 +5,7 @@
 //  Created by MK on 2023/7/23.
 //
 
+import CoreLocation
 import Foundation
 
 // MARK: - SunTime
@@ -14,26 +15,14 @@ public enum SunTime {}
 // MARK: SunTime.LocationCoord
 
 public extension SunTime {
-    struct LocationCoord {
-        let latitude: Double
-        let longitude: Double
-
-        public init(latitude: Double, longitude: Double) {
-            self.latitude = latitude
-            self.longitude = longitude
-        }
-    }
-}
-
-public extension SunTime {
-    static func sunrise(location: LocationCoord,
+    static func sunrise(location: CLLocationCoordinate2D,
                         calendar: Calendar,
                         date: Date) -> Date?
     {
         getTime(sunrise: true, location: location, calendar: calendar, date: date)
     }
 
-    static func sunset(location: LocationCoord,
+    static func sunset(location: CLLocationCoordinate2D,
                        calendar: Calendar,
                        date: Date) -> Date?
     {
@@ -45,17 +34,24 @@ private extension SunTime {
     static let zenithFactor = cos((2180.decimalNumber / 24.decimalNumber).angle.doubleValue).decimalNumber
 
     static func getTime(sunrise: Bool,
-                        location: LocationCoord,
+                        location: CLLocationCoordinate2D,
                         calendar: Calendar,
                         date: Date) -> Date?
     {
-        guard let number = getValue(sunrise: sunrise, location: location, calendar: calendar, date: date) else {
+        guard let number = getValue(sunrise: sunrise,
+                                    location: location,
+                                    calendar: calendar,
+                                    date: date)
+        else {
             return nil
         }
         return parseTime(number: number, calendar: calendar, date: date)
     }
 
-    static func getValue(sunrise: Bool, location: LocationCoord, calendar: Calendar, date: Date) -> NSDecimalNumber? {
+    static func getValue(sunrise: Bool,
+                         location: CLLocationCoordinate2D,
+                         calendar: Calendar, date: Date) -> NSDecimalNumber?
+    {
         let latDecimal = location.latitude.decimalNumber
         let longDecimal = location.longitude.decimalNumber
         let latAngle = latDecimal.angle
