@@ -11,7 +11,7 @@ import OpenCombine
 // MARK: - SizedContentView
 
 open class YXSizedView: UIView {
-    private let sizeSubject = PassthroughSubject<CGSize, Never>()
+    private let sizeSubject = CurrentValueSubject<CGSize, Never>(.zero)
     open lazy var sizePublisher = sizeSubject.removeDuplicates().eraseToAnyPublisher()
 
     override open func layoutSubviews() {
