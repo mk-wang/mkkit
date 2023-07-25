@@ -13,11 +13,12 @@ open class YXModalView: UIView {
     public enum Style {
         case bottom
         case top
+        case center
     }
 
     private(set) var contentView: UIView?
-    var duration: CFTimeInterval = 0.3
-    var hideAlpha: CGFloat = 0.0
+    lazy var duration: CFTimeInterval = style == .center ? 0.2 : 0.3
+    lazy var hideAlpha: CGFloat = 0.0
 
     public let style: Style
     public var willHideCallback: YXModalViewCallback?
@@ -84,12 +85,26 @@ public extension YXModalView {
         superView.addSubview(self)
 
         layoutIfNeeded()
-        beforeShow()
 
-        UIView.animate(withDuration: duration) {
-            weakSelf?.realShow()
-        } completion: { _ in
-            weakSelf?.didShowCompletion?(weakSelf)
+        if style == .center {
+            let duration = duration
+            DispatchQueue.mainAsync {
+                weakSelf?.beforeShow()
+
+                UIView.animate(withDuration: duration) {
+                    weakSelf?.realShow()
+                } completion: { _ in
+                    weakSelf?.didShowCompletion?(weakSelf)
+                }
+            }
+        } else {
+            beforeShow()
+
+            UIView.animate(withDuration: duration) {
+                weakSelf?.realShow()
+            } completion: { _ in
+                weakSelf?.didShowCompletion?(weakSelf)
+            }
         }
     }
 
@@ -101,7 +116,7 @@ public extension YXModalView {
         }
 
         UIView.animate(withDuration: duration) {
-            weakSelf?.beforeShow()
+            weakSelf?.realHide()
         } completion: { _ in
             weakSelf?.removeFromSuperview()
             weakSelf?.contentView?.removeFromSuperview()
@@ -118,13 +133,18 @@ private extension YXModalView {
 
         bgTouchView.alpha = hideAlpha
 
-        var rect = contentView.frame
-        if style == .bottom {
-            rect.origin.y = bounds.size.height
-        } else if style == .top {
-            rect.origin.y = -rect.height
+        if style == .center {
+            let scale: CGFloat = 1.12
+            contentView.transform = .identity.scaledBy(x: scale, y: scale)
+        } else {
+            var rect = contentView.frame
+            if style == .top {
+                rect.origin.y = -rect.height
+            } else if style == .bottom {
+                rect.origin.y = bounds.size.height
+            }
+            contentView.frame = rect
         }
-        contentView.frame = rect
     }
 
     func realShow() {
@@ -134,43 +154,48 @@ private extension YXModalView {
 
         bgTouchView.alpha = 1
 
-        var rect = contentView.frame
-        if style == .bottom {
-            rect.origin.y = bounds.size.height - rect.height
-        } else if style == .top {
-            rect.origin.y = 0
+        if style == .center {
+            contentView.transform = .identity
+            layoutIfNeeded()
+        } else {
+            var rect = contentView.frame
+            if style == .top {
+                rect.origin.y = 0
+            } else if style == .bottom {
+                rect.origin.y = bounds.size.height - rect.height
+            }
+            contentView.frame = rect
         }
-        contentView.frame = rect
+    }
+
+    func realHide() {
+        if style == .center {
+            alpha = hideAlpha
+        } else {
+            beforeShow()
+        }
     }
 }
 
 public extension YXModalView {
     @discardableResult
     static func showFromBottom<T: UIView>(_ contentView: T,
-                                          in container: UIView? = nil,
-                                          configre: (YXModalView, T) -> Void) -> YXModalView
+                                          in _: UIView? = nil,
+                                          configure: (YXModalView, T) -> Void) -> YXModalView
     {
-        let modalView = YXModalView(frame: .zero, style: .bottom)
-        modalView.setContentView(contentView)
-
-        configre(modalView, contentView)
-
-        contentView.frame = modalView.bounds
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        modalView.show(container)
-        return modalView
+        show(contentView, style: .bottom, configure: configure)
     }
 
     @discardableResult
-    static func showFromTop<T: UIView>(_ contentView: T,
-                                       in container: UIView? = nil,
-                                       configre: (YXModalView, T) -> Void) -> YXModalView
+    static func show<T: UIView>(_ contentView: T,
+                                style: YXModalView.Style,
+                                in container: UIView? = nil,
+                                configure: (YXModalView, T) -> Void) -> YXModalView
     {
-        let modalView = YXModalView(frame: .zero, style: .top)
+        let modalView = YXModalView(frame: .zero, style: style)
         modalView.setContentView(contentView)
 
-        configre(modalView, contentView)
+        configure(modalView, contentView)
 
         contentView.frame = modalView.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
