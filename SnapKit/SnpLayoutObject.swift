@@ -46,13 +46,6 @@ public extension SnpLayoutObject {
             }
         }
     }
-
-    // ratio = width / height
-    func addSnpAspectRatio(ratio: CGFloat) {
-        addSnpConfig { [unowned(unsafe) self] _, make in
-            make.width.equalTo(snpDSL.height).multipliedBy(ratio)
-        }
-    }
 }
 
 // MARK: - UIView + SnpLayoutObject
