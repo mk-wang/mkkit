@@ -53,7 +53,7 @@ public struct ScaleViewHighlightHandler: ViewHighlightHandler {
     public let highlightDuration: TimeInterval
     public let unHighlightDuration: TimeInterval
 
-    public init(scale: CGFloat = 0.90,
+    public init(scale: CGFloat = 0.95,
                 highlightDuration: TimeInterval = 0.05,
                 unHighlightDuration: TimeInterval = 0.1)
     {
