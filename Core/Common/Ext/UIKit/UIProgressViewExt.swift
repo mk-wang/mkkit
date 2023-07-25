@@ -18,12 +18,17 @@ public protocol ProgressObject: NSObject {
 }
 
 public extension ProgressObject {
-    func update(progress: Float, duration: TimeInterval, fps: Float = 50, callback: @escaping (Int, Int) -> Void) {
+    func update(target: Float,
+                duration: TimeInterval,
+                fps: Float = 50,
+                progress: ((Int, Int) -> Void)? = nil,
+                completion: (() -> Void)? = nil)
+    {
         progressTimer = nil
 
         let count = ceil(Float(duration) * fps)
         let countInt = Int(count)
-        let diff = (progress - self.progress) / count
+        let diff = (target - self.progress) / count
         var index = 0
         let timer = SwiftTimer(interval: .milliseconds(Int(Float(1000) / fps)),
                                repeats: true)
@@ -33,8 +38,13 @@ public extension ProgressObject {
             index += 1
             if index >= countInt {
                 self?.stopUpdate()
+                if let completion {
+                    DispatchQueue.mainAsync(after: TimeInterval(1 / fps)) {
+                        completion()
+                    }
+                }
             }
-            callback(index, countInt)
+            progress?(index, countInt)
         }
         timer.start()
         progressTimer = timer

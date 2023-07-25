@@ -14,7 +14,7 @@ public extension DispatchQueue {
     }
 
     @inline(__always) class func async(queue: DispatchQueue,
-                                       after interval: Double? = nil,
+                                       after interval: TimeInterval? = nil,
                                        block: @escaping () -> Void)
     {
         if let interval, interval > 0 {
@@ -30,7 +30,7 @@ public extension DispatchQueue {
         }
     }
 
-    class func mainAsync(after interval: Double? = nil, block: @escaping () -> Void) {
+    class func mainAsync(after interval: TimeInterval? = nil, block: @escaping () -> Void) {
         Self.async(queue: .main, after: interval, block: block)
     }
 }
