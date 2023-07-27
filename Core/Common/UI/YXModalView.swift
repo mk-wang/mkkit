@@ -171,6 +171,11 @@ private extension YXModalView {
     func realHide() {
         if style == .center {
             alpha = hideAlpha
+            if let contentView {
+                let scale: CGFloat = 0.8
+                contentView.transform = .identity.scaledBy(x: scale, y: scale)
+                layoutIfNeeded()
+            }
         } else {
             beforeShow()
         }
