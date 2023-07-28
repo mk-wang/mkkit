@@ -47,11 +47,11 @@ public extension UIScrollView {
         return end - start
     }
 
-    func minOffset(for vertical: Bool) -> CGFloat {
+    func minOffset(vertical: Bool) -> CGFloat {
         vertical ? -contentInset.top : -contentInset.left
     }
 
-    func maxOffset(for vertical: Bool) -> CGFloat {
+    func maxOffset(vertical: Bool) -> CGFloat {
         let contentSize = contentSize
         let boundsSize = bounds.size
         let inset = contentInset
@@ -63,9 +63,9 @@ public extension UIScrollView {
         }
     }
 
-    func progress(for vertical: Bool) -> CGFloat {
-        let min = minOffset(for: vertical)
-        let length = maxOffset(for: vertical) - min
+    func progress(vertical: Bool) -> CGFloat {
+        let min = minOffset(vertical: vertical)
+        let length = maxOffset(vertical: vertical) - min
         if length == 0 {
             return 1.0
         }
@@ -76,8 +76,8 @@ public extension UIScrollView {
     func offsetAtProgress(_ progress: CGFloat, vertical: Bool) -> CGPoint {
         var point = CGPoint.zero
 
-        let min = minOffset(for: vertical)
-        let length = maxOffset(for: vertical) - min
+        let min = minOffset(vertical: vertical)
+        let length = maxOffset(vertical: vertical) - min
 
         if vertical {
             point.y = progress * length + min
@@ -88,7 +88,11 @@ public extension UIScrollView {
     }
 
     func scrollToTop(animated: Bool) {
-        setContentOffset(CGPoint(x: 0.0, y: -contentInset.top), animated: animated)
+        setContentOffset(CGPoint(x: 0.0, y: minOffset(vertical: true)), animated: animated)
+    }
+
+    func scrollToBottom(animated: Bool) {
+        setContentOffset(CGPoint(x: 0, y: maxOffset(vertical: true)), animated: animated)
     }
 }
 

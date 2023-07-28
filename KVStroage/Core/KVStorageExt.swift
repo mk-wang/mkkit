@@ -42,14 +42,21 @@ extension KVStorage {
 
 // MARK: - KVStorageBuilder
 
-public struct KVStorageBuilder {
-    public let builder: () -> KVStorage
-    public init(builder: @escaping () -> KVStorage) {
+public class KVStorageBuilder {
+    public let builder: () -> KVStorage?
+    public let keyBuilder: ((String) -> String)?
+
+    public init(builder: @escaping () -> KVStorage?, keyBuilder: ((String) -> String)? = nil) {
         self.builder = builder
+        self.keyBuilder = keyBuilder
     }
 
-    private var storage: KVStorage {
+    private var storage: KVStorage? {
         builder()
+    }
+
+    private func fixedKey(_ text: String) -> String {
+        keyBuilder?(text) ?? text
     }
 }
 
@@ -57,158 +64,158 @@ public struct KVStorageBuilder {
 
 extension KVStorageBuilder: KVStorage {
     public func set(_ val: Date, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Data, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: String, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Double, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Float, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: UInt64, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: UInt32, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: UInt16, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: UInt8, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: UInt, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Int64, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Int32, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Int16, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Int8, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Int, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: Bool, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func set(_ val: (NSCoding & NSObjectProtocol)?, for key: String) {
-        storage.set(val, for: key)
+        storage?.set(val, for: fixedKey(key))
     }
 
     public func object<T>(for key: String, of clz: T.Type) -> T? where T: AnyObject {
-        storage.object(for: key, of: clz)
+        storage?.object(for: fixedKey(key), of: clz)
     }
 
     public func object(for key: String) -> Any? {
-        storage.object(for: key)
+        storage?.object(for: fixedKey(key))
     }
 
     public func hasValue(_ key: String) -> Bool {
-        storage.hasValue(key)
+        storage?.hasValue(fixedKey(key)) ?? false
     }
 
     public func bool(for key: String) -> Bool? {
-        storage.bool(for: key)
+        storage?.bool(for: fixedKey(key))
     }
 
     public func int(for key: String) -> Int? {
-        storage.int(for: key)
+        storage?.int(for: fixedKey(key))
     }
 
     public func int8(for key: String) -> Int8? {
-        storage.int8(for: key)
+        storage?.int8(for: fixedKey(key))
     }
 
     public func int16(for key: String) -> Int16? {
-        storage.int16(for: key)
+        storage?.int16(for: fixedKey(key))
     }
 
     public func int32(for key: String) -> Int32? {
-        storage.int32(for: key)
+        storage?.int32(for: fixedKey(key))
     }
 
     public func int64(for key: String) -> Int64? {
-        storage.int64(for: key)
+        storage?.int64(for: fixedKey(key))
     }
 
     public func uint(for key: String) -> UInt? {
-        storage.uint(for: key)
+        storage?.uint(for: fixedKey(key))
     }
 
     public func uint8(for key: String) -> UInt8? {
-        storage.uint8(for: key)
+        storage?.uint8(for: fixedKey(key))
     }
 
     public func uint16(for key: String) -> UInt16? {
-        storage.uint16(for: key)
+        storage?.uint16(for: fixedKey(key))
     }
 
     public func uint32(for key: String) -> UInt32? {
-        storage.uint32(for: key)
+        storage?.uint32(for: fixedKey(key))
     }
 
     public func uint64(for key: String) -> UInt64? {
-        storage.uint64(for: key)
+        storage?.uint64(for: fixedKey(key))
     }
 
     public func float(for key: String) -> Float? {
-        storage.float(for: key)
+        storage?.float(for: fixedKey(key))
     }
 
     public func double(for key: String) -> Double? {
-        storage.double(for: key)
+        storage?.double(for: fixedKey(key))
     }
 
     public func string(for key: String) -> String? {
-        storage.string(for: key)
+        storage?.string(for: fixedKey(key))
     }
 
     public func data(for key: String) -> Data? {
-        storage.data(for: key)
+        storage?.data(for: fixedKey(key))
     }
 
     public func date(for key: String) -> Date? {
-        storage.date(for: key)
+        storage?.date(for: fixedKey(key))
     }
 
     public func dumpAll() -> [String: Any] {
-        storage.dumpAll()
+        storage?.dumpAll() ?? [:]
     }
 
     public func remove(for key: String) {
-        storage.remove(for: key)
+        storage?.remove(for: key)
     }
 
     public func removeAll() {
-        storage.removeAll()
+        storage?.removeAll()
     }
 }

@@ -27,6 +27,16 @@ public struct KVStorageProperty<T: KVStorageSerializable> {
         }
     }
 
+    public var value: T {
+        get {
+            subject.value
+        }
+
+        set {
+            subject.value = newValue
+        }
+    }
+
     /// A publisher that delivers updates to subscribers.
     public var projectedValue: CurrentValueSubject<T, Never> {
         subject

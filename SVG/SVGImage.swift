@@ -45,6 +45,24 @@ public class SVGImageView: UIImageView {
 
         self.image = image
         backgroundColor = .clear
+
+        addConstraints([
+            .init(item: self,
+                  attribute: .width,
+                  relatedBy: .equal,
+                  toItem: nil,
+                  attribute: .notAnAttribute,
+                  multiplier: 1,
+                  constant: imageSize.width),
+
+            .init(item: self,
+                  attribute: .height,
+                  relatedBy: .equal,
+                  toItem: nil,
+                  attribute: .notAnAttribute,
+                  multiplier: 1,
+                  constant: imageSize.height),
+        ])
     }
 
     public convenience init(path: String,

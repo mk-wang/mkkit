@@ -122,7 +122,8 @@ public extension Lang {
             return "zh_CN"
         case let x where x.rawValue.hasPrefix("zh-"):
             return "zh_TW"
-        case .pt_BR:
+        case .pt_BR,
+             .pt_PT:
             return "pt"
         case .id:
             return "in_ID"

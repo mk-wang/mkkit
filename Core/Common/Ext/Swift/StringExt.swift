@@ -310,3 +310,13 @@ public extension String {
         ","
     }
 }
+
+public extension String {
+    var fileURL: URL {
+        if #available(iOS 16.0, *) {
+            return .init(filePath: self)
+        } else {
+            return .init(fileURLWithPath: self)
+        }
+    }
+}

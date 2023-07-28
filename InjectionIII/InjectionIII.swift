@@ -49,7 +49,7 @@ public extension InjectionIII where Self: UIResponder {
                 let centerCombine = NotificationCenter.default.ocombine
                 injectionNoteCancellable = centerCombine.publisher(for: Notification.Name("INJECTION_BUNDLE_NOTIFICATION"))
                     .removeDuplicates()
-                    .debounce(for: 0.3, scheduler: RunLoop.main.ocombine)
+                    .debounceOnMain(for: 0.3)
                     .sink(receiveValue: { [weak injections] _ in
                         injections?.forEach { element in
                             if let cb = element as? Injection {

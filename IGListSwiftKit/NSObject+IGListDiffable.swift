@@ -11,11 +11,11 @@ import IGListKit
 // MARK: - NSObject + ListDiffable
 
 extension NSObject: ListDiffable {
-    public func diffIdentifier() -> NSObjectProtocol {
+    open func diffIdentifier() -> NSObjectProtocol {
         self
     }
 
-    public func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
+    open func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
         isEqual(object)
     }
 }

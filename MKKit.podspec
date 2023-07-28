@@ -24,6 +24,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'Combine/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'OpenCombine'
     ss.dependency 'OpenCombineFoundation'
+    ss.dependency 'OpenCombineDispatch'
   end
 
   s.subspec 'Theme' do |ss|

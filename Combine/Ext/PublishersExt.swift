@@ -4,7 +4,7 @@
 
 import Foundation
 import OpenCombine
-import OpenCombineFoundation
+import OpenCombineDispatch
 
 // MARK: - Publishers.Single
 
@@ -29,15 +29,19 @@ public extension Publisher where Output: Equatable {
 
 public extension Publisher {
     func debounceOnMain(for seconds: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
-        debounce(for: RunLoop.OCombine.SchedulerTimeType.Stride(seconds),
-                 scheduler: RunLoop.main.ocombine)
+        debounce(for: .seconds(seconds),
+                 scheduler: DispatchQueue.main.ocombine)
             .eraseToAnyPublisher()
     }
 
     func throttleOnMain(for seconds: TimeInterval, latest: Bool = true) -> AnyPublisher<Self.Output, Self.Failure> {
-        throttle(for: RunLoop.OCombine.SchedulerTimeType.Stride(seconds),
-                 scheduler: RunLoop.main.ocombine,
+        throttle(for: .seconds(seconds),
+                 scheduler: DispatchQueue.main.ocombine,
                  latest: latest)
             .eraseToAnyPublisher()
+    }
+
+    func receiveOnMain() -> AnyPublisher<Self.Output, Self.Failure> {
+        receive(on: DispatchQueue.main.ocombine).eraseToAnyPublisher()
     }
 }
