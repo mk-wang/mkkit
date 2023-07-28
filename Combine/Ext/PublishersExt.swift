@@ -10,7 +10,12 @@ import OpenCombineDispatch
 
 public extension Publishers {
     // https://stackoverflow.com/questions/70281648/making-custom-deffered-future-publisher-in-swift-combine
+    // usage:
+    // Publishers.Single<Int, Never> { result in
+    //   result(Result.success(10))
+    // }
     //
+
     struct Single<Output, Failure: Error>: Publisher {
         let promise: (@escaping (Result<Output, Failure>) -> Void) -> Void
 
@@ -18,6 +23,14 @@ public extension Publishers {
             Deferred { Future(promise) }
                 .subscribe(subscriber)
         }
+    }
+}
+
+public extension Publisher {
+    func single(_ promise: @escaping ((Result<Output, Failure>) -> Void) -> Void)
+        -> Publishers.Single<Self.Output, Self.Failure>
+    {
+        Publishers.Single(promise: promise)
     }
 }
 
