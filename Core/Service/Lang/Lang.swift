@@ -110,7 +110,7 @@ extension Lang: CustomStringConvertible {
         case .ro:
             return "Român"
         case .pt_PT:
-            return "Português (Portugal)"
+            return "Português"
         }
     }
 }

@@ -21,7 +21,13 @@ public class SwiftTimer {
 
     private var handler: SwiftTimerHandler
 
-    public init(interval: DispatchTimeInterval, repeats: Bool = false, leeway: DispatchTimeInterval = .seconds(0), queue: DispatchQueue = .main, handler: @escaping SwiftTimerHandler) {
+    public init(interval: DispatchTimeInterval,
+                delay: DispatchTimeInterval? = nil,
+                repeats: Bool = false,
+                leeway: DispatchTimeInterval = .seconds(0),
+                queue: DispatchQueue = .main,
+                handler: @escaping SwiftTimerHandler)
+    {
         self.handler = handler
         self.repeats = repeats
         internalTimer = DispatchSource.makeTimerSource(queue: queue)
@@ -32,9 +38,12 @@ public class SwiftTimer {
         }
 
         if repeats {
-            internalTimer.schedule(deadline: .now() + interval, repeating: interval, leeway: leeway)
+            internalTimer.schedule(deadline: .now() + (delay ?? interval),
+                                   repeating: interval,
+                                   leeway: leeway)
         } else {
-            internalTimer.schedule(deadline: .now() + interval, leeway: leeway)
+            internalTimer.schedule(deadline: .now() + interval,
+                                   leeway: leeway)
         }
     }
 
