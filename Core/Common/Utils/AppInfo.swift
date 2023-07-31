@@ -16,6 +16,7 @@ public enum AppInfo {
         let feedbackMail: String
         let shareTextBuilder: () -> String
         let appNameBuiler: () -> String
+        let baseURLBuilder: (() -> URL)?
 
         static let empty = Config(appId: "", feedbackMail: "", shareTextBuilder: { "" }, appNameBuiler: { "" })
 
@@ -23,12 +24,14 @@ public enum AppInfo {
             appId: String,
             feedbackMail: String,
             shareTextBuilder: @escaping () -> String,
-            appNameBuiler: @escaping () -> String
+            appNameBuiler: @escaping () -> String,
+            baseURLBuilder: (() -> URL)? = nil
         ) {
             self.appId = appId
             self.feedbackMail = feedbackMail
             self.shareTextBuilder = shareTextBuilder
             self.appNameBuiler = appNameBuiler
+            self.baseURLBuilder = baseURLBuilder
         }
     }
 
@@ -41,6 +44,8 @@ public enum AppInfo {
     public static var shareText: String { config.shareTextBuilder() }
 
     public static var appName: String { config.appNameBuiler() }
+
+    public static var baseURL: URL? { config.baseURLBuilder?() }
 }
 
 public extension AppInfo {

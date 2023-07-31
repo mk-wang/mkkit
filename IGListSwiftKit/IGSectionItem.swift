@@ -65,9 +65,9 @@ open class IGSectionItemController<Item: IGSectionItem, Cell: UICollectionViewCe
     }
 
     override open func cellForItem(at index: Int) -> UICollectionViewCell {
-        guard let item, let cell = collectionContext.dequeueReusableCell(of: cellType,
-                                                                         for: self,
-                                                                         at: index) as? Cell
+        guard let item, let cell = collectionContext?.dequeueReusableCell(of: cellType,
+                                                                          for: self,
+                                                                          at: index) as? Cell
         else {
             return UICollectionViewCell()
         }

@@ -19,3 +19,9 @@ extension NSObject: ListDiffable {
         isEqual(object)
     }
 }
+//
+//// MARK: - IGSectionSectionControllerMake
+//
+//public protocol IGSectionSectionControllerMake {
+//    func igContoller(for: ListDiffable) -> ListSectionController?
+//}
