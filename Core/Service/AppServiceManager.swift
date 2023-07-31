@@ -19,7 +19,7 @@ public extension AppServiceManager {
         appServices.append(service)
     }
 
-    static func findService<T: AppSerivce>(_: T.Type) -> T? {
+    static func findService<T: AppSerivce>(_: T.Type = T.self) -> T? {
         for service in appServices {
             if let service = service as? T {
                 return service
