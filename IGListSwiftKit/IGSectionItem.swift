@@ -32,6 +32,7 @@ open class IGSectionItemController<Item: IGSectionItem, Cell: UICollectionViewCe
     open var heightBlock: ((ListCollectionContext, Item, CGFloat) -> CGFloat)?
 
     open var configureBlock: ((Item, Cell) -> Void)?
+    open var onClick: VoidFunction?
 
     public init(cellType: Cell.Type = Cell.self) {
         self.cellType = cellType
@@ -73,5 +74,9 @@ open class IGSectionItemController<Item: IGSectionItem, Cell: UICollectionViewCe
         }
         configureBlock?(item, cell)
         return cell
+    }
+
+    override open func didSelectItem(at _: Int) {
+        onClick?()
     }
 }

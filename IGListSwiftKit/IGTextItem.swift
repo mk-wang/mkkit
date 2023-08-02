@@ -28,7 +28,8 @@ public extension IGTextItem {
         item: Item.Type = IGTextItem.self,
         cell: Cell.Type = IGTextItemCell.self,
         minHeight: CGFloat? = nil,
-        configureBlock: ((Item, Cell) -> Void)? = nil
+        configureBlock: ((Item, Cell) -> Void)? = nil,
+        clickBlock: VoidFunction? = nil
     ) -> IGSectionItemController<Item, Cell> {
         let ctr = IGSectionItemController<Item, Cell>()
         ctr.heightBlock = { _, item, width in
@@ -42,13 +43,14 @@ public extension IGTextItem {
             cell.item = item
             configureBlock?(item, cell)
         }
+        ctr.onClick = clickBlock
         return ctr
     }
 }
 
 // MARK: - IGTextItemCell
 
-open class IGTextItemCell: UICollectionViewCell {
+open class IGTextItemCell: HighlightCollectionViewCell {
     open var item: IGTextItem? {
         didSet {
             textlbl?.text = item?.text
@@ -74,12 +76,17 @@ open class IGTextItemCell: UICollectionViewCell {
     }
 
     open func readyToLayout(item: IGTextItem) {
+        let lbl = makeLbl(item: item)
+        contentView.addSnpSubview(lbl)
+        textlbl = lbl
+    }
+
+    open func makeLbl(item: IGTextItem) -> UILabel {
         let lbl = UILabel(text: item.text, style: item.textStyle)
         lbl.addSnpConfig { _, make in
             make.edges.equalToSuperview()
         }
-        contentView.addSnpSubview(lbl)
-        textlbl = lbl
+        return lbl
     }
 
     public static func heightFor(item: IGTextItem, width: CGFloat) -> CGFloat {
