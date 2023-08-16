@@ -53,7 +53,7 @@ public extension IGTextItem {
 open class IGTextItemCell: HighlightCollectionViewCell {
     open var item: IGTextItem? {
         didSet {
-            textlbl?.text = item?.text
+            update(by: item)
         }
     }
 
@@ -87,6 +87,10 @@ open class IGTextItemCell: HighlightCollectionViewCell {
             make.edges.equalToSuperview()
         }
         return lbl
+    }
+
+    open func update(by item: IGTextItem?) {
+        textlbl?.text = item?.text
     }
 
     public static func heightFor(item: IGTextItem, width: CGFloat) -> CGFloat {

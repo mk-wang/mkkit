@@ -8,7 +8,7 @@ import UIKit
 
 // MARK: - YXModalView
 
-open class YXModalView: UIView {
+open class YXModalView: YXPassTouchView {
     public enum Style {
         case bottom
         case top
@@ -20,15 +20,16 @@ open class YXModalView: UIView {
     lazy var hideAlpha: CGFloat = 0.0
 
     public let style: Style
-    public var willHideCallback: YXModalViewCallback?
-    public var didHideCallback: YXModalViewCallback?
+    public var willHideCallback: ((YXModalView?, Any?) -> Void)?
+    public var didHideCallback: ((YXModalView?, Any?) -> Void)?
 
-    public var willShowCallback: YXModalViewCallback?
-    public var didShowCompletion: YXModalViewCallback?
+    public var willShowCallback: ((YXModalView?) -> Void)?
+    public var didShowCompletion: ((YXModalView?) -> Void)?
 
-    public private(set) lazy var bgTouchView: UIView = {
-        let view = UIView()
+    public private(set) lazy var bgTouchView: YXPassTouchView = {
+        let view = YXPassTouchView()
         view.frame = self.bounds
+        view.passMode = .none
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.backgroundColor = .black.withAlphaComponent(0.3)
         return view
@@ -38,8 +39,9 @@ open class YXModalView: UIView {
         self.style = style
         super.init(frame: frame)
 
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(hide))
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismiss))
         bgTouchView.addGestureRecognizer(gesture)
+        passMode = .none
 
         addSubview(bgTouchView)
     }
@@ -56,8 +58,6 @@ open class YXModalView: UIView {
 }
 
 public extension YXModalView {
-    typealias YXModalViewCallback = (YXModalView?) -> Void
-
     var touchBGColor: UIColor? {
         get {
             bgTouchView.backgroundColor
@@ -107,19 +107,21 @@ public extension YXModalView {
         }
     }
 
-    @objc func hide() {
+    @objc private func dismiss() {
+        hide()
+    }
+
+    func hide(by object: AnyObject? = nil, duration: TimeInterval? = nil) {
+        willHideCallback?(self, object)
+
         weak var weakSelf = self
 
-        if let callback = willHideCallback {
-            callback(weakSelf)
-        }
-
-        UIView.animate(withDuration: duration) {
+        UIView.animate(withDuration: duration ?? self.duration) {
             weakSelf?.realHide()
-        } completion: { _ in
+        } completion: { [weak object] _ in
             weakSelf?.removeFromSuperview()
             weakSelf?.contentView?.removeFromSuperview()
-            weakSelf?.didHideCallback?(weakSelf)
+            weakSelf?.didHideCallback?(weakSelf, object)
         }
     }
 }
@@ -184,10 +186,10 @@ private extension YXModalView {
 public extension YXModalView {
     @discardableResult
     static func showFromBottom<T: UIView>(_ contentView: T,
-                                          in _: UIView? = nil,
+                                          in container: UIView? = nil,
                                           configure: (YXModalView, T) -> Void) -> YXModalView
     {
-        show(contentView, style: .bottom, configure: configure)
+        show(contentView, style: .bottom, in: container, configure: configure)
     }
 
     @discardableResult

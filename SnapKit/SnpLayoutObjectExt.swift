@@ -17,6 +17,35 @@ public extension SnpLayoutObject {
             config?($0, $1)
         }
     }
+
+    func addSnpEdgesToSuper(_ inset: UIEdgeInsets = .zero) {
+        addSnpConfig {
+            $1.edges.equalToSuperview().inset(inset)
+        }
+    }
+
+    func addSnpHorizontalEdgesToSuper(_ inset: CGFloat = 0) {
+        addSnpConfig {
+            $1.horizontalEdges.equalToSuperview().inset(inset)
+        }
+    }
+
+    func addSnpVerticalEdgesToSuper(_ inset: CGFloat = 0) {
+        addSnpConfig {
+            $1.verticalEdges.equalToSuperview().inset(inset)
+        }
+    }
+
+    func addSnpCenterToSuper(x: Bool = true, y: Bool = true) {
+        addSnpConfig {
+            if x {
+                $1.centerX.equalToSuperview()
+            }
+            if y {
+                $1.centerY.equalToSuperview()
+            }
+        }
+    }
 }
 
 public extension UIImageView {

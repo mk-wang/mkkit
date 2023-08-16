@@ -11,6 +11,18 @@ import UIKit
 // MARK: - Properties
 
 public extension NSAttributedString {
+    func textViewSize(width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
+        let drawSize = CGSize(width ?? CGFloat.greatestFiniteMagnitude, height ?? CGFloat.greatestFiniteMagnitude)
+        let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
+
+        let boundingRect = boundingRect(with: drawSize,
+                                        options: options,
+                                        context: nil)
+        return boundingRect.size
+    }
+}
+
+public extension NSAttributedString {
     var bolded: NSAttributedString {
         guard !string.isEmpty else { return self }
 

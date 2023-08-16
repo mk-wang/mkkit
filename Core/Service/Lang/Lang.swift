@@ -24,6 +24,8 @@ public enum Lang: String {
     case fa
     case ro
     case id
+    case pl
+    case uk
     case pt_BR = "pt-BR"
     case pt_PT = "pt-PT"
     case zh_Hans = "zh-Hans"
@@ -111,6 +113,10 @@ extension Lang: CustomStringConvertible {
             return "Român"
         case .pt_PT:
             return "Português"
+        case .pl:
+            return "Polski"
+        case .uk:
+            return "Українська"
         }
     }
 }
@@ -127,6 +133,9 @@ public extension Lang {
             return "pt"
         case .id:
             return "in_ID"
+        case .pl,
+             .uk:
+            return rawValue // TODO:
         default:
             return rawValue
         }
@@ -172,6 +181,10 @@ public extension Lang {
             return "🇷🇴"
         case .pt_PT:
             return "🇵🇹"
+        case .pl:
+            return "🇵🇱"
+        case .uk:
+            return "🇺🇦"
         }
     }
 }

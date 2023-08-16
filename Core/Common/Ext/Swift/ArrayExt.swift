@@ -41,6 +41,22 @@ public extension Array {
         }
         return list
     }
+
+    mutating func removeFirst(where predicate: (Self.Element) throws -> Bool) {
+        guard let index = try? firstIndex(where: predicate) else {
+            return
+        }
+        remove(at: index)
+    }
+
+    func randomPick() -> Element? {
+        guard isNotEmpty else {
+            return nil
+        }
+
+        let index = Int.random(in: 0 ..< count)
+        return at(index)
+    }
 }
 
 public extension Array where Element: Equatable {

@@ -81,12 +81,12 @@ public struct KVStorageOptionalProperty<T: KVStorageSerializable> {
             subject.value = newValue
         }
     }
-    
+
     public var value: T? {
         get {
             subject.value
         }
-        
+
         set {
             subject.value = newValue
         }

@@ -12,10 +12,10 @@ import UIKit
 // MARK: - Day
 
 public struct Day {
-    let calender: Calendar
-    let year: Int
-    let month: Int
-    let day: Int
+    public let calender: Calendar
+    public let year: Int
+    public let month: Int
+    public let day: Int
 
     fileprivate init(calender: Calendar, year: Int, month: Int, day: Int) {
         self.calender = calender
@@ -40,11 +40,21 @@ extension Day: Equatable {
     }
 }
 
+extension Day {
+    var date: Date? {
+        var comps = DateComponents()
+        comps.day = day
+        comps.year = year
+        comps.month = month
+        return calender.date(from: comps)
+    }
+}
+
 // MARK: - Hour
 
 public struct Hour {
-    let day: Day
-    let hour: Int
+    public let day: Day
+    public let hour: Int
 
     public init(day: Day, hour: Int) {
         self.day = day

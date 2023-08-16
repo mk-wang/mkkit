@@ -54,12 +54,10 @@ public extension String {
         let attrString = NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
         let drawSize = CGSize(width ?? CGFloat.greatestFiniteMagnitude, height ?? CGFloat.greatestFiniteMagnitude)
         let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
-
         let boundingRect = attrString.boundingRect(with: drawSize,
                                                    options: options,
                                                    context: nil)
-
-        //  https://developer.apple.com/documentation/uikit/uifont?language=objc
+        //  https://developer.apple.com/documentation/uikit/uifont
         let bottomPadding = boundingRect.origin.y - font.descender
         let height = boundingRect.size.height + bottomPadding
         return CGSize(boundingRect.size.width, height)

@@ -100,6 +100,14 @@ public extension ScreenUtil {
 }
 
 public extension FloatingPoint {
+    var c: CGFloat {
+        ceil(cgFloat)
+    }
+
+    var f: CGFloat {
+        floor(cgFloat)
+    }
+
     var rw: CGFloat {
         ScreenUtil.ratio.x * cgFloat
     }

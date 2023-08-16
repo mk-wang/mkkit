@@ -14,6 +14,7 @@ open class BaseHighLightView: UIView {
     private var highLightedDate: Date?
     private var unhighLightTimer: SwiftTimer?
 
+    public var touchUpCallback: VoidFunction?
     open var isHighLighted: Bool = false {
         didSet {
             unhighLightTimer = nil
@@ -116,7 +117,9 @@ open class BaseHighLightView: UIView {
 }
 
 extension BaseHighLightView {
-    @objc open func onTouchUp() {}
+    @objc open func onTouchUp() {
+        touchUpCallback?()
+    }
 }
 
 // MARK: - BGHighLightView

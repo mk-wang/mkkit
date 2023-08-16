@@ -33,6 +33,7 @@ open class YXButton: UIButton {
     override open var isHighlighted: Bool {
         didSet {
             checkBackgroundColor()
+            handleHighlightState(highLighted: isHighlighted)
         }
     }
 
