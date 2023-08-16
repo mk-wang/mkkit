@@ -1,5 +1,5 @@
 //
-//  Month.swift
+//  TimeService.swift
 //
 //  Created by MK on 2021/7/30.
 //
@@ -98,7 +98,7 @@ public extension Hour {
         } else if hour >= DayTime.morning.rawValue {
             return .morning
         } else {
-            return .afternoon
+            return .evening
         }
     }
 }

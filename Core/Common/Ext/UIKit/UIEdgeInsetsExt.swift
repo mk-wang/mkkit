@@ -9,11 +9,11 @@ import UIKit
 
 public extension UIEdgeInsets {
     static func vertical(_ size: CGFloat) -> Self {
-        Self.symmetric(vertical: size)
+        symmetric(vertical: size)
     }
 
     static func horizontal(_ size: CGFloat) -> Self {
-        Self.symmetric(horizontal: size)
+        symmetric(horizontal: size)
     }
 
     static func symmetric(vertical: CGFloat = 0, horizontal: CGFloat = 0) -> Self {

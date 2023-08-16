@@ -35,7 +35,7 @@ extension CGPoint: Lerpable {
 // MARK: - CGRect + Lerpable
 
 extension CGRect: Lerpable {
-    internal func lerp(with other: CGRect, by k: CGFloat) -> CGRect {
+    func lerp(with other: CGRect, by k: CGFloat) -> CGRect {
         CGRect(
             x: origin.x.lerp(with: other.origin.x, by: k),
             y: origin.y.lerp(with: other.origin.y, by: k),

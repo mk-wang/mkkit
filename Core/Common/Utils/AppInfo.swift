@@ -65,7 +65,7 @@ public extension AppInfo {
 
     static var fullVersion: String {
         var text = "\(shortVersion)"
-        if let buildNumber = Self.buildNumber {
+        if let buildNumber {
             text += ".\(buildNumber)"
         }
         return text

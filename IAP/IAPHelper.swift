@@ -84,16 +84,16 @@ public extension IAPHelper {
                     return
                 }
                 if subscription {
-                    Self.verifySubscription(productID: productID,
-                                            secret: secret,
-                                            validDuration: validDuration,
-                                            environment: environment,
-                                            completion: completion)
+                    verifySubscription(productID: productID,
+                                       secret: secret,
+                                       validDuration: validDuration,
+                                       environment: environment,
+                                       completion: completion)
                 } else {
-                    Self.verifyPurchase(productID: productID,
-                                        secret: secret,
-                                        environment: environment,
-                                        completion: completion)
+                    verifyPurchase(productID: productID,
+                                   secret: secret,
+                                   environment: environment,
+                                   completion: completion)
                 }
 
             case let .error(error: error):

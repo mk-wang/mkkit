@@ -163,7 +163,7 @@ open class BGHighLightView: BaseHighLightView {
             control.isHighlighted = isHighLighted
         }
         view.subviews.forEach {
-            Self.updateState(view: $0, isHighLighted: isHighLighted)
+            updateState(view: $0, isHighLighted: isHighLighted)
         }
     }
 }

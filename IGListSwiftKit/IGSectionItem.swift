@@ -1,5 +1,5 @@
 //
-//  IGItem.swift
+//  IGSectionItem.swift
 //  MKKit
 //
 //  Created by MK on 2023/7/31.

@@ -1,5 +1,5 @@
 //
-//  FileUtils.swift
+//  FileUtil.swift
 //  MKKit
 //
 //  Created by MK on 2022/11/29.
@@ -69,7 +69,7 @@ public extension FileUtil {
     }
 
     static func createDir(url: URL, deleteIfNotDir: Bool = false) throws {
-        var (isExists, isDir) = try Self.fileExists(url: url)
+        var (isExists, isDir) = try fileExists(url: url)
 
         if isExists, !isDir, deleteIfNotDir {
             try fileManager.removeItem(at: url)
@@ -100,7 +100,7 @@ public extension FileUtil {
         if let ext {
             file += ".\(ext)"
         }
-        return Self.temporaryDirectory.appendingPathComponent(file)
+        return temporaryDirectory.appendingPathComponent(file)
     }
 }
 

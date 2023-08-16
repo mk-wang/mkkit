@@ -1,5 +1,5 @@
 //
-//  NSObject+IGListDiffable.swift
+//  NSObject+IGList.swift
 //  MKKit
 //
 //  Created by MK on 2023/7/20.
