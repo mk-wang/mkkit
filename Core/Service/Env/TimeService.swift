@@ -136,6 +136,8 @@ public extension TimeService {
     }
 
     func startTimeCheck() {
+        checkTime()
+
         let interval = 3600
         let seconds = Int64(Date.timeIntervalSinceReferenceDate)
         var delay = interval - Int(seconds % Int64(interval))

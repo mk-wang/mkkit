@@ -25,7 +25,7 @@ public extension UIView {
     }
 
     enum SnpStackViewBuilder {
-        case space(CGFloat? = nil, flex: CGFloat = 1)
+        case space(CGFloat? = nil, flex: CGFloat = 1, min: CGFloat? = nil)
         case view(UIView?, width: CGFloat? = nil, height: CGFloat? = nil, crossCenter: Bool = false, crossEdgesInset: CGFloat? = nil)
         case tight(UIView?)
         case builder((UIView, SnpLayoutObject?) -> UIView?)
@@ -42,7 +42,7 @@ public extension UIView {
             var snpObject: SnpLayoutObject?
 
             switch builder {
-            case let .space(size, flex):
+            case let .space(size, flex, min):
                 #if DEBUG // && targetEnvironment(simulator)
                     snpObject = UIView()
                 #else
@@ -59,13 +59,19 @@ public extension UIView {
                     let mainAxis = direction == .vertical ? make.height : make.width
                     if let size {
                         mainAxis.equalTo(size)
-                    } else if flex > 0 {
-                        if let flexObject {
-                            let target = direction == .vertical ? flexObject.snpDSL.height : flexObject.snpDSL.width
-                            mainAxis.equalTo(target).multipliedBy(flex / flexValue)
-                        } else {
-                            flexObject = snpObject
-                            flexValue = flex
+                    } else {
+                        if let min {
+                            mainAxis.greaterThanOrEqualTo(min)
+                        }
+
+                        if flex > 0 {
+                            if let flexObject {
+                                let target = direction == .vertical ? flexObject.snpDSL.height : flexObject.snpDSL.width
+                                mainAxis.equalTo(target).multipliedBy(flex / flexValue)
+                            } else {
+                                flexObject = snpObject
+                                flexValue = flex
+                            }
                         }
                     }
                 }

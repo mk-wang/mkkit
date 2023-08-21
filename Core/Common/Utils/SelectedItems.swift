@@ -8,6 +8,8 @@
 import Foundation
 import OpenCombine
 
+// MARK: - SelectedItems
+
 open class SelectedItems<T> {
     public let removeDuplicates: Bool
     public let list: [T]
@@ -69,5 +71,16 @@ open class SelectedItems<T> {
             return nil
         }
         return list.at(index)
+    }
+}
+
+extension SelectedItems where T: Equatable {
+    open var selected: T? {
+        get {
+            itemAt(index: subject.value)
+        }
+        set {
+            subject.value = list.firstIndex { $0 == newValue }
+        }
     }
 }

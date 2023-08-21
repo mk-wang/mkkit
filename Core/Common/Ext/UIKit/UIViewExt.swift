@@ -230,6 +230,15 @@ public extension UIView {
         setContentHuggingPriority(.required, for: axis)
         setContentCompressionResistancePriority(.required, for: axis)
     }
+
+    func pinEdges(to other: UIView) {
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: other.topAnchor),
+            bottomAnchor.constraint(equalTo: other.bottomAnchor),
+            leadingAnchor.constraint(equalTo: other.leadingAnchor),
+            trailingAnchor.constraint(equalTo: other.trailingAnchor),
+        ])
+    }
 }
 
 public extension UIView {
