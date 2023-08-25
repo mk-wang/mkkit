@@ -26,7 +26,7 @@ public extension UIView {
 
     enum SnpStackViewBuilder {
         case space(CGFloat? = nil, flex: CGFloat = 1, min: CGFloat? = nil)
-        case view(UIView?, width: CGFloat? = nil, height: CGFloat? = nil, size: CGSize? = nil, crossCenter: Bool = false, crossEdgesInset: CGFloat? = nil)
+        case view(UIView?, width: CGFloat? = nil, height: CGFloat? = nil, size: CGSize? = nil, crossCenter: Bool = false, crossEdgesInset: CGFloat? = nil, tight: Bool = false)
         case tight(UIView?)
         case builder((UIView, SnpLayoutObject?) -> UIView?)
     }
@@ -80,7 +80,8 @@ public extension UIView {
                            height,
                            size,
                            crossCenter,
-                           crossEdgesInset):
+                           crossEdgesInset,
+                           tight):
                 aView?.addSnpConfig { _, make in
                     if let width {
                         make.width.equalTo(width)
@@ -107,7 +108,9 @@ public extension UIView {
                         }
                     }
                 }
-
+                if tight {
+                    aView?.compressionLayout(for: direction == .vertical ? .vertical : .horizontal)
+                }
                 snpObject = aView
             case let .tight(aView):
                 aView?.compressionLayout(for: direction == .vertical ? .vertical : .horizontal)

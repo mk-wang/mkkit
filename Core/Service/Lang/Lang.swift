@@ -119,6 +119,14 @@ extension Lang: CustomStringConvertible {
             return "Українська"
         }
     }
+
+    public var fixName: String {
+        if self == .pt_BR {
+            return Lang.pt_PT.description
+        } else {
+            return description
+        }
+    }
 }
 
 public extension Lang {

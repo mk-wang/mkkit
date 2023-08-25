@@ -57,6 +57,11 @@ public extension UIImage {
         return scaled(toWidth: toWidth, toHeight: toHeight, opaque: opaque)
     }
 
+    func scaled(to target: CGSize, opaque: Bool = false) -> UIImage? {
+        let scale = min(target.width / size.width, target.height / size.height)
+        return scaled(to: scale, opaque: opaque)
+    }
+
     func scaled(toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
         let scale = toHeight / size.height
         let newWidth = size.width * scale

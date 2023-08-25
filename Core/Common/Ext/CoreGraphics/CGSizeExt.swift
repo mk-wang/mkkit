@@ -8,20 +8,12 @@
 import CoreGraphics
 
 public extension CGSize {
-    func scaleTo(scale: CGFloat) -> Self {
-        CGSize(width: width * scale, height: height * scale)
-    }
-
     func scaleTo(width: CGFloat) -> Self {
         CGSize(width: width, height: height * (width / self.width))
     }
 
     func scaleTo(height: CGFloat) -> Self {
         CGSize(width: width * (height / self.height), height: height)
-    }
-
-    func add(width: CGFloat = 0, height: CGFloat = 0) -> Self {
-        CGSize(width: self.width + width, height: self.height + height)
     }
 
     func toRect(point: CGPoint = .zero) -> CGRect {

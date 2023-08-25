@@ -100,7 +100,7 @@ public extension UIScrollView {
     @objc func zoomRectForScale(scale: CGFloat, center: CGPoint) -> CGRect {
         var zoomRect = CGRect.zero
         let size = frame.size
-        zoomRect.size = size.scaleTo(scale: 1 / scale)
+        zoomRect.size = size / scale
         zoomRect.origin.x = center.x - (zoomRect.size.width / 2.0)
         zoomRect.origin.y = center.y - (zoomRect.size.height / 2.0)
 

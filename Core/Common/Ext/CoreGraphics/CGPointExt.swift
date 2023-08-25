@@ -8,28 +8,36 @@
 import CoreGraphics
 
 public extension CGPoint {
-    func scale(_ scale: CGFloat) -> Self {
-        CGPoint(x: x * scale, y: y * scale)
+    static func + (left: CGPoint, right: CGPoint) -> CGPoint {
+        CGPoint(x: left.x + right.x, y: left.y + right.y)
     }
 
-    func add(_ x: CGFloat = 0, _ y: CGFloat = 0) -> Self {
-        CGPoint(x: self.x + x, y: self.y + y)
+    static func - (left: CGPoint, right: CGPoint) -> CGPoint {
+        CGPoint(x: left.x - right.x, y: left.y - right.y)
     }
 
-    func sub(_ x: CGFloat = 0, _ y: CGFloat = 0) -> Self {
-        CGPoint(x: self.x - x, y: self.y - y)
+    static func += (left: inout CGPoint, right: CGPoint) {
+        left = left + right
     }
 
-    func add(_ offset: CGPoint) -> Self {
-        CGPoint(x: x + offset.x, y: y + offset.y)
+    static func -= (left: inout CGPoint, right: CGPoint) {
+        left = left - right
     }
 
-    func sub(_ offset: CGPoint) -> Self {
-        CGPoint(x: x - offset.x, y: y - offset.y)
+    static func / (left: CGPoint, right: CGFloat) -> CGPoint {
+        CGPoint(x: left.x / right, y: left.y / right)
     }
 
-    func toRect(size: CGSize = .zero) -> CGRect {
-        CGRect(origin: self, size: size)
+    static func * (left: CGPoint, right: CGFloat) -> CGPoint {
+        CGPoint(x: left.x * right, y: left.y * right)
+    }
+
+    static func /= (left: inout CGPoint, right: CGFloat) {
+        left = left / right
+    }
+
+    static func *= (left: inout CGPoint, right: CGFloat) {
+        left = left * right
     }
 }
 
@@ -44,5 +52,9 @@ public extension CGPoint {
 
     var swap: CGPoint {
         CGPoint(x: y, y: x)
+    }
+
+    func toRect(size: CGSize = .zero) -> CGRect {
+        CGRect(origin: self, size: size)
     }
 }

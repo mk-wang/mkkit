@@ -32,7 +32,7 @@ public extension UIViewController {
 }
 
 public extension UIViewController {
-    func to(vc: UIViewController, animated: Bool = true) {
+    func push(vc: UIViewController, animated: Bool = true) {
         navigationController?.pushViewController(vc, animated: animated)
     }
 

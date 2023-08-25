@@ -21,8 +21,8 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     // 不removeDuplicates ，有些手机例如 iOS 15， 再控制面板弹出的时候，状态也是 active
     public lazy var appStatePublisher: AnyPublisher<UIApplication.State, Never> = appStateSubject.eraseToAnyPublisher()
 
-    public func application(_ application: UIApplication,
-                            didFinishLaunchingWithOptions opts: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
+    open func application(_ application: UIApplication,
+                          didFinishLaunchingWithOptions opts: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
         SelfLoader.loadAll()
 

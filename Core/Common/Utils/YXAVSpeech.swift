@@ -128,12 +128,12 @@ open class YXAVSpeech: NSObject {
 
 public extension YXAVSpeech {
     @discardableResult
-    func speech(text: String, speed: Float = 1.0, volum: Float = 1.0) -> AVSpeechUtterance? {
+    func speech(text: String, speed: Float = 1.0, volume: Float = 1.0) -> AVSpeechUtterance? {
         // 别的项目这样处理 ， 我不知道为什么
         let converted = (text as NSString).replacingOccurrences(of: "-", with: " ")
         let utterance = AVSpeechUtterance(string: converted)
         utterance.rate *= speed
-        utterance.volume = volum
+        utterance.volume = volume
         utterance.voice = voice
         do {
             try synthesizer.speak(utterance)
