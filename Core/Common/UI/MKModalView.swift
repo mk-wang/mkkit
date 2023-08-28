@@ -136,7 +136,7 @@ private extension MKModalView {
 
         if style == .center {
             let scale: CGFloat = 1.12
-            contentView.transform = .identity.scaledBy(x: scale, y: scale)
+            contentView.transform = CGAffineTransform(scaleX: scale, y: scale)
         } else {
             var rect = contentView.frame
             if style == .top {
