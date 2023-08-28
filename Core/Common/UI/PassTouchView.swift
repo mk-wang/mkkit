@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class YXPassTouchView: UIView {
+open class PassTouchView: UIView {
     public enum PassMode {
         case none
         case contain

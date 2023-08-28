@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - YXCALayerWrapView
 
-open class YXCALayerWrapView: UIView {
+open class CALayerWrapView: UIView {
     public var wrapLayer: CALayer? {
         didSet {
             oldValue?.removeFromSuperlayer()
@@ -26,14 +26,14 @@ open class YXCALayerWrapView: UIView {
     }
 }
 
-public extension YXCALayerWrapView {
+public extension CALayerWrapView {
     class func gradientLayer(colors: [UIColor],
                              start: CGPoint,
                              end: CGPoint,
                              locations: [CGFloat]? = nil)
-        -> YXCALayerWrapView
+        -> CALayerWrapView
     {
-        let box = YXCALayerWrapView()
+        let box = CALayerWrapView()
         let bgLayer = CAGradientLayer()
         bgLayer.colors = colors.map(\.cgColor)
         bgLayer.startPoint = start
@@ -47,7 +47,7 @@ public extension YXCALayerWrapView {
 
     class func verticalGradientLayer(colors: [UIColor],
                                      locations: [CGFloat]? = nil)
-        -> YXCALayerWrapView
+        -> CALayerWrapView
     {
         Self.gradientLayer(colors: colors,
                            start: .init(0.5, 0),
@@ -58,7 +58,7 @@ public extension YXCALayerWrapView {
     class func horizontalGradientLayer(colors: [UIColor],
                                        locations: [CGFloat]? = nil,
                                        directional: Bool = true)
-        -> YXCALayerWrapView
+        -> CALayerWrapView
     {
         var start: CGPoint = .init(0, 0.5)
         var end: CGPoint = .init(1, 0.5)

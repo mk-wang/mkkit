@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class YXSlider: UISlider {
+open class Slider: UISlider {
     open var slideThumbSpace: CGFloat = 0
 
     override open func thumbRect(forBounds bounds: CGRect, trackRect: CGRect, value: Float) -> CGRect {

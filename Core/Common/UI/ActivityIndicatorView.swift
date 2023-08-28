@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class YXActivityIndicatorView: UIView {
+open class ActivityIndicatorView: UIView {
     public let indicator: UIActivityIndicatorView
 
     public init(style: UIActivityIndicatorView.Style) {

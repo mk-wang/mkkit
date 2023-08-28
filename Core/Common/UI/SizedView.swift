@@ -10,7 +10,7 @@ import OpenCombine
 
 // MARK: - SizedContentView
 
-open class YXSizedView: UIView {
+open class SizedView: UIView {
     private let sizeSubject = CurrentValueSubject<CGSize, Never>(.zero)
     open lazy var sizePublisher = sizeSubject.removeDuplicates().eraseToAnyPublisher()
 

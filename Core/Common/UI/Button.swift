@@ -1,5 +1,5 @@
 //
-//  YXButton.swift
+//  MKButton.swift
 //
 //
 //  Created by MK on 2022/5/10.
@@ -8,9 +8,9 @@
 import OpenCombine
 import UIKit
 
-// MARK: - YXButton
+// MARK: - MKButton
 
-open class YXButton: UIButton {
+open class MKButton: UIButton {
     open var tapExt = CGSize.zero
     open var onLayout: VoidFunction?
     open var themeTintColor: UIColor?
@@ -93,7 +93,7 @@ open class YXButton: UIButton {
 
 // MARK: ThemeChangeListener
 
-extension YXButton: ThemeChangeListener {
+extension MKButton: ThemeChangeListener {
     public func onThemeChange(isDark _: Bool) {
         guard !subviews.isEmpty,
               let tintColor = themeTintColor
@@ -109,7 +109,7 @@ extension YXButton: ThemeChangeListener {
     }
 }
 
-public extension YXButton {
+public extension MKButton {
     static func makeButton(type: UIButton.ButtonType = .custom,
                            size: CGSize,
                            style: ButtonViewStyle? = nil,
@@ -117,9 +117,9 @@ public extension YXButton {
                            image originImage: UIImage? = nil,
                            url: URL? = nil,
                            langFlip: Bool = false,
-                           tintColor: UIColor? = nil) -> YXButton
+                           tintColor: UIColor? = nil) -> MKButton
     {
-        let btn = style == nil ? YXButton(type: type) : YXButton(type: type, style: style!)
+        let btn = style == nil ? MKButton(type: type) : MKButton(type: type, style: style!)
         btn.tapExt = tapExt
         var image = originImage
         if image == nil, let url {

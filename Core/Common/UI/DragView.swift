@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - YXDragView
 
-open class YXDragView: UIView {
+open class DragView: UIView {
     public struct HeightConfig {
         public var containerHeight: CGFloat
         public var dismissibleHeight: CGFloat
@@ -27,7 +27,7 @@ open class YXDragView: UIView {
     // configuration
     open var heightConfig: HeightConfig = .screenConfig
     open var dragToExpand: Bool = true
-    open var contentViewBuilder: ((YXDragView) -> UIView?)?
+    open var contentViewBuilder: ((DragView) -> UIView?)?
     open var onClose: VoidFunction?
 
     private(set) weak var contentView: UIView?
@@ -174,7 +174,7 @@ open class YXDragView: UIView {
 
 // MARK: UIGestureRecognizerDelegate
 
-public extension YXDragView {
+public extension DragView {
     var targetContainerHeight: CGFloat {
         expaneded ? maximumContainerHeight : initialHeight
     }
@@ -194,7 +194,7 @@ public extension YXDragView {
 
 // MARK: UIGestureRecognizerDelegate
 
-extension YXDragView: UIGestureRecognizerDelegate {
+extension DragView: UIGestureRecognizerDelegate {
     override open func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
         true
     }
