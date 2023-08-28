@@ -1,7 +1,6 @@
+#import "WeakProxy.h"
 
-#import "YXWeakProxy.h"
-
-@implementation YXWeakProxy
+@implementation WeakProxy
 
 - (instancetype)initWithTarget:(id)target
 {
@@ -11,7 +10,7 @@
 
 + (instancetype)proxyWithTarget:(id)target
 {
-    return [[self alloc] initWithTarget:target];
+    return [[WeakProxy alloc] initWithTarget:target];
 }
 
 - (id)forwardingTargetForSelector:(SEL)selector

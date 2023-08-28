@@ -1,19 +1,19 @@
 //
-//  YXWeekObjectProxy.m
+//  WeekObjectProxy.m
 //
 //
 //  Created by MK on 2021/9/15.
 //
 
-#import "YXWeekObjectProxy.h"
+#import "WeekObjectProxy.h"
 
-@interface YXWeekObjectProxy ()
+@interface WeekObjectProxy ()
 
 @property (nonatomic, readwrite, weak) id target;
 
 @end
 
-@implementation YXWeekObjectProxy
+@implementation WeekObjectProxy
 
 - (instancetype)initWithTarget:(id)target
 {

@@ -1,9 +1,9 @@
-
+// from YYWeakProxy
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YXWeakProxy : NSProxy
+@interface WeakProxy : NSProxy
 
 /**
  The proxy target.

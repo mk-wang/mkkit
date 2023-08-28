@@ -1,5 +1,5 @@
 //
-//  YXWeekObjectProxy.h
+//  WeekObjectProxy.h
 //
 //
 //  Created by MK on 2021/9/15.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface YXWeekObjectProxy : NSObject
+@interface WeekObjectProxy : NSObject
 
 @property (nonatomic, readonly, weak) id target;
 

@@ -1,5 +1,5 @@
 //
-//  YXCALayerWrapView.swift
+//  CALayerWrapView.swift
 //  MKKit
 //
 //  Created by MK on 2023/2/21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-// MARK: - YXCALayerWrapView
+// MARK: - CALayerWrapView
 
 open class CALayerWrapView: UIView {
     public var wrapLayer: CALayer? {

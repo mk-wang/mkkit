@@ -1,5 +1,5 @@
 //
-//  YXSlider.swift
+//  MKSlider.swift
 //  MKKit
 //
 //  Created by MK on 2023/8/9.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class Slider: UISlider {
+open class MKSlider: UISlider {
     open var slideThumbSpace: CGFloat = 0
 
     override open func thumbRect(forBounds bounds: CGRect, trackRect: CGRect, value: Float) -> CGRect {

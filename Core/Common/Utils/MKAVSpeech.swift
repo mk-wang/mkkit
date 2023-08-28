@@ -1,5 +1,5 @@
 //
-//  YXAVSpeech.swift
+//  MKAVSpeech.swift
 //  YogaWorkout
 //
 //  Created by MK on 2021/8/4.
@@ -104,9 +104,9 @@ public extension Lang {
     }
 }
 
-// MARK: - YXAVSpeech
+// MARK: - MKAVSpeech
 
-open class YXAVSpeech: NSObject {
+open class MKAVSpeech: NSObject {
     public let lang: Lang
     public let synthesizer: AVSpeechSynthesizer
     public let voice: AVSpeechSynthesisVoice?
@@ -126,7 +126,7 @@ open class YXAVSpeech: NSObject {
     }
 }
 
-public extension YXAVSpeech {
+public extension MKAVSpeech {
     @discardableResult
     func speech(text: String, speed: Float = 1.0, volume: Float = 1.0) -> AVSpeechUtterance? {
         // 别的项目这样处理 ， 我不知道为什么
@@ -153,7 +153,7 @@ public extension YXAVSpeech {
 
 // MARK: AVSpeechSynthesizerDelegate
 
-extension YXAVSpeech: AVSpeechSynthesizerDelegate {
+extension MKAVSpeech: AVSpeechSynthesizerDelegate {
     public func speechSynthesizer(_: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
         utterance.stateSubject?.value = .started
     }

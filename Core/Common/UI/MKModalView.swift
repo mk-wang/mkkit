@@ -1,14 +1,14 @@
 //
-//  YXModalView.swift
+//  MKModalView.swift
 //
 //  Created by MK on 2021/6/19.
 //
 
 import UIKit
 
-// MARK: - YXModalView
+// MARK: - MKModalView
 
-open class ModalView: PassTouchView {
+open class MKModalView: PassTouchView {
     public enum Style {
         case bottom
         case top
@@ -20,11 +20,11 @@ open class ModalView: PassTouchView {
     lazy var hideAlpha: CGFloat = 0.0
 
     public let style: Style
-    public var willHideCallback: ((ModalView?, Any?) -> Void)?
-    public var didHideCallback: ((ModalView?, Any?) -> Void)?
+    public var willHideCallback: ((MKModalView?, Any?) -> Void)?
+    public var didHideCallback: ((MKModalView?, Any?) -> Void)?
 
-    public var willShowCallback: ((ModalView?) -> Void)?
-    public var didShowCompletion: ((ModalView?) -> Void)?
+    public var willShowCallback: ((MKModalView?) -> Void)?
+    public var didShowCompletion: ((MKModalView?) -> Void)?
 
     public private(set) lazy var bgTouchView: PassTouchView = {
         let view = PassTouchView()
@@ -57,7 +57,7 @@ open class ModalView: PassTouchView {
     }
 }
 
-public extension ModalView {
+public extension MKModalView {
     var touchBGColor: UIColor? {
         get {
             bgTouchView.backgroundColor
@@ -126,7 +126,7 @@ public extension ModalView {
     }
 }
 
-private extension ModalView {
+private extension MKModalView {
     func beforeShow() {
         guard let contentView else {
             return
@@ -183,22 +183,22 @@ private extension ModalView {
     }
 }
 
-public extension ModalView {
+public extension MKModalView {
     @discardableResult
     static func showFromBottom<T: UIView>(_ contentView: T,
                                           in container: UIView? = nil,
-                                          configure: (ModalView, T) -> Void) -> ModalView
+                                          configure: (MKModalView, T) -> Void) -> MKModalView
     {
         show(contentView, style: .bottom, in: container, configure: configure)
     }
 
     @discardableResult
     static func show<T: UIView>(_ contentView: T,
-                                style: ModalView.Style,
+                                style: MKModalView.Style,
                                 in container: UIView? = nil,
-                                configure: (ModalView, T) -> Void) -> ModalView
+                                configure: (MKModalView, T) -> Void) -> MKModalView
     {
-        let modalView = ModalView(frame: .zero, style: style)
+        let modalView = MKModalView(frame: .zero, style: style)
         modalView.setContentView(contentView)
 
         configure(modalView, contentView)

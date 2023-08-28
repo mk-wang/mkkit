@@ -1,5 +1,5 @@
 //
-//  YXDragView.swift
+//  MKDragView.swift
 //  MKKit
 //
 //  Created by MK on 2023/5/24.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-// MARK: - YXDragView
+// MARK: - MKDragView
 
-open class DragView: UIView {
+open class MKDragView: UIView {
     public struct HeightConfig {
         public var containerHeight: CGFloat
         public var dismissibleHeight: CGFloat
@@ -27,7 +27,7 @@ open class DragView: UIView {
     // configuration
     open var heightConfig: HeightConfig = .screenConfig
     open var dragToExpand: Bool = true
-    open var contentViewBuilder: ((DragView) -> UIView?)?
+    open var contentViewBuilder: ((MKDragView) -> UIView?)?
     open var onClose: VoidFunction?
 
     private(set) weak var contentView: UIView?
@@ -174,7 +174,7 @@ open class DragView: UIView {
 
 // MARK: UIGestureRecognizerDelegate
 
-public extension DragView {
+public extension MKDragView {
     var targetContainerHeight: CGFloat {
         expaneded ? maximumContainerHeight : initialHeight
     }
@@ -194,7 +194,7 @@ public extension DragView {
 
 // MARK: UIGestureRecognizerDelegate
 
-extension DragView: UIGestureRecognizerDelegate {
+extension MKDragView: UIGestureRecognizerDelegate {
     override open func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
         true
     }

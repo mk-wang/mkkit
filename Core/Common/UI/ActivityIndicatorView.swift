@@ -1,5 +1,5 @@
 //
-//  YXActivityIndicatorView.swift
+//  ActivityIndicatorView.swift
 //  MKKit
 //
 //  Created by MK on 2023/2/17.
