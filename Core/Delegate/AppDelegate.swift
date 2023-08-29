@@ -14,7 +14,7 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     public var window: UIWindow?
 
     private let rootControllerSubject = CurrentValueSubject<UIViewController?, Never>(nil)
-    lazy var rootControllerPublisher = rootControllerSubject.eraseToAnyPublisher()
+    public lazy var rootControllerPublisher = rootControllerSubject.eraseToAnyPublisher()
 
     private lazy var appStateSubject = CurrentValueSubject<UIApplication.State, Never>(UIApplication.shared.applicationState)
 

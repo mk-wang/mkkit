@@ -29,13 +29,3 @@ extension UnFairLock: NSLocking {
         os_unfair_lock_unlock(inner)
     }
 }
-
-public extension UnFairLock {
-    func run(_ block: VoidFunction) {
-        defer {
-            unlock()
-        }
-        lock()
-        block()
-    }
-}

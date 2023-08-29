@@ -43,11 +43,7 @@ public extension UIView {
 
             switch builder {
             case let .space(size, flex, min):
-                #if DEBUG // && targetEnvironment(simulator)
-                    snpObject = UIView()
-                #else
-                    snpObject = UILayoutGuide()
-                #endif
+                snpObject = UILayoutGuide()
 
                 snpObject?.addSnpConfig { [weak snpObject] _, make in
                     let crossAxis = direction == .vertical ? make.width : make.height
