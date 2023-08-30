@@ -331,3 +331,35 @@ public extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext()
     }
 }
+
+public extension UIImage {
+    func gaussianBlurFilter(radius: CGFloat = 10) -> UIImage? {
+        guard let ciImage = CIImage(image: self) else {
+            return nil
+        }
+
+        guard let clampFilter = CIFilter(name: "CIAffineClamp") else {
+            return nil
+        }
+
+        clampFilter.setDefaults()
+        clampFilter.setValue(ciImage, forKey: kCIInputImageKey)
+
+        guard let blurFilter = CIFilter(name: "CIGaussianBlur") else {
+            return nil
+        }
+
+        blurFilter.setValue(clampFilter.outputImage, forKey: kCIInputImageKey)
+        blurFilter.setValue(radius, forKey: kCIInputRadiusKey)
+
+        guard let outputImage = blurFilter.outputImage else {
+            return nil
+        }
+
+        let ciContext = CIContext()
+        guard let cgImage = ciContext.createCGImage(outputImage, from: ciImage.extent) else {
+            return nil
+        }
+        return .init(cgImage: cgImage)
+    }
+}

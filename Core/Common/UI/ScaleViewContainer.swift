@@ -1,5 +1,5 @@
 //
-//  MKScaleViewContainer.swift
+//  ScaleViewContainer.swift
 //  MKKit
 //
 //  Created by MK on 2023/8/29.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-// MARK: - MKScaleViewContainer
+// MARK: - ScaleViewContainer
 
-open class MKScaleViewContainer<T: UIView>: UIView {
+open class ScaleViewContainer<T: UIView>: UIView {
     public let inner: T
 
     init(frame: CGRect, builder: () -> T) {
@@ -57,7 +57,7 @@ open class MKScaleViewContainer<T: UIView>: UIView {
 
 // MARK: - MKActivityIndicatorView
 
-open class MKActivityIndicatorView: MKScaleViewContainer<UIActivityIndicatorView> {
+open class MKActivityIndicatorView: ScaleViewContainer<UIActivityIndicatorView> {
     public init(frame: CGRect, style: UIActivityIndicatorView.Style) {
         super.init(frame: frame) {
             UIActivityIndicatorView(style: style)
@@ -85,7 +85,7 @@ open class MKActivityIndicatorView: MKScaleViewContainer<UIActivityIndicatorView
 
 // MARK: - MKSwitch
 
-open class MKSwitch: MKScaleViewContainer<UISwitch> {
+open class MKSwitch: ScaleViewContainer<UISwitch> {
     public init(frame: CGRect) {
         super.init(frame: frame) {
             UISwitch()

@@ -125,7 +125,7 @@ public extension UIView {
     var snapshot: UIImage {
         let renderer = UIGraphicsImageRenderer(size: frame.size)
         return renderer.image { _ in
-            drawHierarchy(in: bounds, afterScreenUpdates: true)
+            drawHierarchy(in: bounds, afterScreenUpdates: false)
         }
     }
 }
