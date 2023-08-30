@@ -49,10 +49,10 @@ public extension CALayerWrapView {
                                      locations: [CGFloat]? = nil)
         -> CALayerWrapView
     {
-        Self.gradientLayer(colors: colors,
-                           start: .init(0.5, 0),
-                           end: .init(0.5, 1),
-                           locations: locations)
+        gradientLayer(colors: colors,
+                      start: .init(0.5, 0),
+                      end: .init(0.5, 1),
+                      locations: locations)
     }
 
     class func horizontalGradientLayer(colors: [UIColor],

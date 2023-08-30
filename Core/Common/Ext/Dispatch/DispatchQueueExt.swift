@@ -31,6 +31,6 @@ public extension DispatchQueue {
     }
 
     class func mainAsync(after interval: TimeInterval? = nil, block: @escaping () -> Void) {
-        Self.async(queue: .main, after: interval, block: block)
+        async(queue: .main, after: interval, block: block)
     }
 }

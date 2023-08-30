@@ -128,6 +128,16 @@ public extension UIView {
             drawHierarchy(in: bounds, afterScreenUpdates: false)
         }
     }
+
+    var snapshotByLayer: UIImage? {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, isOpaque, 0.0)
+        defer { UIGraphicsEndImageContext() }
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+        layer.render(in: context)
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
 }
 
 public extension UIView {

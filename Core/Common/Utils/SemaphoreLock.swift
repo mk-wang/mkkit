@@ -13,7 +13,7 @@ open class SemaphoreLock {
     let semaphore: DispatchSemaphore
 
     public init(value: Int = 1) {
-        semaphore = dispatch_semaphore_t(value: value)
+        semaphore = .init(value: value)
     }
 }
 
