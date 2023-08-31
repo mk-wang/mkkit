@@ -47,6 +47,12 @@ public extension Publisher {
             .eraseToAnyPublisher()
     }
 
+    func delayOnMain(for seconds: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
+        delay(for: .seconds(seconds),
+              scheduler: DispatchQueue.main.ocombine)
+            .eraseToAnyPublisher()
+    }
+
     func throttleOnMain(for seconds: TimeInterval, latest: Bool = true) -> AnyPublisher<Self.Output, Self.Failure> {
         throttle(for: .seconds(seconds),
                  scheduler: DispatchQueue.main.ocombine,
