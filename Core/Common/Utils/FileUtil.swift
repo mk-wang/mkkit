@@ -11,19 +11,43 @@ import Foundation
 
 public enum FileUtil {
     static var fileManager = FileManager.default
+    #if targetEnvironment(simulator)
+        public static var homeDir: URL?
+    #endif
 }
 
 public extension FileUtil {
     static var documentDirectory: URL {
-        fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        #if targetEnvironment(simulator)
+            if let homeDir, fileManager.fileExists(atPath: homeDir.path) {
+                let url = homeDir.appendingPathComponent("document")
+                try? createDir(url: url, deleteIfNotDir: true)
+                return url
+            }
+        #endif
+        return fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
     }
 
     static var libraryDirectory: URL {
-        fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
+        #if targetEnvironment(simulator)
+            if let homeDir, fileManager.fileExists(atPath: homeDir.path) {
+                let url = homeDir.appendingPathComponent("library")
+                try? createDir(url: url, deleteIfNotDir: true)
+                return url
+            }
+        #endif
+        return fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
     }
 
     static var temporaryDirectory: URL {
-        fileManager.temporaryDirectory
+        #if targetEnvironment(simulator)
+            if let homeDir, fileManager.fileExists(atPath: homeDir.path) {
+                let url = homeDir.appendingPathComponent("temp")
+                try? createDir(url: url, deleteIfNotDir: true)
+                return url
+            }
+        #endif
+        return fileManager.temporaryDirectory
     }
 }
 
