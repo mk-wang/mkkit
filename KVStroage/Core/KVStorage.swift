@@ -78,6 +78,8 @@ public protocol KVStorage {
     func remove(for key: String) -> Void
 
     func removeAll() -> Void
+
+    func close() -> Void
 }
 
 // MARK: - StorageMMKV

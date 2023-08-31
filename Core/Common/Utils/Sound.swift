@@ -187,6 +187,10 @@ open class Sound {
         return player.play(numberOfLoops: numberOfLoops, completion: completion)
     }
 
+    @discardableResult public func infiniteLoopPlay() -> Bool {
+        play(numberOfLoops: -1, completion: nil)
+    }
+
     // MARK: - Stop playing
 
     /// Stop playing the sound.

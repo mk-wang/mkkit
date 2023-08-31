@@ -218,4 +218,8 @@ extension KVStorageBuilder: KVStorage {
     public func removeAll() {
         storage?.removeAll()
     }
+
+    public func close() {
+        storage?.close()
+    }
 }

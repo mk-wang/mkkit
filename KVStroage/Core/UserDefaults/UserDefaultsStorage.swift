@@ -178,4 +178,6 @@ extension UserDefaultsStorage: KVStorage {
         }
         storage.removePersistentDomain(forName: domain)
     }
+
+    public func close() {}
 }

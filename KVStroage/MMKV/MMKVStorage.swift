@@ -214,4 +214,8 @@ extension MMKVStorage: KVStorage {
     public func remove(for key: String) {
         storage.removeValue(forKey: key)
     }
+
+    public func close() {
+        storage.close()
+    }
 }
