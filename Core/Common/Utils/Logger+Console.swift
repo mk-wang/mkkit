@@ -41,6 +41,8 @@ import OpenCombine
         }
 
         func ad(_ text: String) {
+            let tag = "ad"
+            debug(text, tag: tag)
             guard Self.adConsole.kvValue else {
                 return
             }
@@ -48,11 +50,14 @@ import OpenCombine
         }
 
         func track(_ text: String) {
+            let tag = "track"
+            debug(tag)
+
             guard Self.trackConsole.kvValue else {
                 return
             }
 
-            console(text, tag: "track")
+            console(text, tag: tag)
         }
     }
 
