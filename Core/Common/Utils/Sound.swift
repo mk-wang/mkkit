@@ -72,6 +72,8 @@ open class Sound {
         }
     }
 
+    private var volumeTimer: SwiftTimer?
+
     #if os(iOS) || os(tvOS)
         /// Sound session. The default value is the shared `AVAudioSession` session.
         public static var session: Session = AVAudioSession.sharedInstance()
@@ -178,6 +180,7 @@ open class Sound {
     /// - Parameter numberOfLoops: Number of loops. Specify a negative number for an infinite loop. Default value of 0 means that the sound will be played once.
     /// - Returns: If the sound was played successfully the return value will be true. It will be false if sounds are disabled or if system could not play the sound.
     @discardableResult public func play(numberOfLoops: Int = 0, completion: PlayerCompletion? = nil) -> Bool {
+        volumeTimer = nil
         if !Sound.enabled {
             return false
         }
@@ -194,23 +197,54 @@ open class Sound {
     // MARK: - Stop playing
 
     /// Stop playing the sound.
-    public func stop() {
-        for player in players {
-            player.stop()
+    public func stop(fadeDuration: TimeInterval? = nil) {
+        volumeTimer = nil
+
+        if let fadeDuration {
+            players.forEach { $0.setVolume(0, fadeDuration: fadeDuration) }
+            weak var weakSelf = self
+            volumeTimer = SwiftTimer(interval: .fromSeconds(fadeDuration),
+                                     handler: { _ in
+                                         weakSelf?.players.forEach { $0.stop() }
+                                         weakSelf?.paused = false
+                                     })
+            volumeTimer?.start()
+        } else {
+            players.forEach { $0.stop() }
+            paused = false
         }
-        paused = false
     }
 
     /// Pause current playback.
-    public func pause() {
-        players[counter].pause()
-        paused = true
+    public func pause(fadeDuration: TimeInterval? = nil) {
+        volumeTimer = nil
+
+        let player = players[counter]
+        if let fadeDuration {
+            player.setVolume(0, fadeDuration: fadeDuration)
+            weak var weakSelf = self
+            volumeTimer = SwiftTimer(interval: .fromSeconds(fadeDuration),
+                                     handler: { [weak player] _ in
+                                         player?.pause()
+                                         weakSelf?.paused = true
+                                     })
+            volumeTimer?.start()
+        } else {
+            player.pause()
+            paused = true
+        }
     }
 
     /// Resume playing.
-    @discardableResult public func resume() -> Bool {
+    @discardableResult public func resume(volume: Float? = nil) -> Bool {
+        volumeTimer = nil
+
         if paused {
-            players[counter].resume()
+            let player = players[counter]
+            if let volume {
+                player.volume = volume
+            }
+            player.resume()
             paused = false
             return true
         }
@@ -289,9 +323,16 @@ open class Sound {
             players[counter].volume
         }
         set {
+            volumeTimer = nil
             for player in players {
                 player.volume = newValue
             }
+        }
+    }
+
+    public func setVolume(_ value: Float, fadeDuration duration: TimeInterval) {
+        for player in players {
+            player.setVolume(value, fadeDuration: duration)
         }
     }
 
@@ -367,6 +408,7 @@ public protocol Player: AnyObject {
 
     /// Sound volume.
     var volume: Float { get set }
+    func setVolume(_ volume: Float, fadeDuration duration: TimeInterval)
 
     /// Sound Rate.
     var rate: Float { get set }
