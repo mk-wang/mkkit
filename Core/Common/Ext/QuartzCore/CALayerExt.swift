@@ -73,18 +73,18 @@ extension CALayer {
 
 public extension CALayer {
     func pause() {
-        let pausedTime: CFTimeInterval = self.convertTime(CACurrentMediaTime(), from: nil)
-        self.speed = 0.0
-        self.timeOffset = pausedTime
+        let pausedTime: CFTimeInterval = convertTime(CACurrentMediaTime(), from: nil)
+        speed = 0.0
+        timeOffset = pausedTime
     }
 
     func resume() {
-        let pausedTime: CFTimeInterval = self.timeOffset
-        self.speed = 1.0
-        self.timeOffset = 0.0
-        self.beginTime = 0.0
-        let timeSincePause: CFTimeInterval = self.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-        self.beginTime = timeSincePause
+        let pausedTime: CFTimeInterval = timeOffset
+        speed = 1.0
+        timeOffset = 0.0
+        beginTime = 0.0
+        let timeSincePause: CFTimeInterval = convertTime(CACurrentMediaTime(), from: nil) - pausedTime
+        beginTime = timeSincePause
     }
 }
 

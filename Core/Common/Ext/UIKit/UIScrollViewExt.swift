@@ -87,12 +87,70 @@ public extension UIScrollView {
         return point
     }
 
+    func setContentOffset(_ offset: CGPoint, duration: CGFloat) {
+        guard contentOffset != offset else {
+            return
+        }
+
+        guard duration > 0 else {
+            contentOffset = offset
+            return
+        }
+
+        weak var weakSelf = self
+        UIView.animate(withDuration: duration) {
+            weakSelf?.contentOffset = offset
+        }
+    }
+}
+
+public extension UIScrollView {
+    var topVisiblePoint: CGPoint {
+        .init(x: 0, y: minOffset(vertical: true))
+    }
+
+    var bottomVisiblePoint: CGPoint {
+        .init(x: 0, y: maxOffset(vertical: true))
+    }
+
     func scrollToTop(animated: Bool) {
-        setContentOffset(CGPoint(x: 0.0, y: minOffset(vertical: true)), animated: animated)
+        setContentOffset(topVisiblePoint, animated: animated)
     }
 
     func scrollToBottom(animated: Bool) {
-        setContentOffset(CGPoint(x: 0, y: maxOffset(vertical: true)), animated: animated)
+        setContentOffset(bottomVisiblePoint, animated: animated)
+    }
+
+    var leftVisiblePoint: CGPoint {
+        .init(x: minOffset(vertical: false), y: 0)
+    }
+
+    var rightVisiblePoint: CGPoint {
+        .init(x: maxOffset(vertical: false), y: 0)
+    }
+
+    var startVisiblePoint: CGPoint {
+        Lang.current.isRTL ? rightVisiblePoint : leftVisiblePoint
+    }
+
+    var endVisiblePoint: CGPoint {
+        Lang.current.isRTL ? leftVisiblePoint : rightVisiblePoint
+    }
+
+    func scrollToLeft(animated: Bool) {
+        setContentOffset(leftVisiblePoint, animated: animated)
+    }
+
+    func scrollToStart(animated: Bool) {
+        setContentOffset(startVisiblePoint, animated: animated)
+    }
+
+    func scrollToRight(animated: Bool) {
+        setContentOffset(rightVisiblePoint, animated: animated)
+    }
+
+    func scrollToEnd(animated: Bool) {
+        setContentOffset(endVisiblePoint, animated: animated)
     }
 }
 
