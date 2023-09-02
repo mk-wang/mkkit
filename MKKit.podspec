@@ -75,15 +75,6 @@ Pod::Spec.new do |s|
     ss.source_files = 'YogaKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'YogaKit'
   end
-
-  s.subspec 'Debug' do |ss|
-    ss.source_files = 'Debug/**/*.{h,m,c,swift,hpp}'
-    ss.dependency 'MKKit/Core'
-    ss.pod_target_xcconfig = { 
-      'OTHER_SWIFT_FLAGS[config=Debug]' => '-D DEBUG_BUILD',
-      'OTHER_SWIFT_FLAGS[config=Release]' => '-D DEBUG_BUILDX',
-    }
-  end
 end
 
 
