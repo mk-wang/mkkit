@@ -14,7 +14,12 @@ open class UnFairLock {
 
     public init() {
         inner = os_unfair_lock_t.allocate(capacity: 1)
-        inner.initialize(to: .init())
+        inner.initialize(to: os_unfair_lock())
+    }
+
+    deinit {
+        inner.deinitialize(count: 1)
+        inner.deallocate()
     }
 }
 
