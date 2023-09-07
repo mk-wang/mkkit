@@ -70,14 +70,18 @@ public extension TextViewStyle {
 }
 
 public extension UILabel {
-    convenience init(text: String, style: TextViewStyle) {
+    convenience init(text: String, style: TextViewStyle, numberOfLines: Int = 0) {
         self.init()
         self.text = text
+        self.numberOfLines = numberOfLines
+        aplayTextStyle(style: style)
+    }
+
+    func aplayTextStyle(style: TextViewStyle) {
         font = style.font
         textColor = style.color
         textAlignment = style.textAlignment
         backgroundColor = style.backgroundColor
-        numberOfLines = 0
     }
 }
 

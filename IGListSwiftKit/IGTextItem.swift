@@ -21,6 +21,14 @@ open class IGTextItem: IGSectionItem {
         self.textStyle = textStyle
         super.init()
     }
+
+    override open func diffIdentifier() -> NSObjectProtocol {
+        text as NSString
+    }
+
+    override open func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
+        text == (object as? Self)?.text
+    }
 }
 
 public extension IGTextItem {
@@ -91,6 +99,9 @@ open class IGTextItemCell: HighlightCollectionViewCell {
 
     open func update(by item: IGTextItem?) {
         textlbl?.text = item?.text
+        if let style = item?.textStyle {
+            textlbl?.aplayTextStyle(style: style)
+        }
     }
 
     public static func heightFor(item: IGTextItem, width: CGFloat) -> CGFloat {
