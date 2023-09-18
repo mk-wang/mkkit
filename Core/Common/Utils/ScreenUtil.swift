@@ -17,6 +17,7 @@ public enum ScreenUtil {
     public static let isSmall = screenMin < 321
     public static let isOld = hwRatio < 1.8
 
+    public static let scale = UIScreen.main.scale
     public static let hwRatio = screenSize.height / screenSize.width
 
     private(set) static var ratio: CGPoint = .zero
