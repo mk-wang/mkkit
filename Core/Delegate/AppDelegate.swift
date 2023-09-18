@@ -18,8 +18,14 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var appStateSubject = CurrentValueSubject<UIApplication.State, Never>(UIApplication.shared.applicationState)
 
-    // 不removeDuplicates ，有些手机例如 iOS 15， 再控制面板弹出的时候，状态也是 active
-    public lazy var appStatePublisher: AnyPublisher<UIApplication.State, Never> = appStateSubject.eraseToAnyPublisher()
+    public lazy var appStatePublisher: AnyPublisher<UIApplication.State, Never> = appStateSubject
+        .eraseToAnyPublisher()
+
+    public lazy var appActivedPublisher: AnyPublisher<Void, Never> = appStateSubject
+        .removeDuplicatesAndDropFirst()
+        .compactMap { $0 == .active ? () : nil }
+        .debounceOnMain(for: 0.01)
+        .eraseToAnyPublisher()
 
     open func application(_ application: UIApplication,
                           didFinishLaunchingWithOptions opts: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
@@ -44,8 +50,11 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - UIApplication.State + CustomStringConvertible
 
 extension AppDelegate {
-    open func refreshState(_ application: UIApplication) {
-        let state = application.applicationState
+    open func refreshState(_ application: UIApplication, inActive: Bool? = nil) {
+        var state = application.applicationState
+        if let inActive {
+            state = inActive ? .inactive : .active
+        }
         appStateSubject.send(state)
     }
 

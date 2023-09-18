@@ -21,6 +21,9 @@ import OpenCombine
         @KVStorageProperty(key: "debug.logs.track", storage: UserDefaultsStorage())
         private(set) static var trackConsole: Bool = true
 
+        @KVStorageProperty(key: "debug.logs.tts", storage: UserDefaultsStorage())
+        private(set) static var ttsConsole: Bool = true
+
         private static var consoleObs: AnyCancellable?
 
         static func setupConsole() {
@@ -51,9 +54,20 @@ import OpenCombine
 
         func track(_ text: String) {
             let tag = "track"
-            debug(tag)
+            debug(text, tag: tag)
 
             guard Self.trackConsole.kvValue else {
+                return
+            }
+
+            console(text, tag: tag)
+        }
+
+        func tts(_ text: String) {
+            let tag = "tts"
+            debug(text, tag: tag)
+
+            guard Self.ttsConsole.kvValue else {
                 return
             }
 

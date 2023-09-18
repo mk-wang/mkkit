@@ -74,6 +74,16 @@ open class MKActivityIndicatorView: ScaleViewContainer<UIActivityIndicatorView> 
         }
     }
 
+    public var color: UIColor? {
+        get {
+            inner.color
+        }
+
+        set {
+            inner.color = newValue
+        }
+    }
+
     public func startAnimating() {
         inner.startAnimating()
     }

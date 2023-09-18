@@ -55,4 +55,13 @@ public extension UILabel {
 
         attributedText = attributeTxt
     }
+
+    func lineToFit(_ lines: Int = 1) {
+        numberOfLines = lines
+        adjustsFontSizeToFitWidth = true
+    }
+
+    var hasText: Bool {
+        text?.isNotEmpty ?? false
+    }
 }

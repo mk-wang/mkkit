@@ -10,7 +10,8 @@ import UIKit
 // Life Cycle
 extension AppDelegate {
     open func applicationWillResignActive(_ application: UIApplication) {
-        refreshState(application)
+        // 有些系统 applicationState 可能还是 acitve，所以强制设一下
+        refreshState(application, inActive: true)
     }
 
     open func applicationDidBecomeActive(_ application: UIApplication) {

@@ -14,8 +14,8 @@ public extension UIButton {
         }
         set {
             if Lang.current.isRTL {
-                titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: newValue)
                 imageEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: 0)
+                titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: newValue)
             } else {
                 imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: newValue)
                 titleEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: 0)
@@ -23,9 +23,33 @@ public extension UIButton {
         }
     }
 
+    func rangeImageTitle(margin: CGFloat, pad: CGFloat) {
+        let newValue = margin + pad
+        if Lang.current.isRTL {
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: margin)
+            titleEdgeInsets = UIEdgeInsets(top: 0, left: margin, bottom: 0, right: newValue)
+        } else {
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: margin, bottom: 0, right: newValue)
+            titleEdgeInsets = UIEdgeInsets(top: 0, left: newValue, bottom: 0, right: margin)
+        }
+    }
+
+    func rangeTitle(_ margin: CGFloat) {
+        titleEdgeInsets = .horizontal(margin)
+    }
+
     func setContentToFill() {
         contentHorizontalAlignment = .fill
         contentVerticalAlignment = .fill
+    }
+
+    var adjustsFontSizeToFitWidth: Bool {
+        get {
+            titleLabel?.adjustsFontSizeToFitWidth ?? false
+        }
+        set {
+            titleLabel?.adjustsFontSizeToFitWidth = newValue
+        }
     }
 }
 

@@ -13,9 +13,11 @@ public enum ScreenUtil {
     public static let screenSize: CGSize = UIScreen.main.bounds.size
     public static let screenMin = min(screenSize.width, screenSize.height)
     public static let screenMax = max(screenSize.width, screenSize.height)
-    public static let isSmall = screenMin < 321
 
-    public static let scale = UIScreen.main.scale
+    public static let isSmall = screenMin < 321
+    public static let isOld = hwRatio < 1.8
+
+    public static let hwRatio = screenSize.height / screenSize.width
 
     private(set) static var ratio: CGPoint = .zero
     private(set) static var minRatio: CGFloat = 0
@@ -56,6 +58,10 @@ public extension ScreenUtil {
         }
 
         return height ?? UIApplication.shared.statusBarFrame.size.height
+    }
+
+    static var hasNotch: Bool {
+        topSafeArea > 20
     }
 
     static var topSafeArea: CGFloat {

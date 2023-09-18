@@ -8,16 +8,16 @@
 import UIKit
 
 public extension UIEdgeInsets {
-    static func vertical(_ size: CGFloat) -> Self {
-        symmetric(vertical: size)
-    }
-
-    static func horizontal(_ size: CGFloat) -> Self {
-        symmetric(horizontal: size)
-    }
-
-    static func symmetric(vertical: CGFloat = 0, horizontal: CGFloat = 0) -> Self {
+    static func symmetric(vertical: CGFloat, horizontal: CGFloat) -> Self {
         UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
+    }
+
+    static func horizontal(_ value: CGFloat = 0) -> Self {
+        .init(top: 0, left: value, bottom: 0, right: value)
+    }
+
+    static func vertical(_ value: CGFloat = 0) -> Self {
+        .init(top: value, left: 0, bottom: value, right: 0)
     }
 
     static func only(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
