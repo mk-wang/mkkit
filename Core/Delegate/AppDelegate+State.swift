@@ -36,7 +36,7 @@ extension AppDelegate {
 // MARK: - AppDelegate.BackgroundTask
 
 extension AppDelegate {
-    class BackgroundTask {
+    open class BackgroundTask {
         private let application: UIApplication
         private var identifier = UIBackgroundTaskIdentifier.invalid
 
