@@ -33,11 +33,6 @@ public extension UIApplication {
         openURL(URL(string: "mailto://\(mail)"), completion: completion)
     }
 
-    @discardableResult func rateApp(appleId: String, completion: ((Bool) -> Void)? = nil) -> Bool {
-        let url = URL(string: "itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=\(appleId)")!
-        return openURL(url, completion: completion)
-    }
-
     @discardableResult func openAppSetting(completion: ((Bool) -> Void)? = nil) -> Bool {
         openURL(URL(string: UIApplication.openSettingsURLString), completion: completion)
     }
@@ -50,8 +45,16 @@ public extension UIApplication {
         return openURL(URL(string: str as String), completion: completion)
     }
 
-    @discardableResult func openApp(appleId: String, writeReview: Bool = false, completion: ((Bool) -> Void)? = nil) -> Bool {
+    // 不跳出App
+    @discardableResult func openApp(appleId: String, completion: ((Bool) -> Void)? = nil) -> Bool {
         var urlStr = "https://apps.apple.com/app/id\(appleId)"
+        let url = URL(string: urlStr)
+        return openURL(url, completion: completion)
+    }
+
+    // 打开app store
+    @discardableResult func openAppStore(appleId: String, writeReview: Bool = false, completion: ((Bool) -> Void)? = nil) -> Bool {
+        var urlStr = "itms-apps://itunes.apple.com/app/itunes-u/id\(appleId)"
         if writeReview {
             urlStr += "?action=write-review"
         }
