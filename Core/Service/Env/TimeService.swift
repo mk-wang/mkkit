@@ -110,7 +110,7 @@ public class TimeService {
 
     public lazy var hourPublisher = hourSubject.eraseToAnyPublisher()
     public lazy var dayPublisher = hourSubject.map(\.day).receiveOnMain().eraseToAnyPublisher()
-    public lazy var dayTimePublisher = hourSubject.map(\.dayTime).receiveOnMain().eraseToAnyPublisher()
+    public lazy var dayTimePublisher = hourSubject.map(\.dayTime).removeDuplicates().receiveOnMain().eraseToAnyPublisher()
 
     private var LastHour: Int64 = 0
     private var lastMinute: Int64 = 0
@@ -138,6 +138,7 @@ public extension TimeService {
     func startTimeCheck() {
         checkTime()
 
+        // 每小时变更
         let interval = 3600
         let seconds = Int64(Date.timeIntervalSinceReferenceDate)
         var delay = interval - Int(seconds % Int64(interval))
