@@ -43,6 +43,7 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             self.afterWindow(application, window: self.window!, launchOptions: opts)
         }
+
         return true
     }
 }

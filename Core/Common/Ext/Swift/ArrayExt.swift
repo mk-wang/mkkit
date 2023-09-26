@@ -8,6 +8,16 @@
 import Foundation
 
 public extension Array {
+    init<S>(_ s: S, prefix value: Int) where Element == S.Element, S: Sequence {
+        self.init(s.prefix(value))
+    }
+
+    init<S>(_ s: S, suffix value: Int) where Element == S.Element, S: Sequence {
+        self.init(s.suffix(value))
+    }
+}
+
+public extension Array {
     func at(_ index: Int) -> Element? {
         guard index >= 0, index < count else {
             return nil

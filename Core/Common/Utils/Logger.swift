@@ -13,12 +13,9 @@ import os.log
 open class Logger {
     var level: Level = .default
 
-    let category: String
     private var printers = [Printer]()
 
-    public init(category: String) {
-        self.category = category
-    }
+    public init() {}
 
     public func add(printer: Printer) {
         printers.append(printer)
@@ -166,4 +163,8 @@ extension OSPrinter: Printer {
                                     line: line)
         os_log("%{public}@", log: osLog, type: level.osType, content)
     }
+}
+
+public extension Logger {
+    static let shared: Logger = .init()
 }

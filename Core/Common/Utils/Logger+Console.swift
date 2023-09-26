@@ -36,50 +36,48 @@ import OpenCombine
             }
         }
 
+        func ad(_ text: String) {
+            debugWithConsole(text, tag: "ad") {
+                Self.adConsole.kvValue
+            }
+        }
+
+        func track(_ text: String) {
+            debugWithConsole(text, tag: "track") {
+                Self.trackConsole.kvValue
+            }
+        }
+
+        func tts(_ text: String) {
+            debugWithConsole(text, tag: "tts") {
+                Self.ttsConsole.kvValue
+            }
+        }
+
+        func debugWithConsole(_ text: String, tag: String, check: ValueBuilder<Bool>) {
+            debug(text, tag: tag)
+
+            guard check() else {
+                return
+            }
+
+            console(text, tag: tag)
+        }
+
         func console(_ text: String, tag: String) {
             guard Self.showConsole.kvValue else {
                 return
             }
             Self.console.print("\(tag): \(text)")
         }
-
-        func ad(_ text: String) {
-            let tag = "ad"
-            debug(text, tag: tag)
-            guard Self.adConsole.kvValue else {
-                return
-            }
-            console(text, tag: "ad")
-        }
-
-        func track(_ text: String) {
-            let tag = "track"
-            debug(text, tag: tag)
-
-            guard Self.trackConsole.kvValue else {
-                return
-            }
-
-            console(text, tag: tag)
-        }
-
-        func tts(_ text: String) {
-            let tag = "tts"
-            debug(text, tag: tag)
-
-            guard Self.ttsConsole.kvValue else {
-                return
-            }
-
-            console(text, tag: tag)
-        }
     }
-
 #else
     public extension Logger {
         static func setupConsole() {}
-        func console(_: String, tag _: String) {}
         func ad(_: String) {}
         func track(_: String) {}
+        func tts(_: String) {}
+        func debugWithConsole(_: String, tag _: String, check _: ValueBuilder<Bool>) {}
+        func console(_: String, tag _: String) {}
     }
 #endif

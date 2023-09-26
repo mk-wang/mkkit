@@ -27,6 +27,26 @@ public extension UIColor {
         self.init(rgb: argb, alpha: CGFloat((argb >> 24) & 0xFF) / CGFloat(255.0))
     }
 
+    convenience init?(hex: String) {
+        var cString: String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if cString.hasPrefix("#") {
+            cString.remove(at: cString.startIndex)
+        }
+
+        let strCount = cString.count
+        var rgbValue: Int64 = 0
+        guard strCount == 6 || strCount == 8, Scanner(string: cString).scanHexInt64(&rgbValue) else {
+            return nil
+        }
+
+        var alpha: CGFloat = 1.0
+        if strCount == 8 {
+            alpha = CGFloat((rgbValue & 0xFF00_0000) >> 24) / 255.0
+        }
+        self.init(rgb: rgbValue, alpha: alpha)
+    }
+
     func lighten(by percentage: CGFloat = 0.2) -> UIColor {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)

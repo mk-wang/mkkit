@@ -102,6 +102,13 @@ public extension UIScrollView {
             weakSelf?.contentOffset = offset
         }
     }
+
+    @discardableResult
+    func stopScroll() -> CGPoint {
+        let offset = contentOffset
+        setContentOffset(offset, animated: false)
+        return offset
+    }
 }
 
 public extension UIScrollView {

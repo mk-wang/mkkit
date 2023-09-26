@@ -44,10 +44,16 @@ open class ShareItem: NSObject, UIActivityItemSource {
 public enum ShareHelper {
     public static func share(in vc: UIViewController,
                              text: String,
+                             images: [UIImage]? = nil,
                              subject: String? = nil)
     {
+        var items: [Any] = [ShareItem(text: text, subject: subject)]
+        if let images, images.isNotEmpty {
+            items.append(contentsOf: images)
+        }
+
         let activityController = UIActivityViewController(
-            activityItems: [ShareItem(text: text, subject: subject)],
+            activityItems: items,
             applicationActivities: nil
         )
         vc.present(activityController, animated: true)
