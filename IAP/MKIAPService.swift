@@ -1,5 +1,5 @@
 //
-//  IAPService.swift
+//  MKIAPService.swift
 //  MKKit
 //
 //  Created by MK on 2023/9/27.
@@ -14,19 +14,17 @@ import SwiftyStoreKit
 
 public extension MKIAPService {
     struct Config {
-        public let productInfoList: [ProductInfo]
         public let setPremiumAtLaunch: Bool
         public let failAtLaunch: Bool
         public let passbyLocalVerification: Bool
         public let envBuilder: ValueBuilder<IAPEnvironment>?
 
-        public init(productInfoList: [ProductInfo],
+        public init(productInfoList _: [MKIAPProduct],
                     setPremiumAtLaunch: Bool,
                     failAtLaunch: Bool,
                     passbyLocalVerification: Bool = false,
                     envBuilder: ValueBuilder<IAPEnvironment>? = nil)
         {
-            self.productInfoList = productInfoList
             self.setPremiumAtLaunch = setPremiumAtLaunch
             self.passbyLocalVerification = passbyLocalVerification
             self.failAtLaunch = failAtLaunch
@@ -52,6 +50,8 @@ open class MKIAPService {
         }
     }
 
+    public let productList: [MKIAPProduct]
+
     public let config: Config
 
     private var loadingProduct: Bool = false
@@ -68,26 +68,22 @@ open class MKIAPService {
         }
     }
 
-    public var productInfoList: [ProductInfo] {
-        config.productInfoList
-    }
-
     public init(sharedSecret: String,
                 purchasedSubject: CurrentValueSubject<Set<String>, Never>,
+                productList: [MKIAPProduct],
                 config: Config)
     {
         self.sharedSecret = sharedSecret
+        self.productList = productList
         self.purchasedSubject = purchasedSubject
         self.config = config
     }
 
-    public lazy var productList = productInfoList.map(\.product)
     public lazy var productIDList = productList.map(\.id)
 }
 
 extension MKIAPService {
-    public func purchase(product info: ProductInfo, callback: ((Bool) -> Void)? = nil) {
-        let product = info.product
+    public func purchase(product: MKIAPProduct, callback: ((Bool) -> Void)? = nil) {
         let productID = product.id
         IAPHelper.purchase(productID: productID,
                            secret: sharedSecret,
@@ -155,9 +151,9 @@ extension MKIAPService {
     }
 
     func updateSKProduct(skProduct: SKProduct) {
-        productInfoList.first {
-            $0.product.id == skProduct.productIdentifier
-        }?.skProduct = skProduct
+        productList.first {
+            $0.id == skProduct.productIdentifier
+        }?.update(skProduct: skProduct)
     }
 
     func validatePurchase(setPremium: Bool, forceRefresh: Bool, callback: ((Bool) -> Void)? = nil) {
