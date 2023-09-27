@@ -17,17 +17,20 @@ public extension MKIAPService {
         public let productInfoList: [ProductInfo]
         public let setPremiumAtLaunch: Bool
         public let failAtLaunch: Bool
+        public let passbyLocalVerification: Bool
         public let envBuilder: ValueBuilder<IAPEnvironment>?
 
         public init(productInfoList: [ProductInfo],
                     setPremiumAtLaunch: Bool,
                     failAtLaunch: Bool,
+                    passbyLocalVerification: Bool = false,
                     envBuilder: ValueBuilder<IAPEnvironment>? = nil)
         {
             self.productInfoList = productInfoList
-            self.envBuilder = envBuilder
             self.setPremiumAtLaunch = setPremiumAtLaunch
+            self.passbyLocalVerification = passbyLocalVerification
             self.failAtLaunch = failAtLaunch
+            self.envBuilder = envBuilder
         }
     }
 }
@@ -172,6 +175,8 @@ extension MKIAPService {
 
         Logger.shared.iap("validatePurchase setPremium \(setPremium), forceRefresh \(forceRefresh)")
 
+        let passbyLocalVerification = config.passbyLocalVerification
+
         IAPHelper.verifyPurchase(products: products,
                                  subscriptions: subscriptions,
                                  secret: sharedSecret,
@@ -191,6 +196,11 @@ extension MKIAPService {
             }
 
             guard environment != .local else {
+                #if DEBUG_BUILD
+                    if passbyLocalVerification {
+                        idSet = Set(products).union(subscriptions)
+                    }
+                #endif
                 return
             }
 
