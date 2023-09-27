@@ -19,8 +19,7 @@ public extension MKIAPService {
         public let passbyLocalVerification: Bool
         public let envBuilder: ValueBuilder<IAPEnvironment>?
 
-        public init(productInfoList _: [MKIAPProduct],
-                    setPremiumAtLaunch: Bool,
+        public init(setPremiumAtLaunch: Bool,
                     failAtLaunch: Bool,
                     passbyLocalVerification: Bool = false,
                     envBuilder: ValueBuilder<IAPEnvironment>? = nil)
