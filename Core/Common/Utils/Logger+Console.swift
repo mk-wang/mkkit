@@ -24,6 +24,9 @@ import OpenCombine
         @KVStorageProperty(key: "debug.logs.tts", storage: UserDefaultsStorage())
         private(set) static var ttsConsole: Bool = true
 
+        @KVStorageProperty(key: "debug.logs.iap", storage: UserDefaultsStorage())
+        private(set) static var iapConsole: Bool = true
+
         private static var consoleObs: AnyCancellable?
 
         static func setupConsole() {
@@ -54,6 +57,12 @@ import OpenCombine
             }
         }
 
+        func iap(_ text: String) {
+            debugWithConsole(text, tag: "iap") {
+                Self.iapConsole.kvValue
+            }
+        }
+
         func debugWithConsole(_ text: String, tag: String, check: ValueBuilder<Bool>) {
             debug(text, tag: tag)
 
@@ -77,6 +86,7 @@ import OpenCombine
         func ad(_: String) {}
         func track(_: String) {}
         func tts(_: String) {}
+        func iap(_: String) {}
         func debugWithConsole(_: String, tag _: String, check _: ValueBuilder<Bool>) {}
         func console(_: String, tag _: String) {}
     }
