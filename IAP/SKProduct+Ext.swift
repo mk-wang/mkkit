@@ -16,11 +16,11 @@ public extension SKProduct {
         return formatter.currencyCode
     }
 
-    func originPrice(rate: NSDecimalNumber) -> String? {
+    func localizedRatePrice(rate: NSDecimalNumber) -> String? {
         let formatter = NumberFormatter()
         formatter.locale = priceLocale
         formatter.numberStyle = .currency
-        let value = price.dividing(by: rate)
+        let value = price * rate
         return formatter.string(from: value)
     }
 }
