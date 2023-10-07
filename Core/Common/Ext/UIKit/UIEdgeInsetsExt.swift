@@ -20,9 +20,9 @@ public extension UIEdgeInsets {
         .init(top: value, left: 0, bottom: value, right: 0)
     }
 
-    static func only(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
-        UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
-    }
+//    static func only(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
+//        UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+//    }
 
     var verticalSize: CGFloat {
         top + bottom

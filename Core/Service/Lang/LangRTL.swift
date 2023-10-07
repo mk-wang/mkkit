@@ -82,6 +82,22 @@ public extension UIEdgeInsets {
         }
         return Self(top: top, left: right, bottom: bottom, right: left)
     }
+
+    var start: CGFloat {
+        Lang.current.isRTL ? right : left
+    }
+
+    var end: CGFloat {
+        Lang.current.isRTL ? left : right
+    }
+
+    static func only(top: CGFloat = 0, start: CGFloat = 0, bottom: CGFloat = 0, end: CGFloat = 0) -> Self {
+        if Lang.current.isRTL {
+            return UIEdgeInsets(top: top, left: end, bottom: bottom, right: start)
+        } else {
+            return UIEdgeInsets(top: top, left: start, bottom: bottom, right: end)
+        }
+    }
 }
 
 public extension NSTextAlignment {

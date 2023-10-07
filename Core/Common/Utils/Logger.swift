@@ -136,18 +136,53 @@ public protocol Printer {
 // MARK: - OSPrinter
 
 open class OSPrinter {
-    private let osLog: OSLog
+    private let inner: Printer
 
     public init(
         subsystem: String, category: String
     ) {
-        osLog = OSLog(subsystem: subsystem, category: category)
+        if #available(iOS 14.0, *) {
+            inner = OSPrinterNew(subsystem: subsystem, category: category)
+        } else {
+            inner = OSPrinterOld(subsystem: subsystem, category: category)
+        }
     }
 }
 
 // MARK: Printer
 
 extension OSPrinter: Printer {
+    public func write(level: Logger.Level,
+                      message: String,
+                      tag: String?,
+                      function: String,
+                      file: String,
+                      line: UInt)
+    {
+        inner.write(level: level,
+                    message: message,
+                    tag: tag,
+                    function: function,
+                    file: file,
+                    line: line)
+    }
+}
+
+// MARK: - OSPrinterOld
+
+class OSPrinterOld {
+    private let osLog: OSLog
+
+    public init(
+        subsystem: String, category: String
+    ) {
+        osLog = .init(subsystem: subsystem, category: category)
+    }
+}
+
+// MARK: Printer
+
+extension OSPrinterOld: Printer {
     public func write(level: Logger.Level,
                       message: String,
                       tag: String?,
@@ -162,6 +197,53 @@ extension OSPrinter: Printer {
                                     file: file,
                                     line: line)
         os_log("%{public}@", log: osLog, type: level.osType, content)
+    }
+}
+
+// MARK: - OSPrinterNew
+
+@available(iOS 14.0, *)
+class OSPrinterNew {
+    private let osLog: os.Logger
+    public init(
+        subsystem: String, category: String
+    ) {
+        osLog = .init(subsystem: subsystem, category: category)
+    }
+}
+
+// MARK: Printer
+
+@available(iOS 14.0, *)
+extension OSPrinterNew: Printer {
+    public func write(level: Logger.Level,
+                      message: String,
+                      tag: String?,
+                      function: String,
+                      file: String,
+                      line: UInt)
+    {
+        let content = formatMessage(level: level,
+                                    message: message,
+                                    tag: tag,
+                                    function: function,
+                                    file: file,
+                                    line: line)
+        osLog.log(level: level.osLoggerLevel, "\(content)")
+    }
+}
+
+@available(iOS 14.0, *)
+extension Logger.Level {
+    var osLoggerLevel: OSLogType {
+        switch self {
+        case .debug:
+            return .debug
+        case .info:
+            return .info
+        case .error:
+            return .error
+        }
     }
 }
 

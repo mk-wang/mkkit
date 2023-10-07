@@ -89,6 +89,22 @@ public extension ScreenUtil {
 }
 
 public extension ScreenUtil {
+    static func topHeight(safeArea h1: CGFloat, normal h2: CGFloat) -> CGFloat {
+        hasNotch ? h1 : h2
+    }
+
+    static func topSafeAreaOr(height: CGFloat) -> CGFloat {
+        topHeight(safeArea: topSafeArea, normal: height)
+    }
+
+    static func topSafeAreaMax(height: CGFloat) -> CGFloat {
+        max(topSafeArea, height)
+    }
+
+    static func topHeight(safeAreaAddition h1: CGFloat, normal h2: CGFloat? = nil) -> CGFloat {
+        hasNotch ? topSafeArea + h1 : (h2 ?? h1)
+    }
+
     static func bottomHeight(safeArea h1: CGFloat, normal h2: CGFloat) -> CGFloat {
         bottomSafeArea > 1 ? h1 : h2
     }
