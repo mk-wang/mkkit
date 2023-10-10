@@ -15,6 +15,7 @@ public extension Lang {
         switch self {
         case .en,
              .uk:
+//            return AVSpeechSynthesisVoiceIdentifierAlex
             return "com.apple.ttsbundle.Samantha-compact"
         case .fr:
             return "com.apple.ttsbundle.Amelie-compact"
@@ -118,7 +119,16 @@ open class MKAVSpeech: NSObject {
     public init(lang: Lang) {
         self.lang = lang
         synthesizer = AVSpeechSynthesizer()
-        voice = AVSpeechSynthesisVoice(identifier: lang.speechId) ?? AVSpeechSynthesisVoice(language: lang.speechLang)
+
+        do {
+            var voice = AVSpeechSynthesisVoice(identifier: lang.speechId)
+            if voice == nil {
+                voice = AVSpeechSynthesisVoice(language: lang.speechLang)
+            }
+            self.voice = voice
+        } catch {
+            Logger.shared.error("AVSpeechSynthesisVoice with \(lang)")
+        }
 
         super.init()
 

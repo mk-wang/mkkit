@@ -18,6 +18,12 @@ public extension SnpLayoutObject {
         }
     }
 
+    func addSnpSize(_ size: CGSize) {
+        addSnpConfig {
+            $1.size.equalTo(size)
+        }
+    }
+
     func addSnpEdgesToSuper(_ inset: UIEdgeInsets = .zero) {
         addSnpConfig {
             $1.edges.equalToSuperview().inset(inset)

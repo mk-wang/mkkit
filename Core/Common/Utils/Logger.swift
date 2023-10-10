@@ -216,6 +216,16 @@ class OSPrinterNew {
 
 @available(iOS 14.0, *)
 extension OSPrinterNew: Printer {
+    private static let dateFmt: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "HH:mm:sss"
+        return fmt
+    }()
+
+    private static var time: String {
+        dateFmt.string(from: .init())
+    }
+
     public func write(level: Logger.Level,
                       message: String,
                       tag: String?,
@@ -229,7 +239,7 @@ extension OSPrinterNew: Printer {
                                     function: function,
                                     file: file,
                                     line: line)
-        osLog.log(level: level.osLoggerLevel, "\(content)")
+        osLog.log(level: level.osLoggerLevel, "\(Self.time) \(content)")
     }
 }
 
