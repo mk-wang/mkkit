@@ -39,15 +39,7 @@ open class SelectedItems<T> {
             subject.value
         }
         set {
-            if !removeDuplicates || subject.value != newValue {
-                var index = newValue
-                if let val = newValue {
-                    if val < 0 || val >= list.count {
-                        index = nil
-                    }
-                }
-                subject.value = index
-            }
+            setSelectedIndex(index: newValue)
         }
     }
 
@@ -71,6 +63,20 @@ open class SelectedItems<T> {
             return nil
         }
         return list.at(index)
+    }
+
+    public private(set) weak var setter: AnyObject?
+    public func setSelectedIndex(index: Int?, setter: AnyObject? = nil) {
+        if !removeDuplicates || subject.value != index {
+            var index = index
+            if let val = index {
+                if val < 0 || val >= list.count {
+                    index = nil
+                }
+            }
+            self.setter = setter
+            subject.value = index
+        }
     }
 }
 

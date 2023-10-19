@@ -124,3 +124,14 @@ public extension Int {
         (digit != 0) && (self % digit == 0)
     }
 }
+
+public extension Int {
+    func formatNumber(separator: String? = nil) -> String {
+        let formater = NumberFormatter()
+        if let separator {
+            formater.groupingSeparator = separator
+        }
+        formater.numberStyle = .decimal
+        return formater.string(from: NSNumber(value: self))!
+    }
+}

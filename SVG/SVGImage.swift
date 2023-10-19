@@ -113,3 +113,14 @@ public func svgImage(url: URL, size: CGSize? = nil) -> UIImage? {
         return UIImage(svgImage)
     }
 }
+
+public func svgImage(data: Data, size: CGSize? = nil) -> UIImage? {
+    guard let svgImage = SwiftDraw.SVG(data: data) else {
+        return nil
+    }
+    if let size {
+        return svgImage.rasterize(with: size)
+    } else {
+        return UIImage(svgImage)
+    }
+}

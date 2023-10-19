@@ -56,3 +56,59 @@ public extension UIColor {
                        alpha: alpha)
     }
 }
+
+public extension Int64 {
+    var argb: UIColor {
+        .init(argb: self)
+    }
+
+    var rgba: UIColor {
+        .init(rgba: self)
+    }
+
+    var rgb: UIColor {
+        .init(rgb: self)
+    }
+}
+
+public extension UInt64 {
+    var argb: UIColor {
+        .init(argb: Int64(self))
+    }
+
+    var rgba: UIColor {
+        .init(rgba: Int64(self))
+    }
+
+    var rgb: UIColor {
+        .init(rgb: Int64(self))
+    }
+}
+
+public extension Int {
+    var argb: UIColor {
+        .init(argb: Int64(self))
+    }
+
+    var rgba: UIColor {
+        .init(rgba: Int64(self))
+    }
+
+    var rgb: UIColor {
+        .init(rgb: Int64(self))
+    }
+}
+
+public extension UInt {
+    var argb: UIColor {
+        .init(argb: Int64(self))
+    }
+
+    var rgba: UIColor {
+        .init(rgba: Int64(self))
+    }
+
+    var rgb: UIColor {
+        .init(rgb: Int64(self))
+    }
+}

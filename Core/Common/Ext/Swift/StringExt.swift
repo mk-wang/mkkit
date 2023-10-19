@@ -90,7 +90,7 @@ public extension String {
     }
 
     func makeAttrByTags(normal: [NSAttributedString.Key: Any],
-                        tagAttrs: [String: [NSAttributedString.Key: Any]]) -> NSAttributedString
+                        tagAttrs: [String: [NSAttributedString.Key: Any]]) -> NSMutableAttributedString
     {
         let mStr = NSMutableAttributedString()
         var search = startIndex ..< endIndex
@@ -141,7 +141,7 @@ public extension String {
 
     func makeAttrByTag(normal: [NSAttributedString.Key: Any],
                        tag: String,
-                       tagAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
+                       tagAttrs: [NSAttributedString.Key: Any]) -> NSMutableAttributedString
     {
         makeAttrByTags(normal: normal,
                        tagAttrs: [tag: tagAttrs])
@@ -151,14 +151,14 @@ public extension String {
     func makeAttrByFormat(key: String = "%@",
                           attrs: [NSAttributedString.Key: Any],
                           param: String,
-                          paramAttrs: [NSAttributedString.Key: Any]) -> NSAttributedString
+                          paramAttrs: [NSAttributedString.Key: Any]) -> NSMutableAttributedString
     {
         guard !key.isEmpty else {
-            return NSAttributedString(string: self, attributes: attrs)
+            return NSMutableAttributedString(string: self, attributes: attrs)
         }
         let parts = components(separatedBy: key)
         guard parts.count == 2 else {
-            return NSAttributedString(string: self, attributes: attrs)
+            return NSMutableAttributedString(string: self, attributes: attrs)
         }
         let mStr = NSMutableAttributedString()
         if let text = parts.first, text.isNotEmpty {
@@ -316,5 +316,9 @@ public extension String {
         } else {
             return .init(fileURLWithPath: self)
         }
+    }
+
+    var url: URL? {
+        URL(string: self)
     }
 }

@@ -12,11 +12,11 @@ public extension UIEdgeInsets {
         UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
 
-    static func horizontal(_ value: CGFloat = 0) -> Self {
+    static func horizontal(_ value: CGFloat) -> Self {
         .init(top: 0, left: value, bottom: 0, right: value)
     }
 
-    static func vertical(_ value: CGFloat = 0) -> Self {
+    static func vertical(_ value: CGFloat) -> Self {
         .init(top: value, left: 0, bottom: value, right: 0)
     }
 

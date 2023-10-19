@@ -77,12 +77,6 @@ public extension NSAttributedString {
 
 // MARK: - Methods
 
-public extension NSMutableAttributedString {
-    func addAttributes(attributes: [Key: Any]) {
-        addAttributes(attributes, range: NSRange(0 ..< length))
-    }
-}
-
 public extension NSAttributedString {
     /// SwifterSwift: Applies given attributes to the new instance of NSAttributedString initialized with self object.
     ///
@@ -200,5 +194,18 @@ public extension NSAttributedString {
     @discardableResult
     func font(_ font: UIFont) -> NSAttributedString {
         applying(attributes: [.font: font])
+    }
+}
+
+public extension NSMutableAttributedString {
+    func addAttributes(attributes: [Key: Any]) {
+        addAttributes(attributes, range: NSRange(0 ..< length))
+    }
+
+    func addParagraph(configure: (NSMutableParagraphStyle) -> Void) {
+        let paragraph = NSMutableParagraphStyle()
+        configure(paragraph)
+        let attrs = [NSAttributedString.Key.paragraphStyle: paragraph]
+        return addAttributes(attributes: attrs)
     }
 }
