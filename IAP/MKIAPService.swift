@@ -98,17 +98,19 @@ extension MKIAPService {
         }
     }
 
-    public func checkAtAppStart() {
+    public func checkAtAppStart(completion: (([Purchase], [Purchase], IAPHelper.PurchaseResult) -> Void)? = nil) {
         Logger.shared.iap("checkAtAppStart purchased  \(purchased) ")
 
         isPremium = purchased.isNotEmpty
         let setPremium = config.setPremiumAtLaunch
 
-        IAPHelper.startObserving { [weak self] _, _, result in
+        IAPHelper.startObserving { [weak self] all, finished, result in
             Logger.shared.iap("checkAtAppStart observing  \(result.purchased) ")
             if !result.purchased.isEmpty {
                 self?.validatePurchase(setPremium: setPremium, forceRefresh: false)
             }
+
+            completion?(all, finished, result)
         }
 
         if isPremium {
