@@ -71,6 +71,11 @@ Pod::Spec.new do |s|
     ss.dependency 'SwiftyStoreKit'
   end
 
+  s.subspec 'Lottie' do |ss|
+    ss.source_files = 'Lottie/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'lottie-ios'
+  end
+  
   s.subspec 'YogaKit' do |ss|
     ss.source_files = 'YogaKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'YogaKit'

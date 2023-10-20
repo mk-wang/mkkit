@@ -1,0 +1,371 @@
+//
+//  MKListView.swift
+//
+//  Created by MK on 2021/5/31.
+//
+
+import OpenCombine
+import UIKit
+
+// MARK: - PageView
+
+public protocol PageView: AnyObject {
+    var pageCount: Int {
+        get
+    }
+
+    var currentPage: Int {
+        get
+    }
+    func toPage(index _: Int, animated _: Bool)
+}
+
+// MARK: - MKListView
+
+open class MKListView: UIView {
+    public struct Config {
+        let spacing: CGFloat
+        let initialIndex: Int
+        let width: CGFloat?
+        let builder: (UIView, Int) -> UIView?
+        let count: Int
+
+        public init(count: Int,
+                    spacing: CGFloat = 0,
+                    initialIndex: Int = 0,
+                    width: CGFloat? = nil,
+                    builder: @escaping (UIView, Int) -> UIView?)
+        {
+            self.initialIndex = initialIndex
+            self.spacing = spacing
+            self.width = width
+            self.count = count
+            self.builder = builder
+        }
+    }
+
+    public let config: Config
+
+    public var pageCount: Int {
+        config.count
+    }
+
+    public var scrollConfigure: ((UIScrollView) -> Void)?
+    public var onOffsetChange: ((UIScrollView) -> Void)?
+    public var onScrollEnd: ((UIScrollView) -> Void)?
+    public var onIndexChange: ((Int, Int) -> Void)? // old , current
+
+    public fileprivate(set) lazy var currentPage = config.initialIndex {
+        didSet {
+            guard currentPage != oldValue, let onIndexChange else {
+                return
+            }
+            onIndexChange(oldValue, currentPage)
+        }
+    }
+
+    public init(frame: CGRect, config: Config) {
+        self.config = config
+        super.init(frame: frame)
+    }
+
+    @available(*, unavailable)
+    public required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    fileprivate(set) var scrollView: UIScrollView?
+
+    fileprivate var extendHitInset: UIEdgeInsets?
+
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard isReadyToConfig, pageCount > 0 else {
+            return
+        }
+
+        weak var weakSelf = self
+        addSnpScrollView(vertical: false) { scroll, box in
+            weakSelf?.scrollView = scroll
+            weakSelf?.setupBox(scroll: scroll, box: box)
+        }
+
+        layoutIfNeeded()
+        toPage(index: currentPage, animated: false)
+    }
+
+    override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if let view = super.hitTest(point, with: event) {
+            return view
+        }
+        var rect = bounds
+        if let extendHitInset {
+            rect = rect.inset(by: extendHitInset)
+        }
+        return rect.contains(point) ? scrollView : nil
+    }
+}
+
+extension MKListView {
+    open func setupBox(scroll: UIScrollView, box: UIView) {
+        scrollView = scroll
+
+        scroll.delegate = self
+        scroll.showsHorizontalScrollIndicator = false
+
+        scrollConfigure?(scroll)
+
+        var builders: [UIView.SnpStackViewBuilder] = []
+
+        for index in 0 ..< pageCount {
+            if index != 0 {
+                builders.append(.space(config.spacing))
+            }
+
+            let cell = config.builder(self, index) ?? .init()
+            let cellWidth = config.width ?? bounds.size.width
+            cell.addSnpConfig { _, make in
+                make.verticalEdges.equalToSuperview()
+                make.width.equalTo(cellWidth)
+            }
+
+            builders.append(.view(cell))
+        }
+        box.addSnpStackSubviews(.horizontal, builders: builders)
+    }
+}
+
+// MARK: PageView
+
+extension MKListView: PageView {}
+
+// MARK: UIScrollViewDelegate
+
+extension MKListView: UIScrollViewDelegate {
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        onOffsetChange?(scrollView)
+    }
+
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let scrollToScrollStop = !scrollView.isTracking && !scrollView.isDragging && !scrollView.isDecelerating
+        if scrollToScrollStop {
+            scrollDidEnd(scrollView)
+        }
+    }
+
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            let dragToDragStop = scrollView.isTracking && !scrollView.isDragging && !scrollView.isDecelerating
+            if dragToDragStop {
+                scrollDidEnd(scrollView)
+            }
+        }
+    }
+
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        scrollDidEnd(scrollView)
+    }
+
+    @objc func scrollDidEnd(_ scrollView: UIScrollView) {
+        onScrollEnd?(scrollView)
+        updateCurrentIndex(scrollView)
+    }
+
+    @objc func updateCurrentIndex(_ scrollView: UIScrollView) {
+        let offset = scrollView.contentOffset.x
+        let cellWidth = config.width ?? bounds.size.width
+        var page = Int(round(offset / (config.spacing + cellWidth)))
+        if Lang.current.isRTL {
+            page = config.count - 1 - page
+        }
+        currentPage = page
+    }
+}
+
+public extension MKListView {
+    open func toPage(index: Int, animated: Bool) {
+        guard let scrollView else {
+            return
+        }
+
+        let postion = position(index: index, scrollView: scrollView)
+        let offset: CGPoint = .init(x: postion, y: 0)
+        if animated {
+            scrollView.setContentOffset(offset, animated: true)
+        } else {
+            scrollView.contentOffset = offset
+        }
+        currentPage = index
+    }
+
+    private func position(index: Int, scrollView: UIScrollView) -> CGFloat {
+        let fixedIndex: CGFloat = .init(Lang.current.isRTL ? (config.count - 1 - index) : index)
+        let cellWidth = config.width ?? bounds.size.width
+        var x = (cellWidth + config.spacing) * fixedIndex
+        let minX = scrollView.minOffset(vertical: false)
+
+        if x < minX {
+            x = minX
+        } else {
+            let maxX = scrollView.maxOffset(vertical: false)
+            x = min(maxX, x)
+        }
+
+        return x
+    }
+}
+
+// MARK: - MKPagedListView
+
+open class MKPagedListView: UIView {
+    public struct Config {
+        let spacing: CGFloat
+        let initialIndex: Int
+        let width: CGFloat
+        let builder: (UIView, Int) -> UIView?
+        let count: Int
+        let scaleFact: CGFloat?
+
+        public init(count: Int,
+                    spacing: CGFloat,
+                    initialIndex: Int = 0,
+                    width: CGFloat,
+                    scaleFact: CGFloat? = nil,
+                    builder: @escaping (UIView, Int) -> UIView?)
+        {
+            self.initialIndex = initialIndex
+            self.spacing = spacing
+            self.width = width
+            self.count = count
+            self.scaleFact = scaleFact
+            self.builder = builder
+        }
+    }
+
+    public let config: Config
+
+    public var onIndexChange: ((Int, Int) -> Void)? // old , current
+    public var onOffsetChange: ((UIScrollView) -> Void)?
+    public var onScrollEnd: ((UIScrollView) -> Void)?
+
+    public var cardCount: Int {
+        config.count
+    }
+
+    public fileprivate(set) lazy var currentPage = config.initialIndex {
+        didSet {
+            guard currentPage != oldValue, let onIndexChange else {
+                return
+            }
+            onIndexChange(oldValue, currentPage)
+        }
+    }
+
+    public init(frame: CGRect, config: Config) {
+        self.config = config
+        super.init(frame: frame)
+    }
+
+    @available(*, unavailable)
+    public required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    fileprivate var scaleViewList = [UIView]()
+
+    private lazy var listView: MKListView = {
+        let selfSize = self.bounds.size
+        let cellWidth = config.width
+        let spacing = config.spacing
+        let listWidth = spacing + cellWidth
+
+        let listSize: CGSize = .init(listWidth, selfSize.height)
+        let builder = config.builder
+
+        weak var weakSelf = self
+        let needScale = config.scaleFact != nil
+        var listConfig: MKListView.Config = .init(count: config.count,
+                                                  spacing: 0,
+                                                  initialIndex: config.initialIndex,
+                                                  width: listWidth,
+                                                  builder: { _, index in
+                                                      let box = UIView()
+                                                      let view = builder(box, index) ?? .init()
+                                                      view.addSnpEdgesToSuper(.only(end: spacing))
+                                                      box.addSnpSubview(view)
+                                                      if needScale {
+                                                          weakSelf?.scaleViewList.append(view)
+                                                      }
+                                                      return box
+                                                  })
+
+        let box = MKListView(frame: listSize.toRect(), config: listConfig)
+        let xMargin = (selfSize.width - cellWidth) / 2
+        box.addSnpConfig { _, make in
+            make.size.equalTo(listSize)
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().inset(xMargin)
+        }
+        box.scrollConfigure = {
+            $0.clipsToBounds = false
+            $0.isPagingEnabled = true
+        }
+        box.extendHitInset = .only(start: -xMargin)
+        box.clipsToBounds = false
+
+        box.onIndexChange = {
+            weakSelf?.onIndexChange?($0, $1)
+            weakSelf?.currentPage = $1
+        }
+        box.onOffsetChange = {
+            weakSelf?.offsetChange($0)
+        }
+
+        box.onScrollEnd = {
+            weakSelf?.onScrollEnd?($0)
+        }
+        return box
+    }()
+
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard isReadyToConfig, cardCount > 0 else {
+            return
+        }
+        addSnpSubview(listView)
+    }
+
+    open func toPage(index: Int, animated: Bool) {
+        listView.toPage(index: index, animated: animated)
+    }
+
+    open func offsetChange(_ scrollView: UIScrollView) {
+        defer {
+            onOffsetChange?(scrollView)
+        }
+        guard let fact = config.scaleFact else {
+            return
+        }
+        let selfSize = bounds.size
+        let offset = scrollView.contentOffset.x
+        let position = offset + (selfSize.height / 2) + (config.spacing) / 2
+        for view in scaleViewList {
+            let centerX = view.superview!.center.x
+            let distance = abs(position - centerX)
+            if distance < selfSize.width {
+                let scale: CGFloat = 1 / (1 + fact * distance)
+                view.transform = .init(scaleX: scale, y: scale)
+            }
+        }
+    }
+}
+
+// MARK: PageView
+
+extension MKPagedListView: PageView {
+    public var pageCount: Int {
+        config.count
+    }
+}
