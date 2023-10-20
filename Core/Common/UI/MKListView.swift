@@ -17,7 +17,15 @@ public protocol PageView: AnyObject {
     var currentPage: Int {
         get
     }
+
     func toPage(index _: Int, animated _: Bool)
+}
+
+// MARK: - PageViewIndexChangeEvent
+
+public enum PageViewIndexChangeEvent {
+    case toPage
+    case scroll
 }
 
 // MARK: - MKListView
@@ -53,16 +61,9 @@ open class MKListView: UIView {
     public var scrollConfigure: ((UIScrollView) -> Void)?
     public var onOffsetChange: ((UIScrollView) -> Void)?
     public var onScrollEnd: ((UIScrollView) -> Void)?
-    public var onIndexChange: ((Int, Int) -> Void)? // old , current
+    public var onIndexChange: ((Int, Int, PageViewIndexChangeEvent) -> Void)? // old , current, event
 
-    public fileprivate(set) lazy var currentPage = config.initialIndex {
-        didSet {
-            guard currentPage != oldValue, let onIndexChange else {
-                return
-            }
-            onIndexChange(oldValue, currentPage)
-        }
-    }
+    public private(set) lazy var currentPage = config.initialIndex
 
     public init(frame: CGRect, config: Config) {
         self.config = config
@@ -77,6 +78,15 @@ open class MKListView: UIView {
     fileprivate(set) var scrollView: UIScrollView?
 
     fileprivate var extendHitInset: UIEdgeInsets?
+
+    func setIndex(index: Int, event: PageViewIndexChangeEvent) {
+        guard index != currentPage else {
+            return
+        }
+        let old = currentPage
+        currentPage = index
+        onIndexChange?(old, currentPage, event)
+    }
 
     override open func layoutSubviews() {
         super.layoutSubviews()
@@ -169,17 +179,17 @@ extension MKListView: UIScrollViewDelegate {
 
     @objc func scrollDidEnd(_ scrollView: UIScrollView) {
         onScrollEnd?(scrollView)
-        updateCurrentIndex(scrollView)
+        updateIndexByScroller(scrollView)
     }
 
-    @objc func updateCurrentIndex(_ scrollView: UIScrollView) {
+    @objc func updateIndexByScroller(_ scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.x
         let cellWidth = config.width ?? bounds.size.width
         var page = Int(round(offset / (config.spacing + cellWidth)))
         if Lang.current.isRTL {
             page = config.count - 1 - page
         }
-        currentPage = page
+        setIndex(index: page, event: .scroll)
     }
 }
 
@@ -196,7 +206,8 @@ public extension MKListView {
         } else {
             scrollView.contentOffset = offset
         }
-        currentPage = index
+
+        setIndex(index: index, event: .toPage)
     }
 
     private func position(index: Int, scrollView: UIScrollView) -> CGFloat {
@@ -245,7 +256,7 @@ open class MKPagedListView: UIView {
 
     public let config: Config
 
-    public var onIndexChange: ((Int, Int) -> Void)? // old , current
+    public var onIndexChange: ((Int, Int, PageViewIndexChangeEvent) -> Void)? // old , current, event
     public var onOffsetChange: ((UIScrollView) -> Void)?
     public var onScrollEnd: ((UIScrollView) -> Void)?
 
@@ -253,14 +264,7 @@ open class MKPagedListView: UIView {
         config.count
     }
 
-    public fileprivate(set) lazy var currentPage = config.initialIndex {
-        didSet {
-            guard currentPage != oldValue, let onIndexChange else {
-                return
-            }
-            onIndexChange(oldValue, currentPage)
-        }
-    }
+    public private(set) lazy var currentPage = config.initialIndex
 
     public init(frame: CGRect, config: Config) {
         self.config = config
@@ -314,12 +318,12 @@ open class MKPagedListView: UIView {
         box.extendHitInset = .only(start: -xMargin)
         box.clipsToBounds = false
 
-        box.onIndexChange = {
-            weakSelf?.onIndexChange?($0, $1)
-            weakSelf?.currentPage = $1
-        }
         box.onOffsetChange = {
             weakSelf?.offsetChange($0)
+        }
+
+        box.onIndexChange = {
+            weakSelf?.onIndexChange?($0, $1, $2)
         }
 
         box.onScrollEnd = {
