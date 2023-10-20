@@ -82,21 +82,19 @@ open class MKIAPService {
 }
 
 extension MKIAPService {
-    public func purchase(product: MKIAPProduct, callback: ((Bool) -> Void)? = nil) {
+    public func purchase(product: MKIAPProduct, completion: ((Bool, PurchaseInfo?) -> Void)? = nil) {
         let productID = product.id
         IAPHelper.purchase(productID: productID,
                            secret: sharedSecret,
                            environment: iapEnv,
                            subscription: product.isSubscription)
-        { [weak self] suc, error in
+        { [weak self] suc, info, error in
             Logger.shared.iap("purchase \(productID) \(suc) error \(error?.localizedDescription ?? "")")
 
             if suc {
                 self?.didPurchase([productID], override: false, setPremium: true)
             }
-            if let callback {
-                callback(suc)
-            }
+            completion?(suc, info)
         }
     }
 
@@ -106,7 +104,7 @@ extension MKIAPService {
         isPremium = purchased.isNotEmpty
         let setPremium = config.setPremiumAtLaunch
 
-        IAPHelper.startObserving { [weak self] result in
+        IAPHelper.startObserving { [weak self] _, _, result in
             Logger.shared.iap("checkAtAppStart observing  \(result.purchased) ")
             if !result.purchased.isEmpty {
                 self?.validatePurchase(setPremium: setPremium, forceRefresh: false)
@@ -120,15 +118,22 @@ extension MKIAPService {
         loadProducts()
     }
 
-    public func restorePurchase(setPremium: Bool, callback: ((Bool) -> Void)? = nil) {
-        IAPHelper.restore { [weak self] results in
-            let suc = results.restoredPurchases.isNotEmpty
-            Logger.shared.iap("restorePurchase \(suc) ")
+    public func restorePurchase(setPremium: Bool, completion: ((Bool, RestoreInfo) -> Void)? = nil) {
+        IAPHelper.restore { [weak self] info in
+            let results = info.restoreResults
+            let restoreSuc = results.restoredPurchases.isNotEmpty
+            Logger.shared.iap("restorePurchase \(restoreSuc) ")
 
-            if suc {
-                self?.validatePurchase(setPremium: setPremium, forceRefresh: true, callback: callback)
+            if restoreSuc {
+                self?.validatePurchase(setPremium: setPremium,
+                                       forceRefresh: true,
+                                       callback: { suc, receipt, result in
+                                           info.receipt = receipt
+                                           info.purchaseResult = result
+                                           completion?(suc, info)
+                                       })
             } else {
-                callback?(suc)
+                completion?(false, info)
             }
         }
     }
@@ -155,7 +160,7 @@ extension MKIAPService {
         }?.update(skProduct: skProduct)
     }
 
-    func validatePurchase(setPremium: Bool, forceRefresh: Bool, callback: ((Bool) -> Void)? = nil) {
+    func validatePurchase(setPremium: Bool, forceRefresh: Bool, callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil) {
         let environment = iapEnv
         var products = [String]()
         var subscriptions = [String]()
@@ -177,16 +182,16 @@ extension MKIAPService {
                                  secret: sharedSecret,
                                  forceRefresh: forceRefresh,
                                  environment: environment)
-        { [weak self] result, error in
+        { [weak self] receipt, result, error in
             var idSet: Set<String>?
 
             defer {
                 if let idSet {
                     self?.didPurchase(idSet, override: true, setPremium: setPremium)
-                    callback?(true)
+                    callback?(true, receipt, result)
                 } else {
                     self?.resetPurchase(setPremium: setPremium)
-                    callback?(false)
+                    callback?(false, receipt, result)
                 }
             }
 
