@@ -79,6 +79,8 @@ open class MKListView: UIView {
 
     fileprivate var extendHitInset: UIEdgeInsets?
 
+    private var viewList = [UIView]()
+
     func setIndex(index: Int, event: PageViewIndexChangeEvent) {
         guard index != currentPage else {
             return
@@ -139,10 +141,14 @@ extension MKListView {
                 make.verticalEdges.equalToSuperview()
                 make.width.equalTo(cellWidth)
             }
-
+            viewList.append(cell)
             builders.append(.view(cell))
         }
         box.addSnpStackSubviews(.horizontal, builders: builders)
+    }
+
+    open func contentAt(index: Int) -> UIView? {
+        viewList.at(index)
     }
 }
 
@@ -276,7 +282,7 @@ open class MKPagedListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    fileprivate var scaleViewList = [UIView]()
+    fileprivate var pages = [UIView]()
 
     private lazy var listView: MKListView = {
         let selfSize = self.bounds.size
@@ -298,9 +304,7 @@ open class MKPagedListView: UIView {
                                                       let view = builder(box, index) ?? .init()
                                                       view.addSnpEdgesToSuper(.only(end: spacing))
                                                       box.addSnpSubview(view)
-                                                      if needScale {
-                                                          weakSelf?.scaleViewList.append(view)
-                                                      }
+                                                      weakSelf?.pages.append(view)
                                                       return box
                                                   })
 
@@ -355,7 +359,7 @@ open class MKPagedListView: UIView {
         let selfSize = bounds.size
         let offset = scrollView.contentOffset.x
         let position = offset + (selfSize.height / 2) + (config.spacing) / 2
-        for view in scaleViewList {
+        for view in pages {
             let centerX = view.superview!.center.x
             let distance = abs(position - centerX)
             if distance < selfSize.width {
@@ -363,6 +367,10 @@ open class MKPagedListView: UIView {
                 view.transform = .init(scaleX: scale, y: scale)
             }
         }
+    }
+
+    open func pageAt(index: Int) -> UIView? {
+        pages.at(index)
     }
 }
 
