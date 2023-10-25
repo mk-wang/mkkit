@@ -18,13 +18,13 @@ public extension UIViewController {
 }
 
 public extension UIViewController {
-    func disableSlidePan() {
+    @objc open func disableSlidePan() {
         if let reg = navigationController?.interactivePopGestureRecognizer {
             reg.isEnabled = false
         }
     }
 
-    func enableSlidePan() {
+    @objc open func enableSlidePan() {
         if let reg = navigationController?.interactivePopGestureRecognizer {
             reg.isEnabled = true
         }
@@ -32,11 +32,11 @@ public extension UIViewController {
 }
 
 public extension UIViewController {
-    func push(vc: UIViewController, animated: Bool = true) {
+    @objc open func push(vc: UIViewController, animated: Bool = true) {
         navigationController?.pushViewController(vc, animated: animated)
     }
 
-    func goBack(animated: Bool, completion: (() -> Void)? = nil) {
+    @objc open func goBack(animated: Bool, completion: (() -> Void)? = nil) {
         if let nav = navigationController {
             if nav.children.count < 2 {
                 nav.dismiss(animated: animated, completion: completion)
