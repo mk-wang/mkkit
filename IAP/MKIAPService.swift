@@ -107,14 +107,14 @@ extension MKIAPService {
         IAPHelper.startObserving { [weak self] all, finished, result in
             Logger.shared.iap("checkAtAppStart observing  \(result.purchased) ")
             if !result.purchased.isEmpty {
-                self?.validatePurchase(setPremium: setPremium, forceRefresh: false)
+                self?.validatePurchase(setPremium: setPremium, forceRefresh: true)
             }
 
             completion?(all, finished, result)
         }
 
         if isPremium {
-            validatePurchase(setPremium: config.failAtLaunch, forceRefresh: false)
+            validatePurchase(setPremium: config.failAtLaunch, forceRefresh: true)
         }
 
         loadProducts()
