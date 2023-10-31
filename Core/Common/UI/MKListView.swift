@@ -28,6 +28,13 @@ public enum PageViewIndexChangeEvent {
     case scroll
 }
 
+// MARK: - PageViewIndexScrollBehavior
+
+public enum PageViewIndexScrollBehavior {
+    case end
+    case scrolling
+}
+
 // MARK: - MKListView
 
 open class MKListView: UIView {
@@ -62,6 +69,8 @@ open class MKListView: UIView {
     public var onOffsetChange: ((UIScrollView) -> Void)?
     public var onScrollEnd: ((UIScrollView) -> Void)?
     public var onIndexChange: ((Int, Int, PageViewIndexChangeEvent) -> Void)? // old , current, event
+
+    public var indexChangeBehavior: PageViewIndexScrollBehavior = .end
 
     public private(set) lazy var currentPage = config.initialIndex
 
@@ -108,13 +117,12 @@ open class MKListView: UIView {
     }
 
     override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if let view = super.hitTest(point, with: event) {
-            return view
+        let rt = super.hitTest(point, with: event)
+        guard rt == nil, let extendHitInset else {
+            return rt
         }
-        var rect = bounds
-        if let extendHitInset {
-            rect = rect.inset(by: extendHitInset)
-        }
+
+        let rect = bounds.inset(by: extendHitInset)
         return rect.contains(point) ? scrollView : nil
     }
 }
@@ -161,6 +169,9 @@ extension MKListView: PageView {}
 extension MKListView: UIScrollViewDelegate {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         onOffsetChange?(scrollView)
+        if indexChangeBehavior == .scrolling {
+            updateIndexByScroller(scrollView)
+        }
     }
 
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -185,7 +196,10 @@ extension MKListView: UIScrollViewDelegate {
 
     @objc func scrollDidEnd(_ scrollView: UIScrollView) {
         onScrollEnd?(scrollView)
-        updateIndexByScroller(scrollView)
+
+        if indexChangeBehavior == .end {
+            updateIndexByScroller(scrollView)
+        }
     }
 
     @objc func updateIndexByScroller(_ scrollView: UIScrollView) {
@@ -266,6 +280,15 @@ open class MKPagedListView: UIView {
     public var onOffsetChange: ((UIScrollView) -> Void)?
     public var onScrollEnd: ((UIScrollView) -> Void)?
 
+    public var indexChangeBehavior: PageViewIndexScrollBehavior {
+        get {
+            listView.indexChangeBehavior
+        }
+        set {
+            listView.indexChangeBehavior = newValue
+        }
+    }
+
     public var cardCount: Int {
         config.count
     }
@@ -319,7 +342,7 @@ open class MKPagedListView: UIView {
             $0.clipsToBounds = false
             $0.isPagingEnabled = true
         }
-        box.extendHitInset = .only(start: -xMargin)
+        box.extendHitInset = .only(start: -xMargin, end: min(0, xMargin + listWidth - selfSize.width))
         box.clipsToBounds = false
 
         box.onOffsetChange = {
