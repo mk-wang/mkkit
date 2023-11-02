@@ -2,7 +2,7 @@
 //  PagingCollectionViewLayout.swift
 //  MKKit
 //
-//  Created by MK on 2023/10/10.
+//  Created by MK on 2023/10/10. 不是很好用
 //  https://raw.githubusercontent.com/akxo/paging-collection-view-layout/master/PagingCollectionViewLayout.swift
 // https://gist.github.com/vinhnx/fb20c6942b5823df1c35e69850caf9f6
 

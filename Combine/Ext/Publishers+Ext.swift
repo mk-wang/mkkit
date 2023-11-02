@@ -35,8 +35,12 @@ public extension Publisher {
 }
 
 public extension Publisher where Output: Equatable {
-    func removeDuplicatesAndDropFirst(_ count: Int = 1) -> AnyPublisher<Self.Output, Self.Failure> {
+    func removeDuplicatesAndDrop(_ count: Int = 1) -> AnyPublisher<Self.Output, Self.Failure> {
         removeDuplicates().dropFirst(count).eraseToAnyPublisher()
+    }
+
+    func removeDuplicatesDropAndDebounce(_ count: Int = 1, debounce: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
+        removeDuplicates().dropFirst(count).debounceOnMain(for: debounce).eraseToAnyPublisher()
     }
 }
 

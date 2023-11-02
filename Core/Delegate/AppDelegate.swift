@@ -22,7 +22,7 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
         .eraseToAnyPublisher()
 
     public lazy var appActivedPublisher: AnyPublisher<Void, Never> = appStateSubject
-        .removeDuplicatesAndDropFirst()
+        .removeDuplicatesAndDrop()
         .compactMap { $0 == .active ? () : nil }
         .debounceOnMain(for: 0.01)
         .eraseToAnyPublisher()
