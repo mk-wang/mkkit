@@ -87,20 +87,24 @@ public extension UIScrollView {
         return point
     }
 
-    func setContentOffset(_ offset: CGPoint, duration: CGFloat) {
+    func setContentOffset(_ offset: CGPoint,
+                          duration: TimeInterval? = nil,
+                          completion: VoidFunction1<Bool>? = nil)
+    {
         guard contentOffset != offset else {
             return
         }
 
-        guard duration > 0 else {
+        guard let duration, duration > 0 else {
             contentOffset = offset
+            completion?(true)
             return
         }
 
         weak var weakSelf = self
-        UIView.animate(withDuration: duration) {
+        UIView.animate(withDuration: duration, animations: {
             weakSelf?.contentOffset = offset
-        }
+        }, completion: completion)
     }
 
     @discardableResult

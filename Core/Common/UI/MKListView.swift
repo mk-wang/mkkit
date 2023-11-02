@@ -70,6 +70,8 @@ open class MKListView: UIView {
     public var onScrollEnd: ((UIScrollView) -> Void)?
     public var onIndexChange: ((Int, Int, PageViewIndexChangeEvent) -> Void)? // old , current, event
 
+    private var toPaging = false
+
     public var indexChangeBehavior: PageViewIndexScrollBehavior = .end
 
     public private(set) lazy var currentPage = config.initialIndex
@@ -169,7 +171,7 @@ extension MKListView: PageView {}
 extension MKListView: UIScrollViewDelegate {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         onOffsetChange?(scrollView)
-        if indexChangeBehavior == .scrolling {
+        if !toPaging, indexChangeBehavior == .scrolling {
             updateIndexByScroller(scrollView)
         }
     }
@@ -219,12 +221,13 @@ public extension MKListView {
             return
         }
 
+        toPaging = true
         let postion = position(index: index, scrollView: scrollView)
         let offset: CGPoint = .init(x: postion, y: 0)
-        if animated {
-            scrollView.setContentOffset(offset, animated: true)
-        } else {
-            scrollView.contentOffset = offset
+
+        weak var weakSelf = self
+        scrollView.setContentOffset(offset, duration: animated ? 0.25 : nil) { _ in
+            weakSelf?.toPaging = false
         }
 
         setIndex(index: index, event: .toPage)
