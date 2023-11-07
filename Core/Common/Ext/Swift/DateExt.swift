@@ -12,8 +12,13 @@ import Foundation
 
 public extension Date {
     func add(day: Int) -> Self {
-        Date(timeIntervalSince1970: timeIntervalSince1970 + TimeInterval(day * 24 * 60 * 60))
+        Date(timeIntervalSinceReferenceDate: timeIntervalSinceReferenceDate + TimeInterval(day) * Self.oneDayInterval)
     }
+
+    static let oneMinuteInterval: TimeInterval = 60
+    static let oneHourInterval: TimeInterval = 60 * oneMinuteInterval
+    static let oneDayInterval: TimeInterval = 24 * oneHourInterval
+    static let oneWeakInterval: TimeInterval = oneDayInterval * 7
 }
 
 public extension Date {
