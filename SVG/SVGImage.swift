@@ -21,6 +21,7 @@ public class SVGImageView: UIImageView {
                 imageSize: CGSize,
                 langFlip: Bool = false,
                 listenTheme: Bool = false,
+                aspectFit: Bool = false,
                 tintColorBuilder: ((Bool) -> UIColor?)? = nil)
     {
         self.imageSize = imageSize
@@ -28,12 +29,16 @@ public class SVGImageView: UIImageView {
 
         super.init(frame: CGRect(size: imageSize))
 
+        contentMode = aspectFit ? .scaleAspectFit : .scaleToFill
+
         if listenTheme, tintColorBuilder != nil {
             cancellbale = subjectThemeChange()
         }
 
-        var image = svgImage(url: url, size: imageSize)
+        var image = svgImage(url: url, size: imageSize, renderingMode: aspectFit ? .fit : .fill)
+
         let color = makeTintColor()
+
         if listenTheme || color != nil {
             image = image?.withRenderingMode(.alwaysTemplate)
             tintColor = color
@@ -99,28 +104,55 @@ extension SVGImageView: ThemeChangeListener {
     }
 }
 
-public func svgImage(path: String, size: CGSize? = nil, scale: CGFloat = 0) -> UIImage? {
-    svgImage(url: URL(fileURLWithPath: path), size: size, scale: scale)
+// MARK: - SvgImageRenderingMode
+
+public enum SvgImageRenderingMode {
+    case fill
+    case fit
+    case width
+    case height
 }
 
-public func svgImage(url: URL, size: CGSize? = nil, scale: CGFloat = 0) -> UIImage? {
-    guard let svgImage = SwiftDraw.SVG(fileURL: url) else {
-        return nil
-    }
-    if let size {
-        return svgImage.rasterize(with: size, scale: scale)
-    } else {
-        return UIImage(svgImage)
-    }
+public func svgImage(path: String, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill) -> UIImage? {
+    svgImage(url: URL(fileURLWithPath: path), size: size, scale: scale, renderingMode: renderingMode)
 }
 
-public func svgImage(data: Data, size: CGSize? = nil, scale: CGFloat = 0) -> UIImage? {
-    guard let svgImage = SwiftDraw.SVG(data: data) else {
+public func svgImage(url: URL, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill) -> UIImage? {
+    guard let svg = SwiftDraw.SVG(fileURL: url) else {
         return nil
     }
-    if let size {
-        return svgImage.rasterize(with: size, scale: scale)
-    } else {
-        return UIImage(svgImage)
+    return svgImage(svg: svg, size: size, scale: scale, renderingMode: renderingMode)
+}
+
+public func svgImage(data: Data, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill) -> UIImage? {
+    guard let svg = SwiftDraw.SVG(data: data) else {
+        return nil
     }
+    return svgImage(svg: svg, size: size, scale: scale, renderingMode: renderingMode)
+}
+
+private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, renderingMode: SvgImageRenderingMode) -> UIImage? {
+    guard let size else {
+        return .init(svg)
+    }
+
+    guard renderingMode != .fill else {
+        return svg.rasterize(with: size, scale: scale)
+    }
+
+    let svgSize = svg.size
+    var imageSize = size
+
+    switch renderingMode {
+    case .fit:
+        imageSize = svgSize.scale(fit: size)
+    case .width:
+        imageSize = svgSize.scale(width: size.width)
+    case .height:
+        imageSize = svgSize.scale(height: size.height)
+    default:
+        break
+    }
+
+    return svg.rasterize(with: imageSize, scale: scale)
 }

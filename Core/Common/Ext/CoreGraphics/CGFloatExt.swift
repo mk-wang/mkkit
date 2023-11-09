@@ -9,7 +9,7 @@ import CoreGraphics
 import Foundation
 
 public extension CGFloat {
-    var square: CGSize {
+    var size: CGSize {
         CGSize(width: self, height: self)
     }
 }
