@@ -36,6 +36,7 @@ open class DisplayLink {
         displayLink?.isPaused ?? false
     }
 
+    // 距离下次 frame 的时间
     open var duration: TimeInterval {
         var value: TimeInterval = 0
         if let nextFireTime {
@@ -77,7 +78,10 @@ open class DisplayLink {
     }
 
     @objc private func displayLinkTick(_ displayLink: CADisplayLink) {
-        nextFireTime = displayLink.targetTimestamp
-        callback(self, displayLink.targetTimestamp - displayLink.timestamp)
+        let target = displayLink.targetTimestamp
+        nextFireTime = target
+        // 理论上经过的时间
+        let interval = target - displayLink.timestamp
+        callback(self, interval)
     }
 }
