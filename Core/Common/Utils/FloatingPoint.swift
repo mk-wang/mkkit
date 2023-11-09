@@ -23,15 +23,15 @@ public extension FloatingPoint {
         CGFloat(float)
     }
 
-    var size: CGSize {
+    var cgSize: CGSize {
         .square(cgFloat)
     }
 
-    var ceil: CGFloat {
+    var cgCeil: CGFloat {
         Darwin.ceil(cgFloat)
     }
 
-    var floor: CGFloat {
+    var cgFloor: CGFloat {
         Darwin.floor(cgFloat)
     }
 }
@@ -87,6 +87,42 @@ extension Int32: FloatingPoint {
 // MARK: - Int64 + FloatingPoint
 
 extension Int64: FloatingPoint {
+    public var float: Float {
+        Float(self)
+    }
+
+    public var double: Double {
+        Double(self)
+    }
+}
+
+// MARK: - UInt + FloatingPoint
+
+extension UInt: FloatingPoint {
+    public var float: Float {
+        Float(self)
+    }
+
+    public var double: Double {
+        Double(self)
+    }
+}
+
+// MARK: - UInt32 + FloatingPoint
+
+extension UInt32: FloatingPoint {
+    public var float: Float {
+        Float(self)
+    }
+
+    public var double: Double {
+        Double(self)
+    }
+}
+
+// MARK: - UInt64 + FloatingPoint
+
+extension UInt64: FloatingPoint {
     public var float: Float {
         Float(self)
     }
