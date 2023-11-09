@@ -107,6 +107,7 @@ public extension AppInfo {
         {
             return UIImage(named: lastIcon)
         }
+
         return nil
     }
 }

@@ -139,7 +139,7 @@ public extension UIView {
         return UIGraphicsGetImageFromCurrentImageContext()
     }
 
-    func blurSnapshot(radius: CGFloat = 8.rwMin.c) -> UIImage? {
+    func blurSnapshot(radius: CGFloat) -> UIImage? {
         guard let snapshot = snapshotByLayer,
               let image = snapshot.gaussianBlurFilter(radius: radius)
         else {

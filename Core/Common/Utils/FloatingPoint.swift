@@ -18,9 +18,21 @@ public protocol FloatingPoint {
     }
 }
 
-extension FloatingPoint {
+public extension FloatingPoint {
     var cgFloat: CGFloat {
         CGFloat(float)
+    }
+
+    var size: CGSize {
+        .square(cgFloat)
+    }
+
+    var ceil: CGFloat {
+        Darwin.ceil(cgFloat)
+    }
+
+    var floor: CGFloat {
+        Darwin.floor(cgFloat)
     }
 }
 
