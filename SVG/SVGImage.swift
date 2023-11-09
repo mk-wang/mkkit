@@ -99,27 +99,27 @@ extension SVGImageView: ThemeChangeListener {
     }
 }
 
-public func svgImage(path: String, size: CGSize? = nil) -> UIImage? {
-    svgImage(url: URL(fileURLWithPath: path), size: size)
+public func svgImage(path: String, size: CGSize? = nil, scale: CGFloat = 0) -> UIImage? {
+    svgImage(url: URL(fileURLWithPath: path), size: size, scale: scale)
 }
 
-public func svgImage(url: URL, size: CGSize? = nil) -> UIImage? {
+public func svgImage(url: URL, size: CGSize? = nil, scale: CGFloat = 0) -> UIImage? {
     guard let svgImage = SwiftDraw.SVG(fileURL: url) else {
         return nil
     }
     if let size {
-        return svgImage.rasterize(with: size)
+        return svgImage.rasterize(with: size, scale: scale)
     } else {
         return UIImage(svgImage)
     }
 }
 
-public func svgImage(data: Data, size: CGSize? = nil) -> UIImage? {
+public func svgImage(data: Data, size: CGSize? = nil, scale: CGFloat = 0) -> UIImage? {
     guard let svgImage = SwiftDraw.SVG(data: data) else {
         return nil
     }
     if let size {
-        return svgImage.rasterize(with: size)
+        return svgImage.rasterize(with: size, scale: scale)
     } else {
         return UIImage(svgImage)
     }
