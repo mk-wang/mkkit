@@ -29,6 +29,20 @@ public extension UIView {
 }
 
 public extension UIView {
+    func shadow(color: UIColor, opacity: Float? = nil, offset: CGSize? = nil, radius: CGFloat? = nil) {
+        layer.shadowColor = color.cgColor
+        if let opacity {
+            layer.shadowOpacity = opacity
+        }
+        if let offset {
+            layer.shadowOffset = offset
+        }
+        if let radius {
+            layer.shadowRadius = radius
+        }
+        layer.masksToBounds = false
+    }
+
     func corner(radius: CGFloat,
                 mask: CACornerMask = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner],
                 borderColor: UIColor? = nil,

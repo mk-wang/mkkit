@@ -31,6 +31,21 @@ public extension UICollectionView {
             CATransaction.commit()
         }
     }
+
+    func frame(of section: Int) -> CGRect {
+        var frame: CGRect = .null
+
+        for item in 0 ..< numberOfItems(inSection: section) {
+            let indexPath = IndexPath(item: item, section: section)
+
+            if let attributes = collectionViewLayout.layoutAttributesForItem(at: indexPath) {
+                let rect = attributes.frame
+                frame = rect.union(frame)
+            }
+        }
+
+        return frame
+    }
 }
 
 public extension UICollectionView {

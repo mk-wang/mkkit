@@ -34,6 +34,14 @@ public extension FloatingPoint {
     var cgFloor: CGFloat {
         Darwin.floor(cgFloat)
     }
+
+    var radians: CGFloat {
+        cgFloat * .pi / 180
+    }
+
+    var degrees: CGFloat {
+        cgFloat * 180 / .pi
+    }
 }
 
 // MARK: - CGFloat + FloatingPoint

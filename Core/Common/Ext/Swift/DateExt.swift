@@ -12,7 +12,14 @@ import Foundation
 
 public extension Date {
     func add(day: Int) -> Self {
-        Date(timeIntervalSinceReferenceDate: timeIntervalSinceReferenceDate + TimeInterval(day) * Self.oneDayInterval)
+        .init(timeIntervalSinceReferenceDate: timeIntervalSinceReferenceDate + TimeInterval(day) * Self.oneDayInterval)
+    }
+
+    var beginningOfWeek: Date? {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
+        components.weekday = calendar.firstWeekday
+        return calendar.date(from: components)
     }
 
     static let oneMinuteInterval: TimeInterval = 60
