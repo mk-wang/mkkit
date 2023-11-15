@@ -37,7 +37,7 @@ open class SectionGroupViewFlowLayout: UICollectionViewFlowLayout {
             let attrs = LayoutAttributes(forDecorationViewOfKind: Self.decorationViewKind,
                                          with: .init(row: 0, section: section))
 
-            var rect = collectionView.frame(of: section)
+            var rect = collectionView.sectionFrame(section)
 
             if let inset = config.viewEdgeInsets?(section) {
                 rect = rect.inset(by: inset)

@@ -32,7 +32,7 @@ public extension UICollectionView {
         }
     }
 
-    func frame(of section: Int) -> CGRect {
+    func sectionFrame(_ section: Int) -> CGRect {
         var frame: CGRect = .null
 
         for item in 0 ..< numberOfItems(inSection: section) {
