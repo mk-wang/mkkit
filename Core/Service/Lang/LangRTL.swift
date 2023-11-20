@@ -91,12 +91,22 @@ public extension UIEdgeInsets {
         Lang.current.isRTL ? left : right
     }
 
+    var directionalEdgeInsets: NSDirectionalEdgeInsets {
+        .init(top: top, leading: start, bottom: bottom, trailing: end)
+    }
+
     static func only(top: CGFloat = 0, start: CGFloat = 0, bottom: CGFloat = 0, end: CGFloat = 0) -> Self {
         if Lang.current.isRTL {
             return UIEdgeInsets(top: top, left: end, bottom: bottom, right: start)
         } else {
             return UIEdgeInsets(top: top, left: start, bottom: bottom, right: end)
         }
+    }
+}
+
+public extension NSDirectionalEdgeInsets {
+    var edgeInsets: UIEdgeInsets {
+        .only(top: top, start: leading, bottom: bottom, end: trailing)
     }
 }
 

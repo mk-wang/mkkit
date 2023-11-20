@@ -35,16 +35,37 @@ public extension UIColor {
         }
 
         let strCount = cString.count
-        var rgbValue: Int64 = 0
-        guard strCount == 6 || strCount == 8, Scanner(string: cString).scanHexInt64(&rgbValue) else {
+        var colorValue: Int64 = 0
+        guard strCount == 6 || strCount == 8, Scanner(string: cString).scanHexInt64(&colorValue) else {
             return nil
         }
 
         var alpha: CGFloat = 1.0
         if strCount == 8 {
-            alpha = CGFloat((rgbValue & 0xFF00_0000) >> 24) / 255.0
+            self.init(argb: colorValue)
+        } else {
+            self.init(rgb: colorValue, alpha: 1)
         }
-        self.init(rgb: rgbValue, alpha: alpha)
+    }
+
+    convenience init?(rgba hex: String) {
+        var cString: String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if cString.hasPrefix("#") {
+            cString.remove(at: cString.startIndex)
+        }
+
+        let strCount = cString.count
+        var colorValue: Int64 = 0
+        guard strCount == 6 || strCount == 8, Scanner(string: cString).scanHexInt64(&colorValue) else {
+            return nil
+        }
+
+        if strCount == 8 {
+            self.init(rgba: colorValue)
+        } else {
+            self.init(rgb: colorValue, alpha: 1)
+        }
     }
 
     func lighten(by percentage: CGFloat = 0.2) -> UIColor {

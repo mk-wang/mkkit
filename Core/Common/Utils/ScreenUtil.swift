@@ -122,13 +122,6 @@ public extension ScreenUtil {
     }
 }
 
-public extension CGSize {
-    var rw: CGSize {
-        let scale = ScreenUtil.ratio.x
-        return .init(width: width * scale, height: height * scale)
-    }
-}
-
 public extension FloatingPoint {
     var rw: CGFloat {
         ScreenUtil.ratio.x * cgFloat
@@ -188,5 +181,29 @@ public extension FloatingPoint {
             return val
         }
         return rhMax
+    }
+}
+
+public extension CGSize {
+    var rw: Self {
+        let scale = ScreenUtil.ratio.x
+        return .init(width: width * scale, height: height * scale)
+    }
+}
+
+public extension CGPoint {
+    var rw: Self {
+        let scale = ScreenUtil.ratio.x
+        return .init(x: x * scale, y: y * scale)
+    }
+}
+
+public extension UIEdgeInsets {
+    var rw: Self {
+        let scale = ScreenUtil.ratio.x
+        return .init(top: top * scale,
+                     left: left * scale,
+                     bottom: bottom * scale,
+                     right: right * scale)
     }
 }
