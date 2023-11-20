@@ -59,7 +59,7 @@ extension AppDelegate {
         appStateSubject.send(state)
     }
 
-    open var rootController: UIViewController? {
+    @objc open var rootController: UIViewController? {
         get {
             rootControllerSubject.value
         }

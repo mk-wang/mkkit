@@ -27,7 +27,7 @@ public extension UIColor {
         self.init(rgb: argb, alpha: CGFloat((argb >> 24) & 0xFF) / CGFloat(255.0))
     }
 
-    convenience init?(hex: String) {
+    convenience init?(argb hex: String) {
         var cString: String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
         if cString.hasPrefix("#") {

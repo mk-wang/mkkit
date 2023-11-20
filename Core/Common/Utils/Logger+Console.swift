@@ -21,6 +21,9 @@ import OpenCombine
         @KVStorageProperty(key: "debug.logs.track", storage: UserDefaultsStorage())
         private(set) static var trackConsole: Bool = true
 
+        @KVStorageProperty(key: "debug.logs.tpa", storage: UserDefaultsStorage())
+        private(set) static var tpaConsole: Bool = true
+
         @KVStorageProperty(key: "debug.logs.tts", storage: UserDefaultsStorage())
         private(set) static var ttsConsole: Bool = true
 
@@ -60,6 +63,12 @@ import OpenCombine
         func iap(_ text: String) {
             debugWithConsole(text, tag: "iap") {
                 Self.iapConsole.kvValue
+            }
+        }
+
+        func tpa(_ text: String) {
+            debugWithConsole(text, tag: "tpa") {
+                Self.tpaConsole.kvValue
             }
         }
 
