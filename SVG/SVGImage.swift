@@ -132,9 +132,13 @@ public func svgImage(data: Data, size: CGSize? = nil, scale: CGFloat = 0, render
 }
 
 private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, renderingMode: SvgImageRenderingMode) -> UIImage? {
-    guard let size else {
+    guard var size else {
         return .init(svg)
     }
+    
+    // fix size
+    size.width = ceil(size.width)
+    size.height = ceil(size.height)
 
     guard renderingMode != .fill else {
         return svg.rasterize(with: size, scale: scale)
