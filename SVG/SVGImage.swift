@@ -135,7 +135,7 @@ private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, r
     guard var size else {
         return .init(svg)
     }
-    
+
     // fix size
     size.width = ceil(size.width)
     size.height = ceil(size.height)

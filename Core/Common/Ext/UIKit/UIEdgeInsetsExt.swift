@@ -32,3 +32,47 @@ public extension UIEdgeInsets {
         left + right
     }
 }
+
+// MARK: - MKEdgeInsets
+
+public struct MKEdgeInsets {
+    var top: CGFloat?
+    var start: CGFloat?
+    var bottom: CGFloat?
+    var end: CGFloat?
+
+    public init(top: CGFloat? = nil, start: CGFloat? = nil, bottom: CGFloat? = nil, end: CGFloat? = nil) {
+        self.top = top
+        self.start = start
+        self.bottom = bottom
+        self.end = end
+    }
+
+    public init(vertical val: CGFloat) {
+        top = val
+        bottom = val
+    }
+
+    public init(horizontal val: CGFloat) {
+        start = val
+        end = val
+    }
+}
+
+// MARK: Codable
+
+extension MKEdgeInsets: Codable {}
+
+// MARK: Codable
+
+public extension MKEdgeInsets {
+    var uiInsets: UIEdgeInsets {
+        .only(top: top ?? 0, start: start ?? 0, bottom: bottom ?? 0, end: end ?? 0)
+    }
+}
+
+public extension UIEdgeInsets {
+    var mkInsets: MKEdgeInsets {
+        .init(top: top == 0 ? nil : top, start: start == 0 ? nil : start, bottom: bottom == 0 ? nil : bottom, end: end == 0 ? nil : end)
+    }
+}
