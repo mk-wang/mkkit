@@ -5,6 +5,7 @@
 //  Created by MK on 2022/11/29.
 //
 
+import CommonCrypto
 import Foundation
 
 // MARK: - FileUtil
@@ -210,5 +211,41 @@ public extension FileUtil {
             return 0
         }
         return totalDiskSpaceInBytes
+    }
+}
+
+public extension FileUtil {
+    static func md5(path: String) -> String? {
+        let bufferSize = 4096
+
+        guard let stream = InputStream(fileAtPath: path) else {
+            return nil
+        }
+
+        var context = CC_MD5_CTX()
+        CC_MD5_Init(&context)
+
+        stream.open()
+        defer {
+            stream.close()
+        }
+
+        var buffer = [UInt8](repeating: 0, count: bufferSize)
+
+        while stream.hasBytesAvailable {
+            let read = stream.read(&buffer, maxLength: bufferSize)
+            if read > 0 {
+                CC_MD5_Update(&context, buffer, CC_LONG(read))
+            } else if read == 0 {
+                break
+            } else {
+                return nil
+            }
+        }
+
+        var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+        CC_MD5_Final(&digest, &context)
+
+        return digest.map { String(format: "%02hhx", $0) }.joined()
     }
 }
