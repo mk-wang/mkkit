@@ -48,6 +48,10 @@ public extension UIColor {
         }
     }
 
+    convenience init?(rgb hex: String) {
+        self.init(argb: hex)
+    }
+
     convenience init?(rgba hex: String) {
         var cString: String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
