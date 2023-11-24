@@ -13,9 +13,11 @@
 #import <unistd.h>
 
 #define k_WIDTH [UIScreen mainScreen].bounds.size.width
-#define BTN_X_PAD 20.0f
-#define BTN_WIDTH 60.0f
+
+#define BTN_WIDTH 70.f
 #define BTN_HEIGHT 44.0f
+#define BTN_X_PAD 20.0f
+#define MIN_SIZE 54.f
 
 NS_INLINE CGRect _fixRect(CGRect origin)
 {
@@ -47,13 +49,13 @@ typedef void (^readTextBlock)(void);
 
 @interface GHConsoleRootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
 @public
+    UIStackView *_btnLine;
     UITableView *_tableView;
     UIButton *_clearBtn;
-    UIButton *_saveBtn;
-    UIButton *_readLogBtn;
     UIButton *_minimize;
     UIImageView *_imgV;
 }
+
 @property (nonatomic) BOOL scrollEnable;
 @property (nonatomic, copy) clearTextBlock clearLogText;
 @property (nonatomic, copy) readTextBlock readLog;
@@ -67,11 +69,8 @@ typedef void (^readTextBlock)(void);
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self configBtns];
     [self configLogList];
-    [self configMinimizeBtn];
-    [self configClearBtn];
-    //    [self configSaveBtn];
-    //    [self configReadBtn];
     [self createImgV];
 }
 
@@ -90,33 +89,105 @@ typedef void (^readTextBlock)(void);
 
     [self.view addSubview:_tableView];
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_tableView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_tableView)]];
-    [NSLayoutConstraint activateConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(h)-[_tableView]-0-|" options:0 metrics:@{@"h" : @(BTN_WIDTH)} views:NSDictionaryOfVariableBindings(_tableView)]];
-    [_tableView reloadData];
+
+    [NSLayoutConstraint activateConstraints:@[
+        [NSLayoutConstraint constraintWithItem:_tableView
+                                     attribute:NSLayoutAttributeLeading
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:self.view
+                                     attribute:NSLayoutAttributeLeading
+                                    multiplier:1
+                                      constant:0],
+        [NSLayoutConstraint constraintWithItem:_tableView
+                                     attribute:NSLayoutAttributeTrailing
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:self.view
+                                     attribute:NSLayoutAttributeTrailing
+                                    multiplier:1
+                                      constant:0],
+        [NSLayoutConstraint constraintWithItem:_tableView
+                                     attribute:NSLayoutAttributeTop
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:_btnLine
+                                     attribute:NSLayoutAttributeBottom
+                                    multiplier:1
+                                      constant:0],
+        [NSLayoutConstraint constraintWithItem:_tableView
+                                     attribute:NSLayoutAttributeBottom
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:self.view
+                                     attribute:NSLayoutAttributeBottom
+                                    multiplier:1
+                                      constant:0],
+    ]];
+}
+
+- (void)configBtns
+{
+    _btnLine = [[UIStackView alloc] initWithFrame:CGRectZero];
+    [_btnLine setAlignment:UIStackViewAlignmentCenter];
+    [_btnLine setSpacing:BTN_X_PAD];
+
+    [self.view addSubview:_btnLine];
+    _btnLine.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [NSLayoutConstraint activateConstraints:@[
+        [NSLayoutConstraint constraintWithItem:_btnLine
+                                     attribute:NSLayoutAttributeTrailing
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:self.view
+                                     attribute:NSLayoutAttributeTrailing
+                                    multiplier:1
+                                      constant:0],
+        [NSLayoutConstraint constraintWithItem:_btnLine
+                                     attribute:NSLayoutAttributeTop
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:self.view
+                                     attribute:NSLayoutAttributeTop
+                                    multiplier:1
+                                      constant:0],
+        [NSLayoutConstraint constraintWithItem:_btnLine
+                                     attribute:NSLayoutAttributeHeight
+                                     relatedBy:NSLayoutRelationEqual
+                                        toItem:nil
+                                     attribute:NSLayoutAttributeNotAnAttribute
+                                    multiplier:1
+                                      constant:BTN_HEIGHT],
+    ]];
+
+    [self configClearBtn];
+    [self configMinimizeBtn];
 }
 
 - (void)configMinimizeBtn
 {
-    _minimize = [[UIButton alloc] initWithFrame:CGRectMake(20, 0, BTN_WIDTH, BTN_HEIGHT)];
+    _minimize = [UIButton buttonWithType:UIButtonTypeSystem];
+
     [_minimize addTarget:self action:@selector(minimizeAction:) forControlEvents:UIControlEventTouchUpInside];
     [_minimize setTitle:@"X" forState:UIControlStateNormal];
     [_minimize setTitleColor:[UIColor cyanColor] forState:UIControlStateNormal];
     _minimize.layer.borderWidth = 1;
     _minimize.layer.borderColor = UIColor.grayColor.CGColor;
-    [self.view addSubview:_minimize];
+    [_minimize.widthAnchor constraintEqualToConstant:BTN_WIDTH].active = YES;
+    [_minimize.heightAnchor constraintEqualToConstant:BTN_HEIGHT].active = YES;
+    
+    [_btnLine addArrangedSubview:_minimize];
 }
 
 - (void)configClearBtn
 {
-    CGRect rect = _minimize.frame;
-    rect.origin.x = CGRectGetMaxX(rect) + BTN_X_PAD;
-    _clearBtn = [[UIButton alloc] initWithFrame:rect];
+    _clearBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+
     [_clearBtn addTarget:self action:@selector(clearText) forControlEvents:UIControlEventTouchUpInside];
     [_clearBtn setTitle:@"C" forState:UIControlStateNormal];
     [_clearBtn setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
     _clearBtn.layer.borderWidth = 1;
     _clearBtn.layer.borderColor = UIColor.grayColor.CGColor;
-    [self.view addSubview:_clearBtn];
+
+    [_clearBtn.widthAnchor constraintEqualToConstant:BTN_WIDTH].active = YES;
+    [_clearBtn.heightAnchor constraintEqualToConstant:BTN_HEIGHT].active = YES;
+
+    [_btnLine addArrangedSubview:_clearBtn];
 }
 
 - (void)createImgV
@@ -239,7 +310,7 @@ typedef void (^readTextBlock)(void);
 {
     GHConsoleWindow *window = [[self alloc] init];
     window.windowLevel = UIWindowLevelNormal;
-    window.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 50, 120, 50, 50);
+    window.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - MIN_SIZE, 120, MIN_SIZE, MIN_SIZE);
     window.clipsToBounds = YES;
     return window;
 }
@@ -264,25 +335,19 @@ typedef void (^readTextBlock)(void);
     self.consoleRootViewController.scrollEnable = YES;
     self.backgroundColor = [UIColor clearColor];
     self.consoleRootViewController->_imgV.alpha = 0;
-    self.consoleRootViewController->_minimize.alpha = 1.0;
-    self.consoleRootViewController->_readLogBtn.alpha = 1.0;
-    self.consoleRootViewController->_clearBtn.alpha = 1.0;
-    self.consoleRootViewController->_saveBtn.alpha = 1.0;
+    self.consoleRootViewController->_btnLine.alpha = 1.0;
     self.consoleRootViewController->_tableView.alpha = 1.0;
 }
 
 - (void)minimize
 {
     self.consoleRootViewController.view.backgroundColor = [UIColor clearColor];
-    self.frame = CGRectMake(_axisXY.x, _axisXY.y, 50, 50);
+    self.frame = CGRectMake(_axisXY.x, _axisXY.y, MIN_SIZE, MIN_SIZE);
     [self setNeedsLayout];
     [self layoutIfNeeded];
     self.consoleRootViewController.scrollEnable = NO;
     self.consoleRootViewController->_imgV.alpha = 1.0;
-    self.consoleRootViewController->_minimize.alpha = 0;
-    self.consoleRootViewController->_readLogBtn.alpha = 0;
-    self.consoleRootViewController->_clearBtn.alpha = 0;
-    self.consoleRootViewController->_saveBtn.alpha = 0;
+    self.consoleRootViewController->_btnLine.alpha = 0;
     self.consoleRootViewController->_tableView.alpha = 0;
     self.backgroundColor = [UIColor clearColor];
     [[UIApplication sharedApplication].delegate.window.rootViewController setNeedsStatusBarAppearanceUpdate];
@@ -372,10 +437,7 @@ typedef void (^readTextBlock)(void);
         };
         _consoleWindow.backgroundColor = [UIColor clearColor];
         self.consoleWindow.consoleRootViewController->_imgV.alpha = 1.0;
-        self.consoleWindow.consoleRootViewController->_saveBtn.alpha = 0;
-        self.consoleWindow.consoleRootViewController->_readLogBtn.alpha = 0;
-        self.consoleWindow.consoleRootViewController->_clearBtn.alpha = 0;
-        self.consoleWindow.consoleRootViewController->_minimize.alpha = 0;
+        self.consoleWindow.consoleRootViewController->_btnLine.alpha = 0;
         self.consoleWindow.consoleRootViewController->_tableView.alpha = 0;
     }
     return _consoleWindow;
