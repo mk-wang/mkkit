@@ -170,7 +170,7 @@ typedef void (^readTextBlock)(void);
     _minimize.layer.borderColor = UIColor.grayColor.CGColor;
     [_minimize.widthAnchor constraintEqualToConstant:BTN_WIDTH].active = YES;
     [_minimize.heightAnchor constraintEqualToConstant:BTN_HEIGHT].active = YES;
-    
+
     [_btnLine addArrangedSubview:_minimize];
 }
 

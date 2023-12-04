@@ -30,7 +30,7 @@ public extension ScreenUtil {
             ratio.x = screenSize.width / designSize.width
             ratio.y = screenSize.height / designSize.height
 
-            minRatio = CGFloat.minimum(ratio.x, ratio.y)
+            minRatio = min(ratio.x, ratio.y)
         }
     }
 
