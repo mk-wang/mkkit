@@ -74,22 +74,6 @@ open class Sound {
 
     private var volumeTimer: SwiftTimer?
 
-    #if os(iOS) || os(tvOS)
-        /// Sound session. The default value is the shared `AVAudioSession` session.
-        public static var session: Session = AVAudioSession.sharedInstance()
-
-        /// Sound category for current session. Using this variable is a convenient way to set AVAudioSessions category. The default value is .ambient.
-        public static var category: SoundCategory = {
-            let defaultCategory = SoundCategory.ambient
-            try? session.setCategory(defaultCategory.avFoundationCategory)
-            return defaultCategory
-        }() {
-            didSet {
-                try? session.setCategory(category.avFoundationCategory)
-            }
-        }
-    #endif
-
     private static var sounds = [URL: Sound]()
 
     private static let defaultsKey = "com.moonlightapps.SwiftySound.enabled"
@@ -120,9 +104,6 @@ open class Sound {
     ///
     /// - Parameter url: Sound file URL.
     public init?(url: URL) {
-        #if os(iOS) || os(tvOS)
-            _ = Sound.category
-        #endif
         let playersPerSound = max(Sound.playersPerSound, 1)
         var myPlayers: [Player] = []
         myPlayers.reserveCapacity(playersPerSound)
@@ -142,9 +123,6 @@ open class Sound {
     }
 
     public init?(data: Data, fileTypeHint: String?) {
-        #if os(iOS) || os(tvOS)
-            _ = Sound.category
-        #endif
         let playersPerSound = max(Sound.playersPerSound, 1)
         var myPlayers: [Player] = []
         myPlayers.reserveCapacity(playersPerSound)
