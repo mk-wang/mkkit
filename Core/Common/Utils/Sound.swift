@@ -131,7 +131,7 @@ open class Sound {
                 let player = try Sound.playerClass.init(contentsOf: url)
                 myPlayers.append(player)
             } catch {
-                print("SwiftySound initialization error: \(error)")
+                Logger.shared.error("SwiftySound initialization error: \(error)")
             }
         }
         if myPlayers.isEmpty {
@@ -153,7 +153,7 @@ open class Sound {
                 let player = try Sound.playerClass.init(data: data, fileTypeHint: fileTypeHint)
                 myPlayers.append(player)
             } catch {
-                print("SwiftySound initialization error: \(error)")
+                Logger.shared.error("SwiftySound initialization error: \(error)")
             }
         }
         if myPlayers.isEmpty {
@@ -445,7 +445,7 @@ extension AVAudioPlayer: Player, AVAudioPlayerDelegate {
     }
 
     public func audioPlayerDecodeErrorDidOccur(_: AVAudioPlayer, error: Error?) {
-        print("SwiftySound playback error: \(String(describing: error))")
+        Logger.shared.error("SwiftySound playback error: \(String(describing: error))")
     }
 }
 

@@ -88,7 +88,7 @@ public extension UIView {
         } else if let guide = object as? UILayoutGuide {
             addSnpLayoutGuide(guide)
         } else {
-            print(object.theClassName)
+            Logger.shared.error(object.theClassName)
         }
     }
 }

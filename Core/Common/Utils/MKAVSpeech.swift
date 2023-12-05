@@ -149,7 +149,8 @@ public extension MKAVSpeech {
             try synthesizer.speak(utterance)
             utterance.stateSubject = .init(.none)
             return utterance
-        } catch _ {
+        } catch {
+            Logger.shared.error("MKAVSpeech speedh \(text), error \(error)")
             return nil
         }
     }
