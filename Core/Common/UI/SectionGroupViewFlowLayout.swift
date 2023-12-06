@@ -90,6 +90,12 @@ private class LayoutAttributes: UICollectionViewLayoutAttributes {
 // MARK: - ReusableView
 
 private class ReusableView: UICollectionReusableView {
+    lazy var contentView: UIView = {
+        let box = UIView()
+        box.addSnpEdgesToSuper()
+        return box
+    }()
+
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         super.apply(layoutAttributes)
 
@@ -97,6 +103,10 @@ private class ReusableView: UICollectionReusableView {
             return
         }
 
-        configure(layoutAttributes.indexPath.section, self)
+        if contentView.superview == nil {
+            addSnpSubview(contentView)
+        }
+
+        configure(layoutAttributes.indexPath.section, contentView)
     }
 }
