@@ -210,6 +210,11 @@ public extension Lang {
         if let lang = Lang(rawValue: text) {
             return lang
         }
+        if let text = text.components(separatedBy: .init(charactersIn: "_-")).first,
+           let lang = Lang(rawValue: text)
+        {
+            return lang
+        }
         for lang in list {
             if text.hasPrefix(lang.short) {
                 if lang == .zh_Hant || lang == .zh_Hans {

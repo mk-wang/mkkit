@@ -22,19 +22,19 @@ open class LangService {
 
     public let langList: [Lang]
     public let `default`: Lang
-}
 
-// MARK: AppSerivce
-
-extension LangService {
-    private var system: Lang? {
+    private lazy var system: Lang? = {
         guard let lang = NSLocale.preferredLanguages.first else {
             return nil
         }
         return Lang.from(text: lang, list: langList)
-    }
+    }()
+}
 
-    public var lang: Lang {
+// MARK: AppSerivce
+
+public extension LangService {
+    var lang: Lang {
         get {
             langSubject.value ?? (system ?? self.default)
         } set {
