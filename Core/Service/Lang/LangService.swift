@@ -15,6 +15,12 @@ open class LangService {
         langSubject = subject
         langList = list
         self.default = `default`
+
+        if let text = NSLocale.preferredLanguages.first {
+            system = Lang.from(text: text, list: langList)
+        } else {
+            system = nil
+        }
     }
 
     private let langSubject: CurrentValueSubject<Lang?, Never>
@@ -22,13 +28,7 @@ open class LangService {
 
     public let langList: [Lang]
     public let `default`: Lang
-
-    private lazy var system: Lang? = {
-        guard let lang = NSLocale.preferredLanguages.first else {
-            return nil
-        }
-        return Lang.from(text: lang, list: langList)
-    }()
+    public let system: Lang?
 }
 
 // MARK: AppSerivce
