@@ -30,6 +30,23 @@ public extension SnpLayoutObject {
         }
     }
 
+    func addSnpMKEdgesToSuper(_ inset: MKEdgeInsets) {
+        addSnpConfig {
+            if let inset = inset.start {
+                $1.leading.equalToSuperview().inset(inset)
+            }
+            if let inset = inset.end {
+                $1.trailing.equalToSuperview().inset(inset)
+            }
+            if let inset = inset.top {
+                $1.top.equalToSuperview().inset(inset)
+            }
+            if let inset = inset.bottom {
+                $1.bottom.equalToSuperview().inset(inset)
+            }
+        }
+    }
+
     func addSnpHorizontalEdgesToSuper(_ inset: CGFloat = 0) {
         addSnpConfig {
             $1.horizontalEdges.equalToSuperview().inset(inset)

@@ -5,6 +5,7 @@
 //  Created by MK on 2021/7/22.
 //
 
+import CoreImage
 import UIKit
 
 public extension UIImage {
@@ -47,6 +48,11 @@ public extension UIImage {
     func cropped(to rect: CGRect) -> UIImage {
         guard rect.size.width <= size.width, rect.size.height <= size.height else { return self }
         let scaledRect = rect.applying(CGAffineTransform(scaleX: scale, y: scale))
+
+        if let image = ciImage {
+            return .init(ciImage: image.cropped(to: scaledRect))
+        }
+
         guard let image = cgImage?.cropping(to: scaledRect) else { return self }
         return UIImage(cgImage: image, scale: scale, orientation: imageOrientation)
     }

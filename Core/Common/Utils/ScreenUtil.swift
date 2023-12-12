@@ -61,6 +61,14 @@ public extension ScreenUtil {
         return height ?? UIApplication.shared.statusBarFrame.size.height
     }
 
+    static var windowOrientation: UIInterfaceOrientation {
+        if #available(iOS 13.0, *) {
+            self.window?.windowScene?.interfaceOrientation ?? .unknown
+        } else {
+            UIApplication.shared.statusBarOrientation
+        }
+    }
+
     static var hasNotch: Bool {
         topSafeArea > 20
     }

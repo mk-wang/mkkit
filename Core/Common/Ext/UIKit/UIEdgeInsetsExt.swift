@@ -63,6 +63,22 @@ public struct MKEdgeInsets {
 
 extension MKEdgeInsets: Codable {}
 
+public extension MKEdgeInsets {
+    private static func unionFloat(_ lhs: CGFloat?, _ rhs: CGFloat?) -> CGFloat? {
+        guard let lhs, let rhs else {
+            return lhs != nil ? lhs : rhs
+        }
+        return max(lhs, rhs)
+    }
+
+    static func union(_ lhs: Self, _ rhs: Self) -> Self {
+        .init(top: unionFloat(lhs.top, rhs.top),
+              start: unionFloat(lhs.start, rhs.start),
+              bottom: unionFloat(lhs.bottom, rhs.bottom),
+              end: unionFloat(lhs.end, rhs.end))
+    }
+}
+
 // MARK: Codable
 
 public extension MKEdgeInsets {
