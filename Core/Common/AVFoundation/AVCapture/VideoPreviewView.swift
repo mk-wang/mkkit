@@ -17,15 +17,15 @@ open class VideoPreviewView: UIView {
         AVCaptureVideoPreviewLayer.self
     }
 
-    public var showRegionOfInterest: Bool = false
-    public var showMask: Bool = false
+    public var canShowRegionOfInterest: Bool = false
+    public var canShowMask: Bool = false
 
     private let regionOfInterestSubject: CurrentValueSubject<CGRect, Never> = .init(.null)
     public private(set) lazy var regionOfInterestPublihser = regionOfInterestSubject.removeDuplicatesDropAndDebounce(0, debounce: 0.1).eraseToAnyPublisher()
 
     public lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer = layer as! AVCaptureVideoPreviewLayer
 
-    private let minimumRegionOfInterestSize: CGFloat = 50
+    public var minimumRegionOfInterestSize: CGFloat = 50
 
     private lazy var maskLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
@@ -47,20 +47,20 @@ open class VideoPreviewView: UIView {
         super.layoutSubviews()
 
         // Disable CoreAnimation actions so that the positions of the sublayers immediately move to their new position.
-        guard showMask || showRegionOfInterest else {
+        guard canShowMask || canShowRegionOfInterest else {
             return
         }
 
         CATransaction.begin()
         CATransaction.setDisableActions(true)
 
-        if showMask {
+        if canShowMask {
             if maskLayer.superlayer == nil {
                 layer.addSublayer(maskLayer)
             }
         }
 
-        if showRegionOfInterest {
+        if canShowRegionOfInterest {
             if regionOfInterestOutline.superlayer == nil {
                 layer.addSublayer(regionOfInterestOutline)
             }

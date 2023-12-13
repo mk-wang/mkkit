@@ -134,15 +134,17 @@ public extension AVCaptureDevice {
 }
 
 public extension AVCaptureOutput {
-    func setupVideoConnection(front: Bool) {
+    @discardableResult
+    func setupVideoConnection(front: Bool, videoOrientation: AVCaptureVideoOrientation) -> AVCaptureConnection? {
         guard let connection = connection(with: .video) else {
-            return
+            return nil
         }
 
         if front {
             connection.isVideoMirrored = true
         }
 
-        connection.videoOrientation = .portrait
+        connection.videoOrientation = videoOrientation
+        return connection
     }
 }

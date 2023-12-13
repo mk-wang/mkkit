@@ -105,18 +105,12 @@ public extension CaputerSession {
     }
 
     @discardableResult
-    func addMetaoutput(_ metaOutput: AVCaptureMetadataOutput) -> Bool {
-        guard let videoInput, session.canAddOutput(metaOutput) else {
+    func addOutput(_ output: AVCaptureOutput) -> Bool {
+        guard session.canAddOutput(output) else {
             return false
         }
 
-        if metaOutput.availableMetadataObjectTypes.contains(.face) {
-            metaOutput.metadataObjectTypes = [.face]
-        }
-
-        session.addOutput(metaOutput)
-//        metaOutput.setMetadataObjectsDelegate(self, queue: metadataObjectsQueue)
-
+        session.addOutput(output)
         return true
     }
 
@@ -178,7 +172,8 @@ public extension CaputerSession {
             // Only setup observers and start the session running if setup succeeded.
             self.addObservers()
             self.session.startRunning()
-            self.isRuning = self.session.isRunning
+            let isRunning = self.session.isRunning
+            self.isRuning = isRunning
         }
     }
 
