@@ -74,4 +74,8 @@ public extension CGSize {
     var point: CGPoint {
         CGPoint(x: width, y: height)
     }
+
+    var center: CGPoint {
+        CGPoint(x: width * 0.5, y: height * 0.5)
+    }
 }

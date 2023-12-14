@@ -36,6 +36,8 @@ public extension CGRect {
         CGPoint(x: origin.x + width / 2, y: origin.y + height / 2)
     }
 
+    var area: CGFloat { width * height }
+
     func to(center: CGPoint) -> Self {
         CGRect(center: center, size: size)
     }

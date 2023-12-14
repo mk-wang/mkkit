@@ -25,6 +25,8 @@ open class VideoPreviewView: UIView {
 
     public lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer = layer as! AVCaptureVideoPreviewLayer
 
+    public private(set) lazy var drawLayer = CALayer()
+
     public var minimumRegionOfInterestSize: CGFloat = 50
 
     private lazy var maskLayer: CAShapeLayer = {
@@ -51,18 +53,23 @@ open class VideoPreviewView: UIView {
             return
         }
 
+        if drawLayer.superlayer == nil {
+            layer.addSublayer(drawLayer)
+        }
+        drawLayer.frame = bounds
+
         CATransaction.begin()
         CATransaction.setDisableActions(true)
 
         if canShowMask {
             if maskLayer.superlayer == nil {
-                layer.addSublayer(maskLayer)
+                drawLayer.addSublayer(maskLayer)
             }
         }
 
         if canShowRegionOfInterest {
             if regionOfInterestOutline.superlayer == nil {
-                layer.addSublayer(regionOfInterestOutline)
+                drawLayer.addSublayer(regionOfInterestOutline)
             }
 
             // Create the path for the mask layer. We use the even odd fill rule so that the region of interest does not have a fill color.
@@ -79,6 +86,13 @@ open class VideoPreviewView: UIView {
 }
 
 public extension VideoPreviewView {
+    func showDrawLayer(_ show: Bool) {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        drawLayer.isHidden = !show
+        CATransaction.commit()
+    }
+
     private(set) var regionOfInterest: CGRect {
         get {
             regionOfInterestSubject.value
