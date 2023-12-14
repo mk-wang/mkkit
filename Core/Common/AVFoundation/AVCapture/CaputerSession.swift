@@ -66,15 +66,17 @@ open class CaputerSession {
         self.preset = preset
     }
 
-    public func setupSession(configuration: @escaping (CaputerSession) -> Void) {
+    public func setupSession(configuration: @escaping VoidFunction1<CaputerSession>, callback: VoidFunction? = nil) {
         runInSessionQueue { [weak self] in
             guard let self else {
+                callback?()
                 return
             }
 
             self.session.beginConfiguration()
             configuration(self)
             self.session.commitConfiguration()
+            callback?()
         }
     }
 
@@ -83,10 +85,8 @@ open class CaputerSession {
         return videoDiscovery.devices.first(where: { $0.position == position })
     }
 
-    public func runInSessionQueue(_ function: @escaping VoidFunction) {
-        sessionQueue.async {
-            function()
-        }
+    public func runInSessionQueue(delay: TimeInterval = 0, function: @escaping VoidFunction) {
+        DispatchQueue.async(queue: sessionQueue, after: delay, block: function)
     }
 }
 
@@ -115,19 +115,22 @@ public extension CaputerSession {
     }
 
     @discardableResult
-    func switchCamera(front: Bool) -> Bool {
+    func switchCamera(front: Bool, configuration: VoidFunction1<Bool>? = nil, callback: VoidFunction? = nil) -> Bool {
         guard useFrontCamera != front else {
+            callback?()
             return true
         }
 
         guard let device = videoDevcieFor(front: front),
               let newInput = try? AVCaptureDeviceInput(device: device)
         else {
+            callback?()
             return false
         }
 
         runInSessionQueue { [weak self] in
             guard let self else {
+                callback?()
                 return
             }
 
@@ -152,11 +155,13 @@ public extension CaputerSession {
                 session.sessionPreset = previousSessionPreset
             }
 
+            configuration?(front)
             session.commitConfiguration()
 
             DispatchQueue.main.async { [weak self] in
                 self?.useFrontCamera = front
             }
+            callback?()
         }
         return true
     }
