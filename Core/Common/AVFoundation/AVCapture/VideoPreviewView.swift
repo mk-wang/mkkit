@@ -83,6 +83,10 @@ open class VideoPreviewView: UIView {
 
         CATransaction.commit()
     }
+
+    public var previewROIRect: CGRect {
+        videoPreviewLayer.metadataOutputRectConverted(fromLayerRect: videoPreviewLayer.bounds)
+    }
 }
 
 public extension VideoPreviewView {
@@ -117,12 +121,7 @@ public extension VideoPreviewView {
         }
     }
 
-    /**
-     Updates the region of interest with a proposed region of interest ensuring
-     the new region of interest is within the bounds of the video preview. When
-     a new region of interest is set, the region of interest is redrawn.
-     */
-    @objc func setRegionOfInterestWithProposedRegionOfInterest(_ proposedRegionOfInterest: CGRect) {
+    func regionOfInterestWithProposedRegion(_ proposedRegionOfInterest: CGRect) -> CGRect {
         // We standardize to ensure we have positive widths and heights with an origin at the top left.
         let videoPreviewRect = videoPreviewLayer.layerRectConverted(fromMetadataOutputRect:
             CGRect(x: 0, y: 0, width: 1, height: 1)
@@ -166,7 +165,15 @@ public extension VideoPreviewView {
             newRegionOfInterest.origin = oldRegionOfInterest.origin
             newRegionOfInterest.size.height = minimumRegionOfInterestSize
         }
+        return newRegionOfInterest
+    }
 
-        regionOfInterest = newRegionOfInterest
+    /**
+     Updates the region of interest with a proposed region of interest ensuring
+     the new region of interest is within the bounds of the video preview. When
+     a new region of interest is set, the region of interest is redrawn.
+     */
+    @objc func setRegionOfInterestWithProposedRegion(_ rect: CGRect) {
+        regionOfInterest = regionOfInterestWithProposedRegion(rect)
     }
 }
