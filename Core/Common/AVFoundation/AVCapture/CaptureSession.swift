@@ -1,5 +1,5 @@
 //
-//  CaputerSession.swift
+//  CaptureSession.swift
 //  MKKit
 //
 //  Created by MK on 2023/12/13.
@@ -9,9 +9,9 @@ import AVFoundation
 import Foundation
 import OpenCombine
 
-// MARK: - CaputerSession
+// MARK: - CaptureSession
 
-open class CaputerSession {
+open class CaptureSession {
     public let session = AVCaptureSession()
     public private(set) var useFrontCamera: Bool = true
 
@@ -66,7 +66,7 @@ open class CaputerSession {
         self.preset = preset
     }
 
-    public func setupSession(configuration: @escaping VoidFunction1<CaputerSession>, callback: VoidFunction? = nil) {
+    public func setupSession(configuration: @escaping VoidFunction1<CaptureSession>, callback: VoidFunction? = nil) {
         runInSessionQueue { [weak self] in
             guard let self else {
                 callback?()
@@ -90,7 +90,7 @@ open class CaputerSession {
     }
 }
 
-public extension CaputerSession {
+public extension CaptureSession {
     @discardableResult
     func addVideoDevice(_ device: AVCaptureDevice) throws -> Bool {
         let input = try AVCaptureDeviceInput(device: device)
@@ -167,7 +167,7 @@ public extension CaputerSession {
     }
 }
 
-public extension CaputerSession {
+public extension CaptureSession {
     func start() {
         runInSessionQueue { [weak self] in
             guard let self else {
@@ -256,9 +256,9 @@ public extension CaputerSession {
     }
 }
 
-// MARK: CaputerSession.Interrupt
+// MARK: CaptureSession.Interrupt
 
-public extension CaputerSession {
+public extension CaptureSession {
     enum Interrupt {
         case none
         case reason(AVCaptureSession.InterruptionReason)
@@ -270,10 +270,10 @@ public extension CaputerSession {
     }
 }
 
-// MARK: - CaputerSession.Interrupt + Comparable
+// MARK: - CaptureSession.Interrupt + Comparable
 
-extension CaputerSession.Interrupt: Comparable {
-    public static func < (lhs: CaputerSession.Interrupt, rhs: CaputerSession.Interrupt) -> Bool {
+extension CaptureSession.Interrupt: Comparable {
+    public static func < (lhs: CaptureSession.Interrupt, rhs: CaptureSession.Interrupt) -> Bool {
         switch (lhs, rhs) {
         case (.none, .none):
             return true
