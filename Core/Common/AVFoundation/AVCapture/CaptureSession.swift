@@ -15,7 +15,7 @@ open class CaptureSession {
     public let session = AVCaptureSession()
     public private(set) var useFrontCamera: Bool = true
 
-    private let sessionQueue = DispatchQueue(label: "mkkit.session.queue") // Communicate with the session and other session objects on this queue.
+    private let sessionQueue = DispatchQueue(label: "mkkit.capture.session.queue") // Communicate with the session and other session objects on this queue.
 
     private lazy var videoDiscovery = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
                                                                        mediaType: .video,
@@ -54,10 +54,6 @@ open class CaptureSession {
             }
         }
     }
-
-    private var metadataOutput: AVCaptureMetadataOutput?
-    private lazy var metadataObjectsQueue = DispatchQueue(label: "mk.video.meta.queue")
-    private var previewView: VideoPreviewView?
 
     let preset: AVCaptureSession.Preset
 
