@@ -25,17 +25,9 @@ open class VideoPreviewView: UIView {
 
     public lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer = layer as! AVCaptureVideoPreviewLayer
 
-    public private(set) lazy var drawLayer = CALayer()
+    private lazy var drawLayer = CALayer()
 
     public var minimumRegionOfInterestSize: CGFloat = 50
-
-    private lazy var maskLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillRule = .evenOdd
-        layer.fillColor = UIColor.black.cgColor
-        layer.opacity = 0.6
-        return layer
-    }()
 
     private lazy var regionOfInterestOutline: CAShapeLayer = {
         let layer = CAShapeLayer()
@@ -48,40 +40,27 @@ open class VideoPreviewView: UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
 
-        // Disable CoreAnimation actions so that the positions of the sublayers immediately move to their new position.
-        guard canShowMask || canShowRegionOfInterest else {
-            return
-        }
-
         if drawLayer.superlayer == nil {
             layer.addSublayer(drawLayer)
         }
         drawLayer.frame = bounds
-
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-
-        if canShowMask {
-            if maskLayer.superlayer == nil {
-                drawLayer.addSublayer(maskLayer)
-            }
+        
+        // Disable CoreAnimation actions so that the positions of the sublayers immediately move to their new position.
+        guard canShowRegionOfInterest else {
+            return
         }
 
         if canShowRegionOfInterest {
             if regionOfInterestOutline.superlayer == nil {
-                drawLayer.addSublayer(regionOfInterestOutline)
+                addToDrawLayer(regionOfInterestOutline)
             }
 
             // Create the path for the mask layer. We use the even odd fill rule so that the region of interest does not have a fill color.
             let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: bounds.size.width, height: bounds.size.height))
             path.append(UIBezierPath(rect: regionOfInterest))
             path.usesEvenOddFillRule = true
-            maskLayer.path = path.cgPath
-
             regionOfInterestOutline.path = CGPath(rect: regionOfInterest, transform: nil)
         }
-
-        CATransaction.commit()
     }
 
     public var previewROIRect: CGRect {
@@ -91,10 +70,18 @@ open class VideoPreviewView: UIView {
 
 public extension VideoPreviewView {
     func showDrawLayer(_ show: Bool) {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        drawLayer.isHidden = !show
-        CATransaction.commit()
+        UIView.runDisableActions { [weak self] in
+            guard let self else {
+                return
+            }
+            self.drawLayer.isHidden = !show
+        }
+    }
+
+    func addToDrawLayer(_ layer: CALayer) {
+        UIView.runDisableActions { [weak self] in
+            self?.drawLayer.addSublayer(layer)
+        }
     }
 
     private(set) var regionOfInterest: CGRect {

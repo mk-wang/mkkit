@@ -315,3 +315,17 @@ public extension UIView {
         return borderLayers?.first as? CAGradientLayer
     }
 }
+
+public extension UIView {
+    static func runDisableActions(_ block: VoidFunction,
+                                  completion: VoidFunction? = nil)
+    {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        if let completion {
+            CATransaction.setCompletionBlock(completion)
+        }
+        block()
+        CATransaction.commit()
+    }
+}

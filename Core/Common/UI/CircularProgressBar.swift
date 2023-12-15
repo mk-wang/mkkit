@@ -61,10 +61,9 @@ open class CircularProgressBar: UIView {
             Float(getProgress())
         }
         set {
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            updateProgress(progress: CGFloat(newValue))
-            CATransaction.commit()
+            UIView.runDisableActions { [weak self] in
+                self?.updateProgress(progress: CGFloat(newValue))
+            }
         }
     }
 

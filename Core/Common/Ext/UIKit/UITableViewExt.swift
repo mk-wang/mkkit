@@ -9,17 +9,24 @@ import UIKit
 
 public extension UITableView {
     func reloadWithoutAnimation() {
-        CATransaction.begin()
-        CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-        reloadData()
-        CATransaction.commit()
+        UIView.runDisableActions { [weak self] in
+            self?.reloadData()
+        }
     }
 
     func reloadDataWithCompletion(_ completion: (() -> Void)? = nil) {
-        CATransaction.begin()
-        CATransaction.setCompletionBlock(completion)
-        reloadData()
-        CATransaction.commit()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                if let cb = completion {
+                    cb()
+                }
+                return
+            }
+
+            UIView.runDisableActions({ [weak self] in
+                self?.reloadData()
+            }, completion: completion)
+        }
     }
 }
 

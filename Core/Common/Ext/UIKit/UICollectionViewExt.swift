@@ -9,10 +9,9 @@ import UIKit
 
 public extension UICollectionView {
     func reloadWithoutAnimation() {
-        CATransaction.begin()
-        CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-        reloadData()
-        CATransaction.commit()
+        UIView.runDisableActions { [weak self] in
+            self?.reloadData()
+        }
     }
 
     func reloadDataWithCompletion(_ completion: (() -> Void)? = nil) {
@@ -24,11 +23,9 @@ public extension UICollectionView {
                 return
             }
 
-            CATransaction.begin()
-            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-            CATransaction.setCompletionBlock(completion)
-            self.reloadData()
-            CATransaction.commit()
+            UIView.runDisableActions({ [weak self] in
+                self?.reloadData()
+            }, completion: completion)
         }
     }
 
