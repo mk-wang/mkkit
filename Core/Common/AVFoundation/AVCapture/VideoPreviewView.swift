@@ -49,17 +49,15 @@ open class VideoPreviewView: UIView {
             return
         }
 
-        if canShowRegionOfInterest {
-            if regionOfInterestOutline.superlayer == nil {
-                addToDrawLayer(regionOfInterestOutline)
-            }
-
-            // Create the path for the mask layer. We use the even odd fill rule so that the region of interest does not have a fill color.
-            let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: bounds.size.width, height: bounds.size.height))
-            path.append(UIBezierPath(rect: regionOfInterest))
-            path.usesEvenOddFillRule = true
-            regionOfInterestOutline.path = CGPath(rect: regionOfInterest, transform: nil)
+        if regionOfInterestOutline.superlayer == nil {
+            addToDrawLayer(regionOfInterestOutline)
         }
+
+        // Create the path for the mask layer. We use the even odd fill rule so that the region of interest does not have a fill color.
+        let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: bounds.size.width, height: bounds.size.height))
+        path.append(UIBezierPath(rect: regionOfInterest))
+        path.usesEvenOddFillRule = true
+        regionOfInterestOutline.path = CGPath(rect: regionOfInterest, transform: nil)
     }
 
     public var previewROIRect: CGRect {
