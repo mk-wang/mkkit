@@ -43,6 +43,12 @@ public extension UIDeviceOrientation {
     }
 }
 
+public extension CGRect {
+    static var fullROI: Self {
+        CGRectMake(0, 0, 1, 1)
+    }
+}
+
 public extension AVCaptureDevice.Format {
     var resolution: CGSize {
         let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)

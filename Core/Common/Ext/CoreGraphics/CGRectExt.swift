@@ -43,10 +43,14 @@ public extension CGRect {
     }
 
     func scale(_ scale: CGFloat) -> Self {
-        var rect = self
-        rect.origin = rect.origin * scale
-        rect.size = rect.size * scale
-        return rect
+        .init(origin: origin * scale, size: size * scale)
+    }
+
+    func scale(_ scale: CGSize) -> Self {
+        .init(x: origin.x * scale.width,
+              y: origin.y * scale.height,
+              width: size.width * scale.width,
+              height: size.height * scale.height)
     }
 }
 
