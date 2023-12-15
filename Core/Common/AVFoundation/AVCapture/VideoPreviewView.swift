@@ -88,8 +88,9 @@ public extension VideoPreviewView {
         set {
             if newValue != regionOfInterestSubject.value {
                 regionOfInterestSubject.value = newValue
-
-                setNeedsLayout()
+                if canShowRegionOfInterest {
+                    setNeedsLayout()
+                }
             }
         }
     }
