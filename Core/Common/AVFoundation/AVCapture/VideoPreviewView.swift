@@ -107,9 +107,7 @@ public extension VideoPreviewView {
 
     func regionOfInterestWithProposedRegion(_ proposedRegionOfInterest: CGRect) -> CGRect {
         // We standardize to ensure we have positive widths and heights with an origin at the top left.
-        let videoPreviewRect = videoPreviewLayer.layerRectConverted(fromMetadataOutputRect:
-            CGRect(x: 0, y: 0, width: 1, height: 1)
-        ).standardized
+        let videoPreviewRect = videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: .fullROI).standardized
 
         /*
          Intersect the video preview view with the view's frame to only get

@@ -125,7 +125,7 @@ public extension AVCaptureDevice {
                     Logger.shared.info("Could not lock for configuration: \(error)")
                 }
             }
-        } else {}
+        }
     }
 
     private func minimumSubjectDistanceForCode(fieldOfView: Float, minimumSize: Float, previewFillPercentage: Float) -> Float {
