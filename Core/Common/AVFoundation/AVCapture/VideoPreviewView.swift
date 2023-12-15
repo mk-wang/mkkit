@@ -43,8 +43,7 @@ open class VideoPreviewView: UIView {
         if drawLayer.superlayer == nil {
             layer.addSublayer(drawLayer)
         }
-        drawLayer.frame = bounds
-        
+
         // Disable CoreAnimation actions so that the positions of the sublayers immediately move to their new position.
         guard canShowRegionOfInterest else {
             return
