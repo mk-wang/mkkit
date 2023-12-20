@@ -44,7 +44,7 @@ open class SectionGroupViewFlowLayout: UICollectionViewFlowLayout {
             }
 
             attrs.frame = rect
-            attrs.zIndex = -1
+            attrs.zIndex = Int.min
             attrs.configure = config.viewConfigure
 
             attributes.append(attrs)

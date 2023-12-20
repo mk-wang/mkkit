@@ -83,7 +83,7 @@ public extension UIView {
                         make.width.equalTo(width)
                     }
                     if let height {
-                        make.width.equalTo(height)
+                        make.height.equalTo(height)
                     }
                     if let size {
                         make.size.equalTo(size)
