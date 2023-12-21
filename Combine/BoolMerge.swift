@@ -10,14 +10,21 @@ import OpenCombine
 
 // MARK: - BoolMerge
 
+// wait for all
 public class BoolMerge: Publisher {
     public typealias Output = Bool
     public typealias Failure = Never
+
+    public enum Operate {
+        case and
+        case or
+    }
 
     var cancellableSet = Set<AnyCancellable>()
     var values: [Bool]
 
     let subjuct = CurrentValueSubject<Bool, Never>(false)
+    let operate: Operate
 
     var value: Bool {
         get {
@@ -31,7 +38,9 @@ public class BoolMerge: Publisher {
         }
     }
 
-    public init(_ list: [some OpenCombine.Publisher<Bool, Never>]) {
+    public init(_ list: [some OpenCombine.Publisher<Bool, Never>], operate: Operate = .and) {
+        self.operate = operate
+
         values = Array(repeating: false, count: list.count)
 
         for (index, publihser) in list.enumerated() {
@@ -47,13 +56,23 @@ public class BoolMerge: Publisher {
     }
 
     func checkValues() {
-        for value in values {
-            if !value {
-                self.value = false
-                return
+        if operate == .and {
+            for value in values {
+                if !value {
+                    self.value = false
+                    return
+                }
             }
+            value = true
+        } else {
+            for value in values {
+                if value {
+                    self.value = true
+                    return
+                }
+            }
+            value = false
         }
-        value = true
     }
 }
 

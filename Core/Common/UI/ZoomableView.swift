@@ -11,9 +11,9 @@ import UIKit
 
 open class ZoomableView: UIView {
     public struct Config {
-        let zoomScale: CGFloat
-        let zoomInDuratin: CGFloat
-        let zoomOutDuratin: CGFloat
+        public let zoomScale: CGFloat
+        public let zoomInDuratin: CGFloat
+        public let zoomOutDuratin: CGFloat
 
         public init(zoomScale: CGFloat, zoomInDuratin: CGFloat, zoomOutDuratin: CGFloat) {
             self.zoomScale = zoomScale
@@ -29,8 +29,8 @@ open class ZoomableView: UIView {
     open var onTouchDown: VoidFunction?
     open var onTouchUp: VoidFunction?
 
-    private var needZoomOut: Bool = false
-    private var isAnimating = false
+    public var needZoomOut: Bool = false
+    public var isAnimating = false
 
     public init(frame: CGRect, config: Config? = nil) {
         self.config = config ?? Self.defalutConfig
