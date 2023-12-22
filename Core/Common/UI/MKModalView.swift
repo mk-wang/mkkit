@@ -44,6 +44,7 @@ open class MKModalView: PassTouchView {
         passMode = .none
 
         addSubview(bgTouchView)
+        bgTouchView.isUserInteractionEnabled = false
     }
 
     @available(*, unavailable)
@@ -94,6 +95,7 @@ public extension MKModalView {
                     weakSelf?.realShow()
                 } completion: { _ in
                     weakSelf?.didShowCompletion?(weakSelf)
+                    weakSelf?.bgTouchView.isUserInteractionEnabled = true
                 }
             }
         } else {
@@ -103,6 +105,7 @@ public extension MKModalView {
                 weakSelf?.realShow()
             } completion: { _ in
                 weakSelf?.didShowCompletion?(weakSelf)
+                weakSelf?.bgTouchView.isUserInteractionEnabled = true
             }
         }
     }

@@ -11,7 +11,7 @@ import UIKit
 // MARK: - MKButton
 
 open class MKButton: UIButton {
-    open var tapExt = CGSize.zero
+    open var tapExt: CGSize? = nil
     open var onLayout: VoidFunction?
     open var themeTintColor: UIColor?
     open var themeCancellable: AnyCancellable?
@@ -68,8 +68,16 @@ open class MKButton: UIButton {
         }
     }
 
-    override open func point(inside point: CGPoint, with _: UIEvent?) -> Bool {
-        bounds.insetBy(dx: -tapExt.width, dy: -tapExt.height).contains(point)
+    override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        var inside = super.point(inside: point, with: event)
+        guard !inside, let tapExt else {
+            return inside
+        }
+
+        let rect = bounds.insetBy(dx: -tapExt.width, dy: -tapExt.height)
+        inside = rect.contains(point)
+
+        return inside
     }
 
     override init(frame: CGRect) {

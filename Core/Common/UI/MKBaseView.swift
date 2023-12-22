@@ -36,13 +36,14 @@ open class MKBaseView: UIView {
     }
 
     override open func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        var rt = super.point(inside: point, with: event)
-        guard !rt, let extendHitInset else {
-            return rt
+        var inside = super.point(inside: point, with: event)
+        guard !inside, let extendHitInset else {
+            return inside
         }
         let rect = bounds.inset(by: extendHitInset)
-        rt = rect.contains(point)
-        return rt
+        inside = rect.contains(point)
+
+        return inside
     }
 }
 
