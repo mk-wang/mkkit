@@ -40,10 +40,10 @@ public extension UIEdgeInsets {
 // MARK: - MKEdgeInsets
 
 public struct MKEdgeInsets {
-    var top: CGFloat?
-    var start: CGFloat?
-    var bottom: CGFloat?
-    var end: CGFloat?
+    public let top: CGFloat?
+    public let start: CGFloat?
+    public let bottom: CGFloat?
+    public let end: CGFloat?
 
     public init(top: CGFloat? = nil, start: CGFloat? = nil, bottom: CGFloat? = nil, end: CGFloat? = nil) {
         self.top = top
@@ -55,11 +55,15 @@ public struct MKEdgeInsets {
     public init(vertical val: CGFloat) {
         top = val
         bottom = val
+        start = nil
+        end = nil
     }
 
     public init(horizontal val: CGFloat) {
         start = val
         end = val
+        bottom = nil
+        top = nil
     }
 }
 
