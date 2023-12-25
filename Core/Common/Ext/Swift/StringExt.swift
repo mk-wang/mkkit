@@ -21,6 +21,12 @@ public func rotNumber(_ value: UInt32, n: UInt8) -> UInt32 {
 }
 
 public extension String {
+    static func equalIngoreNil(lhs: String?, rhs: String?) -> Bool {
+        lhs == rhs || ((lhs?.isEmpty ?? true) && (rhs?.isEmpty ?? true))
+    }
+}
+
+public extension String {
     func rot(n: UInt8) -> String {
         String(unicodeScalars.map {
             let value = rotNumber(UInt32($0.value), n: n)
