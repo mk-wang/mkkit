@@ -44,7 +44,6 @@ open class MKModalView: PassTouchView {
         passMode = .none
 
         addSubview(bgTouchView)
-        bgTouchView.isUserInteractionEnabled = false
     }
 
     @available(*, unavailable)
@@ -94,8 +93,7 @@ public extension MKModalView {
                 UIView.animate(withDuration: duration) {
                     weakSelf?.realShow()
                 } completion: { _ in
-                    weakSelf?.didShowCompletion?(weakSelf)
-                    weakSelf?.bgTouchView.isUserInteractionEnabled = true
+                    weakSelf?.afterShow()
                 }
             }
         } else {
@@ -104,8 +102,7 @@ public extension MKModalView {
             UIView.animate(withDuration: duration) {
                 weakSelf?.realShow()
             } completion: { _ in
-                weakSelf?.didShowCompletion?(weakSelf)
-                weakSelf?.bgTouchView.isUserInteractionEnabled = true
+                weakSelf?.afterShow()
             }
         }
     }
@@ -136,6 +133,7 @@ private extension MKModalView {
         }
 
         bgTouchView.alpha = hideAlpha
+        bgTouchView.isUserInteractionEnabled = false
 
         if style == .center {
             let scale: CGFloat = 1.12
@@ -170,6 +168,11 @@ private extension MKModalView {
             }
             contentView.frame = rect
         }
+    }
+
+    func afterShow() {
+        didShowCompletion?(self)
+        bgTouchView.isUserInteractionEnabled = true
     }
 
     func realHide() {
