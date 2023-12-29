@@ -12,26 +12,42 @@ import UIKit
 open class MKDragView: UIView {
     public struct HeightConfig {
         public var containerHeight: CGFloat
-        public var dismissibleHeight: CGFloat
         public var maximumContainerHeight: CGFloat
+        public var minimumContainerHeight: CGFloat
+        public var dismissibleHeight: CGFloat?
 
         public static var screenConfig: Self {
             let full = ScreenUtil.screenSize.height
             let maxHeight = full - ScreenUtil.topSafeArea - 10.rw
             return .init(containerHeight: full * 0.64,
-                         dismissibleHeight: full * 0.3,
-                         maximumContainerHeight: min(full * 0.9, maxHeight))
+                         maximumContainerHeight: min(full * 0.9, maxHeight),
+                         minimumContainerHeight: ScreenUtil.bottomSafeArea + 40,
+                         dismissibleHeight: full * 0.3)
+        }
+
+        public init(containerHeight: CGFloat,
+                    maximumContainerHeight: CGFloat,
+                    minimumContainerHeight: CGFloat,
+                    dismissibleHeight: CGFloat? = nil)
+        {
+            self.containerHeight = containerHeight
+            self.maximumContainerHeight = maximumContainerHeight
+            self.minimumContainerHeight = minimumContainerHeight
+            self.dismissibleHeight = dismissibleHeight
         }
     }
 
     // configuration
     open var heightConfig: HeightConfig = .screenConfig
     open var dragToExpand: Bool = true
+
     open var contentViewBuilder: ((MKDragView) -> UIView?)?
     open var onClose: VoidFunction?
 
-    private(set) weak var contentView: UIView?
+    public private(set) weak var contentView: UIView?
     private(set) weak var touchView: UIView?
+
+    public var checkMidPosiotionOnDragEnd: Bool = true
 
     private(set) var expaneded = false
     private var contentHeightConstraint: NSLayoutConstraint?
@@ -56,27 +72,26 @@ open class MKDragView: UIView {
                 contentView.addGestureRecognizer(gesture)
             }
 
-            let touchView = UIView()
-            addSubview(touchView)
-            touchView.translatesAutoresizingMaskIntoConstraints = false
-            self.touchView = touchView
-            do {
-                let gesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-                touchView.addGestureRecognizer(gesture)
-            }
-
             NSLayoutConstraint.activate([
-                touchView.topAnchor.constraint(equalTo: topAnchor),
-                touchView.leadingAnchor.constraint(equalTo: leadingAnchor),
-                touchView.trailingAnchor.constraint(equalTo: trailingAnchor),
-                touchView.bottomAnchor.constraint(equalTo: contentView.topAnchor),
-
                 contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
                 contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
                 contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             ])
 
-            contentHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: initialHeight)
+            if let touchView = makeTouchView() {
+                touchView.translatesAutoresizingMaskIntoConstraints = false
+                addSubview(touchView)
+                self.touchView = touchView
+
+                NSLayoutConstraint.activate([
+                    touchView.topAnchor.constraint(equalTo: topAnchor),
+                    touchView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                    touchView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                    touchView.bottomAnchor.constraint(equalTo: contentView.topAnchor),
+                ])
+            }
+
+            contentHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: heightConfig.containerHeight)
             contentHeightConstraint?.isActive = true
         }
     }
@@ -86,14 +101,16 @@ open class MKDragView: UIView {
     }
 
     // https://github.com/xmhafiz/CustomModalVC/blob/main/HalfScreenPresentation/CustomModalViewController.swift
-    @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+    @objc open func handlePan(_ gesture: UIPanGestureRecognizer) {
         guard let contentView else {
             return
         }
-        let offset = gesture.translation(in: self).y
+        let state = gesture.state
+
+        let offset: CGFloat = state == .began ? 0 : gesture.translation(in: self).y
         gesture.setTranslation(.zero, in: self)
 
-        let state = gesture.state
+        let initialHeight = heightConfig.containerHeight
 
         guard state != .cancelled else {
             setContainerHeight(initialHeight, dragEnd: true)
@@ -106,27 +123,45 @@ open class MKDragView: UIView {
 
         var targetHeight: CGFloat?
 
+        let maximumContainerHeight = heightConfig.maximumContainerHeight
+        let minimumContainerHeight = heightConfig.minimumContainerHeight
+
         let height = (dragContentHeight ?? targetContainerHeight) - offset
         if state == .began {
             dragContentHeight = initialHeight
             targetHeight = height
         } else if state == .changed {
-            if height < maximumContainerHeight, height > safeAreaInsets.bottom + 40 {
+            if height <= maximumContainerHeight, height >= minimumContainerHeight {
                 targetHeight = height
             }
         } else {
             let isDraggingUp = gesture.velocity(in: gesture.view!).y < 0
 
-            if height < dismissibleHeight { // below min
+            let midHeight = (initialHeight + maximumContainerHeight) / 2
+
+            if let dismissibleHeight = heightConfig.dismissibleHeight,
+               height <= dismissibleHeight
+            { // below dissmiss
                 hideView()
-            } else if height < initialHeight //  below default
-                || (!isDraggingUp && height < maximumContainerHeight) // below max and going down
-            {
-                targetHeight = initialHeight
-                expaneded = false
-            } else if height > initialHeight, isDraggingUp { // below max and going up
-                targetHeight = maximumContainerHeight
-                expaneded = true
+                return
+            }
+
+            if checkMidPosiotionOnDragEnd {
+                let midHeight = (initialHeight + maximumContainerHeight) / 2
+                expaneded = height >= midHeight
+                targetHeight = expaneded ? maximumContainerHeight : initialHeight
+            } else {
+                let isDraggingUp = gesture.velocity(in: gesture.view!).y < 0
+
+                if height < initialHeight //  below default
+                    || (!isDraggingUp && height < maximumContainerHeight) // below max and going down
+                {
+                    expaneded = false
+                    targetHeight = initialHeight
+                } else if height > initialHeight, isDraggingUp { // below max and going up
+                    expaneded = true
+                    targetHeight = maximumContainerHeight
+                }
             }
         }
 
@@ -166,9 +201,18 @@ open class MKDragView: UIView {
         }
     }
 
-    func updateContent(height: CGFloat) {
+    @objc open func updateContent(height: CGFloat) {
         contentHeightConstraint?.constant = height
         layoutIfNeeded()
+    }
+
+    @objc open func makeTouchView() -> UIView? {
+        let box = UIView()
+        do {
+            let gesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+            box.addGestureRecognizer(gesture)
+        }
+        return box
     }
 }
 
@@ -176,19 +220,28 @@ open class MKDragView: UIView {
 
 public extension MKDragView {
     var targetContainerHeight: CGFloat {
-        expaneded ? maximumContainerHeight : initialHeight
+        expaneded ? heightConfig.maximumContainerHeight : heightConfig.containerHeight
     }
 
-    var initialHeight: CGFloat {
-        heightConfig.containerHeight
+    func onMaxHeight(_ fix: CGFloat = 1) -> Bool {
+        guard let height = contentView?.bounds.size.height else {
+            return false
+        }
+        return height + fix > heightConfig.maximumContainerHeight
     }
 
-    var maximumContainerHeight: CGFloat {
-        heightConfig.maximumContainerHeight
+    func onInitalHeight(_ fix: CGFloat = 0.5) -> Bool {
+        guard let height = contentView?.bounds.size.height else {
+            return false
+        }
+        return abs(height - heightConfig.containerHeight) < fix
     }
 
-    var dismissibleHeight: CGFloat {
-        heightConfig.dismissibleHeight
+    func onMinHeight(_ fix: CGFloat = 1) -> Bool {
+        guard let height = contentView?.bounds.size.height else {
+            return false
+        }
+        return height - fix < heightConfig.minimumContainerHeight
     }
 }
 
