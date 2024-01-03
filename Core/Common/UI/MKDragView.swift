@@ -5,37 +5,17 @@
 //  Created by MK on 2023/5/24.
 //
 
+import OpenCombine
 import UIKit
 
 // MARK: - MKDragView
 
 open class MKDragView: UIView {
-    public struct HeightConfig {
-        public var containerHeight: CGFloat
-        public var maximumContainerHeight: CGFloat
-        public var minimumContainerHeight: CGFloat
-        public var dismissibleHeight: CGFloat?
-        public var minHeightOffsetRatio: CGFloat = 0.45
+    fileprivate let offsetSubject: CurrentValueSubject<CGFloat, Never> = .init(0)
+    public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
-        public static var screenConfig: Self {
-            let full = ScreenUtil.screenSize.height
-            let maxHeight = full - ScreenUtil.topSafeArea - 10.rw
-            return .init(containerHeight: full * 0.64,
-                         maximumContainerHeight: min(full * 0.9, maxHeight),
-                         minimumContainerHeight: ScreenUtil.bottomSafeArea + 40,
-                         dismissibleHeight: full * 0.3)
-        }
-
-        public init(containerHeight: CGFloat,
-                    maximumContainerHeight: CGFloat,
-                    minimumContainerHeight: CGFloat,
-                    dismissibleHeight: CGFloat? = nil)
-        {
-            self.containerHeight = containerHeight
-            self.maximumContainerHeight = maximumContainerHeight
-            self.minimumContainerHeight = minimumContainerHeight
-            self.dismissibleHeight = dismissibleHeight
-        }
+    var heightOffset: CGFloat {
+        offsetSubject.value
     }
 
     // configuration
@@ -49,6 +29,7 @@ open class MKDragView: UIView {
     private(set) weak var touchView: UIView?
 
     public var checkMidPosiotionOnDragEnd: Bool = true
+    public var canDragDownToMin: Bool = true
 
     private(set) var expaneded = false
     private var contentHeightConstraint: NSLayoutConstraint?
@@ -174,6 +155,8 @@ open class MKDragView: UIView {
         if var targetHeight {
             if !dragToExpand, targetHeight > initialHeight {
                 targetHeight = initialHeight
+            } else if targetHeight < initialHeight, !canDragDownToMin {
+                targetHeight = initialHeight
             }
             setContainerHeight(targetHeight, dragEnd: gesture.state == .ended)
         }
@@ -208,6 +191,7 @@ open class MKDragView: UIView {
     }
 
     @objc open func updateContent(height: CGFloat) {
+        offsetSubject.value = height - heightConfig.containerHeight
         contentHeightConstraint?.constant = height
         layoutIfNeeded()
     }
@@ -256,5 +240,37 @@ public extension MKDragView {
 extension MKDragView: UIGestureRecognizerDelegate {
     override open func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
         true
+    }
+}
+
+// MARK: MKDragView.HeightConfig
+
+public extension MKDragView {
+    struct HeightConfig {
+        public var containerHeight: CGFloat
+        public var maximumContainerHeight: CGFloat
+        public var minimumContainerHeight: CGFloat
+        public var dismissibleHeight: CGFloat?
+        public var minHeightOffsetRatio: CGFloat = 0.45
+
+        public static var screenConfig: Self {
+            let full = ScreenUtil.screenSize.height
+            let maxHeight = full - ScreenUtil.topSafeArea - 10.rw
+            return .init(containerHeight: full * 0.64,
+                         maximumContainerHeight: min(full * 0.9, maxHeight),
+                         minimumContainerHeight: ScreenUtil.bottomSafeArea + 40,
+                         dismissibleHeight: full * 0.3)
+        }
+
+        public init(containerHeight: CGFloat,
+                    maximumContainerHeight: CGFloat,
+                    minimumContainerHeight: CGFloat,
+                    dismissibleHeight: CGFloat? = nil)
+        {
+            self.containerHeight = containerHeight
+            self.maximumContainerHeight = maximumContainerHeight
+            self.minimumContainerHeight = minimumContainerHeight
+            self.dismissibleHeight = dismissibleHeight
+        }
     }
 }
