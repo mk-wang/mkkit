@@ -16,9 +16,11 @@ open class StickyHeaderFlowLayout: UICollectionViewFlowLayout {
             return layoutAttributes
         }
 
+        layoutAttributes = layoutAttributes.compactMap { $0.copy() as? UICollectionViewLayoutAttributes }
+
         if let attributes = layoutAttributes.first(where: { $0.indexPath == stickIndexPath }) {
             stick(attributes: attributes)
-        } else if let attributes = layoutAttributesForItem(at: stickIndexPath) {
+        } else if let attributes = layoutAttributesForItem(at: stickIndexPath)?.copy() as? UICollectionViewLayoutAttributes {
             stick(attributes: attributes)
             layoutAttributes.append(attributes)
         }
