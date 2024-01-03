@@ -15,6 +15,7 @@ open class MKDragView: UIView {
         public var maximumContainerHeight: CGFloat
         public var minimumContainerHeight: CGFloat
         public var dismissibleHeight: CGFloat?
+        public var minHeightOffsetRatio: CGFloat = 0.45
 
         public static var screenConfig: Self {
             let full = ScreenUtil.screenSize.height
@@ -126,11 +127,16 @@ open class MKDragView: UIView {
         let maximumContainerHeight = heightConfig.maximumContainerHeight
         let minimumContainerHeight = heightConfig.minimumContainerHeight
 
-        let height = (dragContentHeight ?? targetContainerHeight) - offset
+        let startHeight = (dragContentHeight ?? targetContainerHeight)
+        var height = startHeight - offset
+
         if state == .began {
             dragContentHeight = initialHeight
             targetHeight = height
         } else if state == .changed {
+            if height < initialHeight, height >= minimumContainerHeight {
+                height = startHeight - offset * heightConfig.minHeightOffsetRatio
+            }
             if height <= maximumContainerHeight, height >= minimumContainerHeight {
                 targetHeight = height
             }
@@ -165,11 +171,11 @@ open class MKDragView: UIView {
             }
         }
 
-        if var height = targetHeight {
-            if !dragToExpand, height > initialHeight {
-                height = initialHeight
+        if var targetHeight {
+            if !dragToExpand, targetHeight > initialHeight {
+                targetHeight = initialHeight
             }
-            setContainerHeight(height, dragEnd: gesture.state == .ended)
+            setContainerHeight(targetHeight, dragEnd: gesture.state == .ended)
         }
     }
 
