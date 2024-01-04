@@ -24,8 +24,7 @@ public struct Day {
         self.day = day
     }
 
-    public init(date: Date) {
-        let calendar = date.calendar
+    public init(date: Date, calendar: Calendar = .current) {
         let comps = calendar.dateComponents([.year, .month, .day], from: date)
         self.init(calender: calendar, year: comps.year!, month: comps.month!, day: comps.day!)
     }
@@ -61,8 +60,7 @@ public struct Hour {
         self.hour = hour
     }
 
-    public init(date: Date) {
-        let calendar = date.calendar
+    public init(date: Date, calendar: Calendar = .current) {
         let comps = calendar.dateComponents([.year, .month, .day, .hour], from: date)
         day = .init(calender: calendar, year: comps.year!, month: comps.month!, day: comps.day!)
         hour = comps.hour!
