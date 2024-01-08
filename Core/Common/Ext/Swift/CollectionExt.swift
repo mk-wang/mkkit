@@ -70,3 +70,9 @@ public extension MKCountable {
         !isEmpty
     }
 }
+
+public extension Set {
+    static func equalIngoreNil(_ lhs: Self?, _ rhs: Self?) -> Bool {
+        lhs == rhs || ((lhs?.isEmpty ?? true) && (rhs?.isEmpty ?? true))
+    }
+}

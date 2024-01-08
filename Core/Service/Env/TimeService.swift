@@ -12,13 +12,13 @@ import UIKit
 // MARK: - Day
 
 public struct Day {
-    public let calender: Calendar
+    public let calendar: Calendar
     public let year: Int
     public let month: Int
     public let day: Int
 
-    fileprivate init(calender: Calendar, year: Int, month: Int, day: Int) {
-        self.calender = calender
+    fileprivate init(calendar: Calendar, year: Int, month: Int, day: Int) {
+        self.calendar = calendar
         self.year = year
         self.month = month
         self.day = day
@@ -26,7 +26,7 @@ public struct Day {
 
     public init(date: Date, calendar: Calendar = .current) {
         let comps = calendar.dateComponents([.year, .month, .day], from: date)
-        self.init(calender: calendar, year: comps.year!, month: comps.month!, day: comps.day!)
+        self.init(calendar: calendar, year: comps.year!, month: comps.month!, day: comps.day!)
     }
 }
 
@@ -34,7 +34,7 @@ public struct Day {
 
 extension Day: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.calender.timeZone.identifier == rhs.calender.timeZone.identifier
+        lhs.calendar.timeZone.identifier == rhs.calendar.timeZone.identifier
             && lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day
     }
 }
@@ -45,7 +45,7 @@ extension Day {
         comps.day = day
         comps.year = year
         comps.month = month
-        return calender.date(from: comps)
+        return calendar.date(from: comps)
     }
 }
 
@@ -62,7 +62,7 @@ public struct Hour {
 
     public init(date: Date, calendar: Calendar = .current) {
         let comps = calendar.dateComponents([.year, .month, .day, .hour], from: date)
-        day = .init(calender: calendar, year: comps.year!, month: comps.month!, day: comps.day!)
+        day = .init(calendar: calendar, year: comps.year!, month: comps.month!, day: comps.day!)
         hour = comps.hour!
     }
 }

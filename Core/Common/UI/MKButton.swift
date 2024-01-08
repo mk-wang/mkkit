@@ -80,7 +80,7 @@ open class MKButton: UIButton {
         return inside
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
 
         themeCancellable = subjectThemeChange()

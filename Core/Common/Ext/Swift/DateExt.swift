@@ -15,16 +15,15 @@ public extension Date {
         .init(timeIntervalSinceReferenceDate: timeIntervalSinceReferenceDate + TimeInterval(day) * Self.oneDayInterval)
     }
 
-    func beginningOfWeek(_ calendar: Calendar = .current) -> Date? {
+    func beginningOfWeek(_ calendar: Calendar = .current) -> Date {
         var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
         components.weekday = calendar.firstWeekday
-        return calendar.date(from: components)
+        return calendar.date(from: components)!
     }
 
     static let oneMinuteInterval: TimeInterval = 60
     static let oneHourInterval: TimeInterval = 60 * oneMinuteInterval
     static let oneDayInterval: TimeInterval = 24 * oneHourInterval
-    static let oneWeakInterval: TimeInterval = oneDayInterval * 7
 }
 
 public extension Date {

@@ -13,10 +13,6 @@ import IGListKit
 open class IGSectionItem: NSObject {
     public fileprivate(set) var cachedSize: CGSize? = nil
 
-    override public init() {
-        super.init()
-    }
-
     open func clearCache() {
         cachedSize = nil
     }

@@ -189,6 +189,22 @@ public extension LRUCache {
         head = nil
         tail = nil
     }
+
+    func contains(key: Key, reorder: Bool = true) -> Bool {
+        guard !reorder else {
+            return value(forKey: key) != nil
+        }
+
+        lock?.lock()
+        defer { lock?.unlock() }
+        return values[key] != nil
+    }
+
+    var keys: [Key] {
+        lock?.lock()
+        defer { lock?.unlock() }
+        return .init(values.keys)
+    }
 }
 
 private extension LRUCache {

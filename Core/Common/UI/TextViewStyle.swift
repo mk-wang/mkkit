@@ -70,7 +70,7 @@ public extension TextViewStyle {
 }
 
 public extension UILabel {
-    convenience init(text: String? = nil, style: TextViewStyle, numberOfLines: Int = 0) {
+    convenience init(text: String?, style: TextViewStyle, numberOfLines: Int = 0) {
         self.init()
         self.text = text
         self.numberOfLines = numberOfLines

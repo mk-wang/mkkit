@@ -21,7 +21,7 @@ public func rotNumber(_ value: UInt32, n: UInt8) -> UInt32 {
 }
 
 public extension String {
-    static func equalIngoreNil(lhs: String?, rhs: String?) -> Bool {
+    static func equalIngoreNil(_ lhs: Self?, _ rhs: Self?) -> Bool {
         lhs == rhs || ((lhs?.isEmpty ?? true) && (rhs?.isEmpty ?? true))
     }
 }
