@@ -88,10 +88,18 @@ open class BaseHighLightView: UIView {
     }
 
     override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if highLightOnTouch {
-            isHighLighted = true
-        }
         super.touchesMoved(touches, with: event)
+
+        guard event?.type == .touches,
+              let touch = touches.first
+        else {
+            return
+        }
+
+        let target = bounds.contains(touch.location(in: self))
+        if isHighLighted != target {
+            isHighLighted = target
+        }
     }
 
     override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
