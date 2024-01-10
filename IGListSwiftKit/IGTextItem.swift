@@ -69,10 +69,6 @@ open class IGTextItemCell: HighlightCollectionViewCell {
         super.init(frame: frame)
     }
 
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
     open var textlbl: UILabel?
 
     override open func layoutSubviews() {
