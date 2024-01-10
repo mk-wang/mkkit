@@ -59,16 +59,10 @@ public enum Lang: String {
     }
 
     public var short: String {
-        switch self {
-        case .zh_Hans:
-            return "zh"
-        case .zh_Hant:
-            return "zh"
-        case .pt_BR:
-            return "pt"
-        default:
-            return rawValue
+        if let text = rawValue.components(separatedBy: .init(charactersIn: "_-")).first {
+            return text
         }
+        return rawValue
     }
 }
 
@@ -207,23 +201,45 @@ extension Lang: Equatable, Codable {
 
 public extension Lang {
     static func from(text: String, list: [Self]) -> Self? {
-        if let lang = Lang(rawValue: text) {
+        if let lang = Lang(rawValue: text), list.contains(lang) {
             return lang
         }
-        if let text = text.components(separatedBy: .init(charactersIn: "_-")).first,
-           let lang = Lang(rawValue: text)
-        {
+
+        guard let shortText = text.components(separatedBy: .init(charactersIn: "_-")).first, shortText != text else {
+            return nil
+        }
+
+        if let lang = Lang(rawValue: shortText), list.contains(lang) {
             return lang
         }
+
         for lang in list {
-            if text.hasPrefix(lang.short) {
-                if lang == .zh_Hant || lang == .zh_Hans {
-                    return text.contains("Hans") ? .zh_Hans : zh_Hant
-                } else {
-                    return lang
+            let langShort = lang.short
+            var guess: Lang?
+
+            if shortText == langShort {
+                if shortText == "zh" {
+                    if text.contains("Hans") {
+                        guess = .zh_Hans
+                    } else if text.contains("Hant") {
+                        guess = .zh_Hant
+                    }
+                } else if shortText == "es" {
+                    if text.contains("MX") {
+                        guess = .es_mx
+                    }
+                } else if shortText == "pt" {
+                    if text.contains("BR") {
+                        guess = .pt_BR
+                    }
                 }
+                if let guess, list.contains(guess) {
+                    return guess
+                }
+                return lang
             }
         }
+
         return nil
     }
 }
