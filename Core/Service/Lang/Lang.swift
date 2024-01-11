@@ -59,10 +59,7 @@ public enum Lang: String {
     }
 
     public var short: String {
-        if let text = rawValue.components(separatedBy: .init(charactersIn: "_-")).first {
-            return text
-        }
-        return rawValue
+        rawValue.short
     }
 }
 
@@ -205,41 +202,53 @@ public extension Lang {
             return lang
         }
 
-        guard let shortText = text.components(separatedBy: .init(charactersIn: "_-")).first, shortText != text else {
+        let textShort = text.short
+        guard textShort != text else {
             return nil
         }
 
-        if let lang = Lang(rawValue: shortText), list.contains(lang) {
+        if let lang = Lang(rawValue: textShort), list.contains(lang) {
             return lang
         }
 
         for lang in list {
             let langShort = lang.short
-            var guess: Lang?
-
-            if shortText == langShort {
-                if shortText == "zh" {
-                    if text.contains("Hans") {
-                        guess = .zh_Hans
-                    } else if text.contains("Hant") {
-                        guess = .zh_Hant
-                    }
-                } else if shortText == "es" {
-                    if text.contains("MX") {
-                        guess = .es_mx
-                    }
-                } else if shortText == "pt" {
-                    if text.contains("BR") {
-                        guess = .pt_BR
-                    }
-                }
-                if let guess, list.contains(guess) {
-                    return guess
-                }
-                return lang
+            guard langShort != lang.rawValue, langShort == textShort else {
+                continue
             }
+
+            var guess: Lang?
+            if langShort == "zh" {
+                if text.contains("Hans") {
+                    guess = .zh_Hans
+                } else if text.contains("Hant") {
+                    guess = .zh_Hant
+                }
+            } else if langShort == "es" {
+                if text.contains("MX") {
+                    guess = .es_mx
+                }
+            } else if langShort == "pt" {
+                if text.contains("BR") {
+                    guess = .pt_BR
+                }
+            }
+
+            if let guess, list.contains(guess) {
+                return guess
+            }
+            return lang
         }
 
         return nil
+    }
+}
+
+private extension String {
+    var short: String {
+        guard let index = firstIndex(where: { $0 == "_" || $0 == "-" }) else {
+            return self
+        }
+        return substring(to: index)
     }
 }
