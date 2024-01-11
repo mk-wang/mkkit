@@ -215,29 +215,31 @@ public extension Lang {
 
         for lang in list {
             let langShort = lang.short
-            var guess: Lang?
-
-            if shortText == langShort {
-                if shortText == "zh" {
-                    if text.contains("Hans") {
-                        guess = .zh_Hans
-                    } else if text.contains("Hant") {
-                        guess = .zh_Hant
-                    }
-                } else if shortText == "es" {
-                    if text.contains("MX") {
-                        guess = .es_mx
-                    }
-                } else if shortText == "pt" {
-                    if text.contains("BR") {
-                        guess = .pt_BR
-                    }
-                }
-                if let guess, list.contains(guess) {
-                    return guess
-                }
-                return lang
+            guard langShort != lang.rawValue, langShort == shortText else {
+                continue
             }
+
+            var guess: Lang?
+            if shortText == "zh" {
+                if text.contains("Hans") {
+                    guess = .zh_Hans
+                } else if text.contains("Hant") {
+                    guess = .zh_Hant
+                }
+            } else if shortText == "es" {
+                if text.contains("MX") {
+                    guess = .es_mx
+                }
+            } else if shortText == "pt" {
+                if text.contains("BR") {
+                    guess = .pt_BR
+                }
+            }
+
+            if let guess, list.contains(guess) {
+                return guess
+            }
+            return lang
         }
 
         return nil
