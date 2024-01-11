@@ -197,6 +197,25 @@ extension Lang: Equatable, Codable {
 }
 
 public extension Lang {
+    static func system(list: [Self]) -> Self? {
+        if let first = NSLocale.preferredLanguages.first,
+           let lang = Lang(rawValue: first),
+           list.contains(lang)
+        {
+            return lang
+        }
+
+        let langs = list.map(\.rawValue)
+        if let first = Bundle.preferredLocalizations(from: langs).first,
+           let lang = Lang(rawValue: first),
+           list.contains(lang)
+        {
+            return lang
+        }
+
+        return nil
+    }
+
     static func from(text: String, list: [Self]) -> Self? {
         if let lang = Lang(rawValue: text), list.contains(lang) {
             return lang
