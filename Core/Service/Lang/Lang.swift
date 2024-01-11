@@ -59,10 +59,7 @@ public enum Lang: String {
     }
 
     public var short: String {
-        if let text = rawValue.components(separatedBy: .init(charactersIn: "_-")).first {
-            return text
-        }
-        return rawValue
+        rawValue.short
     }
 }
 
@@ -205,32 +202,33 @@ public extension Lang {
             return lang
         }
 
-        guard let shortText = text.components(separatedBy: .init(charactersIn: "_-")).first, shortText != text else {
+        let textShort = text.short
+        guard textShort != text else {
             return nil
         }
 
-        if let lang = Lang(rawValue: shortText), list.contains(lang) {
+        if let lang = Lang(rawValue: textShort), list.contains(lang) {
             return lang
         }
 
         for lang in list {
             let langShort = lang.short
-            guard langShort != lang.rawValue, langShort == shortText else {
+            guard langShort != lang.rawValue, langShort == textShort else {
                 continue
             }
 
             var guess: Lang?
-            if shortText == "zh" {
+            if langShort == "zh" {
                 if text.contains("Hans") {
                     guess = .zh_Hans
                 } else if text.contains("Hant") {
                     guess = .zh_Hant
                 }
-            } else if shortText == "es" {
+            } else if langShort == "es" {
                 if text.contains("MX") {
                     guess = .es_mx
                 }
-            } else if shortText == "pt" {
+            } else if langShort == "pt" {
                 if text.contains("BR") {
                     guess = .pt_BR
                 }
@@ -243,5 +241,14 @@ public extension Lang {
         }
 
         return nil
+    }
+}
+
+private extension String {
+    var short: String {
+        guard let index = firstIndex(where: { $0 == "_" || $0 == "-" }) else {
+            return self
+        }
+        return substring(to: index)
     }
 }
