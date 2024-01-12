@@ -102,6 +102,10 @@ public extension UIEdgeInsets {
             return UIEdgeInsets(top: top, left: start, bottom: bottom, right: end)
         }
     }
+
+    static func vertical(_ value: CGFloat, start: CGFloat = 0, end: CGFloat = 0) -> Self {
+        .only(top: value, start: start, bottom: value, end: end)
+    }
 }
 
 public extension NSDirectionalEdgeInsets {

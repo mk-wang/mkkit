@@ -9,24 +9,20 @@ import UIKit
 
 public extension UIEdgeInsets {
     static func symmetric(vertical: CGFloat, horizontal: CGFloat) -> Self {
-        UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
+        .init(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
 
     static func all(_ value: CGFloat) -> Self {
-        UIEdgeInsets(top: value, left: value, bottom: value, right: value)
+        .init(top: value, left: value, bottom: value, right: value)
     }
 
-    static func horizontal(_ value: CGFloat) -> Self {
-        .init(top: 0, left: value, bottom: 0, right: value)
+    static func horizontal(_ value: CGFloat, top: CGFloat = 0, bottom: CGFloat = 0) -> Self {
+        .init(top: top, left: value, bottom: bottom, right: value)
     }
 
-    static func vertical(_ value: CGFloat) -> Self {
-        .init(top: value, left: 0, bottom: value, right: 0)
+    static func vertical(_ value: CGFloat, left: CGFloat = 0, right: CGFloat = 0) -> Self {
+        .init(top: value, left: left, bottom: value, right: right)
     }
-
-//    static func only(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
-//        UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
-//    }
 
     var verticalSize: CGFloat {
         top + bottom
@@ -34,6 +30,22 @@ public extension UIEdgeInsets {
 
     var horizontalSize: CGFloat {
         left + right
+    }
+}
+
+public extension UIEdgeInsets {
+    static func + (left: UIEdgeInsets, right: UIEdgeInsets) -> UIEdgeInsets {
+        .init(top: left.top + right.top,
+              left: left.left + right.left,
+              bottom: left.bottom + right.bottom,
+              right: left.right + right.right)
+    }
+
+    static func max(_ left: UIEdgeInsets, _ right: UIEdgeInsets) -> UIEdgeInsets {
+        .init(top: CGFloat.maximum(left.top, right.top),
+              left: CGFloat.maximum(left.left, right.left),
+              bottom: CGFloat.maximum(left.bottom, right.bottom),
+              right: CGFloat.maximum(left.right, right.right))
     }
 }
 
@@ -52,18 +64,34 @@ public struct MKEdgeInsets {
         self.end = end
     }
 
-    public init(vertical val: CGFloat) {
+    public init(vertical val: CGFloat, start: CGFloat? = nil, end: CGFloat? = nil) {
         top = val
         bottom = val
-        start = nil
-        end = nil
+        self.start = start
+        self.end = end
     }
 
-    public init(horizontal val: CGFloat) {
+    public init(horizontal val: CGFloat, top: CGFloat? = nil, bottom: CGFloat? = nil) {
         start = val
         end = val
-        bottom = nil
-        top = nil
+        self.top = top
+        self.bottom = bottom
+    }
+
+    static func only(top: CGFloat? = nil, start: CGFloat? = nil, bottom: CGFloat? = nil, end: CGFloat? = nil) -> Self {
+        .init(top: top, start: start, bottom: bottom, end: end)
+    }
+
+    static func vertical(_ val: CGFloat, start: CGFloat? = nil, end: CGFloat? = nil) -> Self {
+        .init(vertical: val, start: start, end: end)
+    }
+
+    static func horizontal(_ val: CGFloat, top: CGFloat? = nil, bottom: CGFloat? = nil) -> Self {
+        .init(horizontal: val, top: top, bottom: bottom)
+    }
+
+    static func symmetric(vertical: CGFloat, horizontal: CGFloat) -> Self {
+        .init(top: vertical, start: horizontal, bottom: vertical, end: horizontal)
     }
 }
 
