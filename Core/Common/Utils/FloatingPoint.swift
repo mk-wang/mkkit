@@ -1,5 +1,5 @@
 //
-//  FloatingPoint.swift
+//  MKFloatingPoint.swift
 //
 //
 //  Created by MK on 2022/3/17.
@@ -7,9 +7,9 @@
 
 import CoreGraphics
 
-// MARK: - FloatingPoint
+// MARK: - MKFloatingPoint
 
-public protocol FloatingPoint {
+public protocol MKFloatingPoint {
     var float: Float {
         get
     }
@@ -18,35 +18,35 @@ public protocol FloatingPoint {
     }
 }
 
-public extension FloatingPoint {
-    var cgFloat: CGFloat {
-        CGFloat(float)
+public extension MKFloatingPoint {
+    var cgfValue: CGFloat {
+        CGFloat(double)
     }
 
     var cgSize: CGSize {
-        .square(cgFloat)
+        .square(cgfValue)
     }
 
-    var cgCeil: CGFloat {
-        Darwin.ceil(cgFloat)
+    var cgfCeil: CGFloat {
+        Darwin.ceil(cgfValue)
     }
 
-    var cgFloor: CGFloat {
-        Darwin.floor(cgFloat)
+    var cgfFloor: CGFloat {
+        Darwin.floor(cgfValue)
     }
 
     var radians: CGFloat {
-        cgFloat * .pi / 180
+        cgfValue * .pi / 180
     }
 
     var degrees: CGFloat {
-        cgFloat * 180 / .pi
+        cgfValue * 180 / .pi
     }
 }
 
-// MARK: - CGFloat + FloatingPoint
+// MARK: - CGFloat + MKFloatingPoint
 
-extension CGFloat: FloatingPoint {
+extension CGFloat: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -56,9 +56,9 @@ extension CGFloat: FloatingPoint {
     }
 }
 
-// MARK: - Float32 + FloatingPoint
+// MARK: - Float32 + MKFloatingPoint
 
-extension Float32: FloatingPoint {
+extension Float32: MKFloatingPoint {
     public var float: Float {
         self
     }
@@ -68,9 +68,9 @@ extension Float32: FloatingPoint {
     }
 }
 
-// MARK: - Float64 + FloatingPoint
+// MARK: - Float64 + MKFloatingPoint
 
-extension Float64: FloatingPoint {
+extension Float64: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -80,9 +80,9 @@ extension Float64: FloatingPoint {
     }
 }
 
-// MARK: - Int32 + FloatingPoint
+// MARK: - Int32 + MKFloatingPoint
 
-extension Int32: FloatingPoint {
+extension Int32: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -92,9 +92,9 @@ extension Int32: FloatingPoint {
     }
 }
 
-// MARK: - Int64 + FloatingPoint
+// MARK: - Int64 + MKFloatingPoint
 
-extension Int64: FloatingPoint {
+extension Int64: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -104,9 +104,9 @@ extension Int64: FloatingPoint {
     }
 }
 
-// MARK: - UInt + FloatingPoint
+// MARK: - UInt + MKFloatingPoint
 
-extension UInt: FloatingPoint {
+extension UInt: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -116,9 +116,9 @@ extension UInt: FloatingPoint {
     }
 }
 
-// MARK: - UInt32 + FloatingPoint
+// MARK: - UInt32 + MKFloatingPoint
 
-extension UInt32: FloatingPoint {
+extension UInt32: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -128,9 +128,9 @@ extension UInt32: FloatingPoint {
     }
 }
 
-// MARK: - UInt64 + FloatingPoint
+// MARK: - UInt64 + MKFloatingPoint
 
-extension UInt64: FloatingPoint {
+extension UInt64: MKFloatingPoint {
     public var float: Float {
         Float(self)
     }
@@ -141,43 +141,14 @@ extension UInt64: FloatingPoint {
 }
 
 public extension CGPoint {
-    init(_ w: FloatingPoint, _ y: FloatingPoint) {
-        self.init(x: w.cgFloat, y: y.cgFloat)
+    init(_ w: MKFloatingPoint, _ y: MKFloatingPoint) {
+        self.init(x: w.cgfValue, y: y.cgfValue)
     }
 }
 
 public extension CGSize {
-    init(_ w: FloatingPoint, _ y: FloatingPoint) {
-        self.init(width: w.cgFloat, height: y.cgFloat)
-    }
-}
-
-public extension Int {
-    var digitCount: Int {
-        numberOfDigits(in: self)
-    }
-
-    var usefulDigitCount: Int {
-        var count = 0
-        for digitOrder in 0 ..< digitCount {
-            /// get each order digit from self
-            let digit = self % Int(truncating: pow(10, digitOrder + 1) as NSDecimalNumber)
-                / Int(truncating: pow(10, digitOrder) as NSDecimalNumber)
-            if isUseful(digit) { count += 1 }
-        }
-        return count
-    }
-
-    private func numberOfDigits(in number: Int) -> Int {
-        if number < 10 && number >= 0 || number > -10 && number < 0 {
-            return 1
-        } else {
-            return 1 + numberOfDigits(in: number / 10)
-        }
-    }
-
-    private func isUseful(_ digit: Int) -> Bool {
-        (digit != 0) && (self % digit == 0)
+    init(_ w: MKFloatingPoint, _ y: MKFloatingPoint) {
+        self.init(width: w.cgfValue, height: y.cgfValue)
     }
 }
 

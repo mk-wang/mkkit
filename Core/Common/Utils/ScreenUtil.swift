@@ -130,37 +130,37 @@ public extension ScreenUtil {
     }
 }
 
-public extension FloatingPoint {
+public extension MKFloatingPoint {
     var rw: CGFloat {
-        ScreenUtil.ratio.x * cgFloat
+        ScreenUtil.ratio.x * cgfValue
     }
 
     var rh: CGFloat {
-        ScreenUtil.ratio.y * cgFloat
+        ScreenUtil.ratio.y * cgfValue
     }
 
     var rs: CGFloat {
-        ScreenUtil.minRatio * cgFloat
+        ScreenUtil.minRatio * cgfValue
     }
 
     var rwMin: CGFloat {
-        CGFloat.minimum(CGFloat(1), ScreenUtil.ratio.x) * cgFloat
+        CGFloat.minimum(CGFloat(1), ScreenUtil.ratio.x) * cgfValue
     }
 
     var rwMax: CGFloat {
-        CGFloat.maximum(CGFloat(1), ScreenUtil.ratio.x) * cgFloat
+        CGFloat.maximum(CGFloat(1), ScreenUtil.ratio.x) * cgfValue
     }
 
     var rhMin: CGFloat {
-        CGFloat.minimum(CGFloat(1), ScreenUtil.ratio.y) * cgFloat
+        CGFloat.minimum(CGFloat(1), ScreenUtil.ratio.y) * cgfValue
     }
 
     var rhMax: CGFloat {
-        CGFloat.maximum(CGFloat(1), ScreenUtil.ratio.y) * cgFloat
+        CGFloat.maximum(CGFloat(1), ScreenUtil.ratio.y) * cgfValue
     }
 
     var rwsMin: CGFloat {
-        let val = cgFloat
+        let val = cgfValue
         if ScreenUtil.isSmall {
             return val
         }
@@ -168,7 +168,7 @@ public extension FloatingPoint {
     }
 
     var rwsMax: CGFloat {
-        let val = cgFloat
+        let val = cgfValue
         if ScreenUtil.isSmall {
             return val
         }
@@ -176,7 +176,7 @@ public extension FloatingPoint {
     }
 
     var rhsMin: CGFloat {
-        let val = cgFloat
+        let val = cgfValue
         if ScreenUtil.isSmall {
             return val
         }
@@ -184,7 +184,7 @@ public extension FloatingPoint {
     }
 
     var rhsMax: CGFloat {
-        let val = cgFloat
+        let val = cgfValue
         if ScreenUtil.isSmall {
             return val
         }
