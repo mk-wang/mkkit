@@ -20,7 +20,7 @@ public extension UIEdgeInsets {
         .init(top: top, left: value, bottom: bottom, right: value)
     }
 
-    static func vertical(_ value: CGFloat, left: CGFloat = 0, right: CGFloat = 0) -> Self {
+    static func verticalLR(_ value: CGFloat, left: CGFloat = 0, right: CGFloat = 0) -> Self {
         .init(top: value, left: left, bottom: value, right: right)
     }
 
