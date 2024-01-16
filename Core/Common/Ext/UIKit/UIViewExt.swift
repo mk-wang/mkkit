@@ -216,6 +216,24 @@ public extension UIView {
 }
 
 public extension UIView {
+    func findFirstSubview<T: UIView>(_ type: T.Type, except: [UIView] = []) -> T? {
+        for subview in subviews {
+            guard !except.contains(subview) else {
+                continue
+            }
+            if let view = subview as? T {
+                return view
+            } else {
+                if let view = subview.findFirstSubview(type, except: except) {
+                    return view
+                }
+            }
+        }
+        return nil
+    }
+}
+
+public extension UIView {
     func findFirstSuperView<T: UIView>(_: T.Type) -> T? {
         var aView: UIView? = superview
 

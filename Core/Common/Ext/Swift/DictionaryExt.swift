@@ -19,4 +19,12 @@ public extension Dictionary {
             }
         }
     }
+
+    func has(key: Key) -> Bool {
+        index(forKey: key) != nil
+    }
+
+    func get(_ key: Key, default: Value) -> Value {
+        self[key] ?? `default`
+    }
 }

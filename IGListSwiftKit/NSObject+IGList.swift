@@ -20,6 +20,10 @@ extension NSObject: ListDiffable {
     }
 }
 
+public extension NSObject {
+    static let emptyDiffableList: [NSObject] = []
+}
+
 //
 //// MARK: - IGSectionSectionControllerMake
 //

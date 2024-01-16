@@ -113,25 +113,25 @@ public enum SvgImageRenderingMode {
     case height
 }
 
-public func svgImage(path: String, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill) -> UIImage? {
-    svgImage(url: URL(fileURLWithPath: path), size: size, scale: scale, renderingMode: renderingMode)
+public func svgImage(path: String, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill, insets: UIEdgeInsets = .zero) -> UIImage? {
+    svgImage(url: URL(fileURLWithPath: path), size: size, scale: scale, renderingMode: renderingMode, insets: insets)
 }
 
-public func svgImage(url: URL, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill) -> UIImage? {
+public func svgImage(url: URL, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill, insets: UIEdgeInsets = .zero) -> UIImage? {
     guard let svg = SwiftDraw.SVG(fileURL: url) else {
         return nil
     }
-    return svgImage(svg: svg, size: size, scale: scale, renderingMode: renderingMode)
+    return svgImage(svg: svg, size: size, scale: scale, renderingMode: renderingMode, insets: insets)
 }
 
-public func svgImage(data: Data, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill) -> UIImage? {
+public func svgImage(data: Data, size: CGSize? = nil, scale: CGFloat = 0, renderingMode: SvgImageRenderingMode = .fill, insets: UIEdgeInsets = .zero) -> UIImage? {
     guard let svg = SwiftDraw.SVG(data: data) else {
         return nil
     }
-    return svgImage(svg: svg, size: size, scale: scale, renderingMode: renderingMode)
+    return svgImage(svg: svg, size: size, scale: scale, renderingMode: renderingMode, insets: insets)
 }
 
-private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, renderingMode: SvgImageRenderingMode) -> UIImage? {
+private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, renderingMode: SvgImageRenderingMode, insets: UIEdgeInsets) -> UIImage? {
     guard var size else {
         return .init(svg)
     }
@@ -158,5 +158,5 @@ private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, r
         break
     }
 
-    return svg.rasterize(with: imageSize, scale: scale)
+    return svg.rasterize(with: imageSize, scale: scale, insets: insets)
 }

@@ -1,5 +1,5 @@
 //
-//  MKFloatingPoint.swift
+//  FloatingPoint.swift
 //
 //
 //  Created by MK on 2022/3/17.
@@ -18,11 +18,13 @@ public protocol MKFloatingPoint {
     }
 }
 
-public extension MKFloatingPoint {
+extension MKFloatingPoint {
     var cgfValue: CGFloat {
         CGFloat(double)
     }
+}
 
+public extension MKFloatingPoint {
     var cgSize: CGSize {
         .square(cgfValue)
     }
