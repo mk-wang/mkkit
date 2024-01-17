@@ -8,6 +8,43 @@
 import OpenCombine
 import UIKit
 
+// MARK: - CALayer.ShadowConfig
+
+public extension CALayer {
+    struct ShadowConfig {
+        let color: UIColor
+        let opacity: Float?
+        let offset: CGSize?
+        let radius: CGFloat?
+        let path: UIBezierPath?
+
+        public init(color: UIColor, opacity: Float? = nil, offset: CGSize? = nil, radius: CGFloat? = nil, path: UIBezierPath? = nil) {
+            self.color = color
+            self.opacity = opacity
+            self.offset = offset
+            self.radius = radius
+            self.path = path
+        }
+    }
+
+    func applyShadowConfig(_ config: ShadowConfig) {
+        shadowColor = config.color.cgColor
+
+        if let value = config.opacity {
+            shadowOpacity = value
+        }
+        if let value = config.offset {
+            shadowOffset = value
+        }
+        if let value = config.radius {
+            shadowRadius = value
+        }
+        if let value = config.path?.cgPath {
+            shadowPath = value
+        }
+    }
+}
+
 // MARK: - AppThemeCGColor
 
 class AppThemeCGColor: NSObject {
