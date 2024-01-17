@@ -56,16 +56,19 @@ public extension String {
 }
 
 public extension String {
-    func textViewSize(font: UIFont, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
+    func textViewSize(font: UIFont, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
         let attrString = NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
         let drawSize = CGSize(width ?? CGFloat.greatestFiniteMagnitude, height ?? CGFloat.greatestFiniteMagnitude)
         let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
         let boundingRect = attrString.boundingRect(with: drawSize,
                                                    options: options,
                                                    context: nil)
-        //  https://developer.apple.com/documentation/uikit/uifont
-        let bottomPadding = boundingRect.origin.y - font.descender
-        let height = boundingRect.size.height + bottomPadding
+
+        var height = boundingRect.size.height
+        if fixBottomPadding {
+            //  https://developer.apple.com/documentation/uikit/uifont
+            height += boundingRect.origin.y - font.descender
+        }
         return CGSize(boundingRect.size.width, height)
     }
 }
