@@ -55,10 +55,21 @@ open class MKModalView: PassTouchView {
         contentView = view
         addSubview(view)
     }
+
+    public var dismissOnBackgroundTap: Bool = true
 }
 
 public extension MKModalView {
-    var touchBGColor: UIColor? {
+    var touchViewPassMode: PassMode {
+        get {
+            bgTouchView.passMode
+        }
+        set {
+            bgTouchView.passMode = newValue
+        }
+    }
+
+    var touchViewColor: UIColor? {
         get {
             bgTouchView.backgroundColor
         }
@@ -66,7 +77,9 @@ public extension MKModalView {
             bgTouchView.backgroundColor = newValue
         }
     }
+}
 
+public extension MKModalView {
     func show(_ container: UIView? = nil) {
         guard contentView != nil, let superView = container ?? ScreenUtil.window else {
             return
@@ -108,7 +121,9 @@ public extension MKModalView {
     }
 
     @objc private func dismiss() {
-        hide()
+        if dismissOnBackgroundTap {
+            hide()
+        }
     }
 
     func hide(by object: AnyObject? = nil, duration: TimeInterval? = nil) {
