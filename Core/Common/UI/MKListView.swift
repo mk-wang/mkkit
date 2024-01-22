@@ -92,6 +92,15 @@ open class MKListView: UIView {
 
     private var viewList = [UIView]()
 
+    public var isScrollEnabled: Bool {
+        get {
+            scrollView?.isScrollEnabled ?? false
+        }
+        set {
+            scrollView?.isScrollEnabled = newValue
+        }
+    }
+
     func setIndex(index: Int, event: PageViewIndexChangeEvent) {
         guard index != currentPage else {
             return
@@ -309,6 +318,15 @@ open class MKPagedListView: UIView {
     }
 
     fileprivate var pages = [UIView]()
+
+    public var isScrollEnabled: Bool {
+        get {
+            listView.isScrollEnabled
+        }
+        set {
+            listView.isScrollEnabled = newValue
+        }
+    }
 
     private lazy var listView: MKListView = {
         let selfSize = self.bounds.size
