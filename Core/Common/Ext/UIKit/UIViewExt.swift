@@ -277,6 +277,17 @@ public extension UIView {
 }
 
 public extension UIView {
+    func convertedFrame(of view: UIView, frame: CGRect? = nil) -> CGRect {
+        let container = view.superview
+        assert(container != nil)
+
+        var rect = frame ?? view.frame
+        let center = container!.convert(rect.center, to: self)
+        return .init(center: center, size: rect.size)
+    }
+}
+
+public extension UIView {
     func compressionLayout(for axis: NSLayoutConstraint.Axis) {
         setContentHuggingPriority(.required, for: axis)
         setContentCompressionResistancePriority(.required, for: axis)
