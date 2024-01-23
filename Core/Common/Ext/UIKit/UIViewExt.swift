@@ -277,6 +277,7 @@ public extension UIView {
 }
 
 public extension UIView {
+    // for simple cases: no transformation applied
     func convertedFrame(of view: UIView, frame: CGRect? = nil) -> CGRect {
         let container = view.superview
         assert(container != nil)
