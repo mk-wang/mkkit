@@ -13,18 +13,21 @@ open class DashedView: UIView {
     public struct Config {
         var dashWidth: CGFloat = 0
         var dashColor: UIColor = .clear
+        var dashFillColor: UIColor?
         var dashLength: CGFloat = 0
         var betweenDashesSpace: CGFloat = 0
         var cornerRadius: CGFloat = 0
 
         public init(dashWidth: CGFloat,
                     dashColor: UIColor,
+                    dashFillColor: UIColor? = nil,
                     dashLength: CGFloat,
                     betweenDashesSpace: CGFloat,
                     cornerRadius: CGFloat)
         {
             self.dashWidth = dashWidth
             self.dashColor = dashColor
+            self.dashFillColor = dashFillColor
             self.dashLength = dashLength
             self.betweenDashesSpace = betweenDashesSpace
             self.cornerRadius = cornerRadius
@@ -62,16 +65,13 @@ open class DashedView: UIView {
         dashBorder.lineDashPattern = [config.dashLength, config.betweenDashesSpace] as [NSNumber]
         dashBorder.lineJoin = .round
         dashBorder.frame = bounds
-        dashBorder.fillColor = nil
+        dashBorder.fillColor = config.dashFillColor?.cgColor
 
+        let rect = bounds.insetBy(dx: config.dashWidth / 2, dy: config.dashWidth / 2)
         if config.cornerRadius > 0 {
-            dashBorder.path = UIBezierPath(roundedRect: bounds, cornerRadius: config.cornerRadius).cgPath
-//            layer.masksToBounds = true
-//            layer.cornerRadius = config.cornerRadius
+            dashBorder.path = UIBezierPath(roundedRect: rect, cornerRadius: config.cornerRadius).cgPath
         } else {
-            dashBorder.path = UIBezierPath(rect: bounds).cgPath
-//            layer.masksToBounds = false
-//            layer.cornerRadius = 0
+            dashBorder.path = UIBezierPath(rect: rect).cgPath
         }
 
         layer.addSublayer(dashBorder)
