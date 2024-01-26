@@ -306,6 +306,24 @@ public extension String {
         }
         return String(self[...index])
     }
+
+    var trimmedAllText: String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var leadingTrimmedAllText: String {
+        guard let index = firstIndex(where: { !$0.isWhitespace && !$0.isNewline }) else {
+            return ""
+        }
+        return String(self[index...])
+    }
+
+    var trailingTrimmedAllText: String {
+        guard let index = lastIndex(where: { !$0.isWhitespace && !$0.isNewline }) else {
+            return ""
+        }
+        return String(self[...index])
+    }
 }
 
 public extension String {

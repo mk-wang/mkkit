@@ -63,9 +63,9 @@ public extension ScreenUtil {
 
     static var windowOrientation: UIInterfaceOrientation {
         if #available(iOS 13.0, *) {
-            self.window?.windowScene?.interfaceOrientation ?? .unknown
+            return self.window?.windowScene?.interfaceOrientation ?? .unknown
         } else {
-            UIApplication.shared.statusBarOrientation
+            return UIApplication.shared.statusBarOrientation
         }
     }
 
