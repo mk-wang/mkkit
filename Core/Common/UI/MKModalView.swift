@@ -24,7 +24,7 @@ open class MKModalView: PassTouchView {
     public var didHideCallback: ((MKModalView?, Any?) -> Void)?
 
     public var willShowCallback: ((MKModalView?) -> Void)?
-    public var didShowCompletion: ((MKModalView?) -> Void)?
+    public var didShowCallback: ((MKModalView?) -> Void)?
 
     public private(set) lazy var bgTouchView: PassTouchView = {
         let view = PassTouchView()
@@ -186,7 +186,7 @@ private extension MKModalView {
     }
 
     func afterShow() {
-        didShowCompletion?(self)
+        didShowCallback?(self)
         bgTouchView.isUserInteractionEnabled = true
     }
 
