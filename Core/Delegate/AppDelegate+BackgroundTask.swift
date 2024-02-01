@@ -19,7 +19,7 @@ extension AppDelegate {
             self.application = application
         }
 
-        // task will be retain by beginBackgroundTask
+        // task will be retained by beginBackgroundTask
         public func begin() {
             guard let application, identifier == .invalid else {
                 return
