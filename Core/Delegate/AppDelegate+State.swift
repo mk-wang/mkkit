@@ -28,8 +28,7 @@ extension AppDelegate {
 
     open func applicationWillTerminate(_ application: UIApplication) {
         BackgroundTask.run(application: application) { [weak self] completion in
-            self?.onTerminate(application)
-            completion()
+            self?.onTerminate(application, completion: completion)
         }
     }
 }
