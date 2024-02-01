@@ -27,43 +27,9 @@ extension AppDelegate {
     }
 
     open func applicationWillTerminate(_ application: UIApplication) {
-        BackgroundTask.run(application: application) { [weak self] _ in
+        BackgroundTask.run(application: application) { [weak self] completion in
             self?.onTerminate(application)
-        }
-    }
-}
-
-// MARK: - AppDelegate.BackgroundTask
-
-extension AppDelegate {
-    open class BackgroundTask {
-        private let application: UIApplication
-        private var identifier = UIBackgroundTaskIdentifier.invalid
-
-        public init(application: UIApplication) {
-            self.application = application
-        }
-
-        public class func run(application: UIApplication, handler: (BackgroundTask) -> Void) {
-            // NOTE: The handler must call end() when it is done
-
-            let backgroundTask = BackgroundTask(application: application)
-            backgroundTask.begin()
-            handler(backgroundTask)
-        }
-
-        public func begin() {
-            identifier = application.beginBackgroundTask {
-                self.end()
-            }
-        }
-
-        public func end() {
-            if identifier != UIBackgroundTaskIdentifier.invalid {
-                application.endBackgroundTask(identifier)
-            }
-
-            identifier = UIBackgroundTaskIdentifier.invalid
+            completion()
         }
     }
 }
