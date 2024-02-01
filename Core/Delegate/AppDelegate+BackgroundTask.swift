@@ -19,13 +19,14 @@ extension AppDelegate {
             self.application = application
         }
 
+        // task will be retain by beginBackgroundTask
         public func begin() {
-            guard let application else {
+            guard let application, identifier == .invalid else {
                 return
             }
 
-            identifier = application.beginBackgroundTask { [weak self] in
-                self?.end()
+            identifier = application.beginBackgroundTask {
+                self.end()
             }
         }
 
@@ -46,8 +47,7 @@ extension AppDelegate {
 public extension AppDelegate.BackgroundTask {
     typealias TaskCompletion = () -> Void
 
-    // The handler must call TaskCompletion when it is done
-    // task retained by TaskCompletion
+    // The handler should call TaskCompletion when it is done
     @discardableResult
     class func run(application: UIApplication,
                    handler: (@escaping TaskCompletion) -> Void) -> AppDelegate.BackgroundTask
@@ -55,8 +55,8 @@ public extension AppDelegate.BackgroundTask {
         let task = AppDelegate.BackgroundTask(application: application)
         task.begin()
 
-        handler {
-            task.end()
+        handler { [weak task] in
+            task?.end()
         }
 
         return task
