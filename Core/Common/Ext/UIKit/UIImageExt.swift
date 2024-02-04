@@ -46,7 +46,12 @@ public extension UIImage {
 
 public extension UIImage {
     func cropped(to rect: CGRect) -> UIImage {
-        guard rect.size.width <= size.width, rect.size.height <= size.height else { return self }
+        let selfSize = self.size
+        let rectSize = rect.size
+        
+        guard Int(rectSize.width) <= Int(selfSize.width), Int(rectSize.height) <= Int(selfSize.height) else {
+            return self
+        }
         let scaledRect = rect.applying(CGAffineTransform(scaleX: scale, y: scale))
 
         if let image = ciImage {
