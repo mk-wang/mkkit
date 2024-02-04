@@ -34,7 +34,7 @@ extension AppDelegate {
             guard let application, identifier != .invalid else {
                 return
             }
-            
+
             application.endBackgroundTask(identifier)
             identifier = .invalid
         }

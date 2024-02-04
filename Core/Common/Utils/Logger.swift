@@ -117,7 +117,10 @@ public func formatMessage(level: Logger.Level,
                           line: UInt) -> String
 {
     let file = shortFileName(file)
-    let tagInfo = tag == nil || tag!.isEmpty ? "" : ": \(tag!)"
+    var tagInfo = ""
+    if let tag, tag.isNotEmpty {
+        tagInfo = ": \(tag)"
+    }
 //    return "[\(level)\(tagInfo)] \(function) \(message)"
     return "[\(level)\(tagInfo)] \(file)#\(line) \(message)"
 }
