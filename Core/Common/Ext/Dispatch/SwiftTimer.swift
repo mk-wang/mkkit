@@ -47,6 +47,21 @@ public class SwiftTimer {
         }
     }
 
+    public convenience init(interval: TimeInterval,
+                            delay: TimeInterval? = nil,
+                            repeats: Bool = false,
+                            leeway: TimeInterval = 0,
+                            queue: DispatchQueue = .main,
+                            handler: @escaping SwiftTimerHandler)
+    {
+        self.init(interval: .fromSeconds(interval),
+                  delay: delay == nil ? nil : .fromSeconds(delay!),
+                  repeats: repeats,
+                  leeway: .fromSeconds(leeway),
+                  queue: queue,
+                  handler: handler)
+    }
+
     public static func repeaticTimer(interval: DispatchTimeInterval, leeway: DispatchTimeInterval = .seconds(0), queue: DispatchQueue = .main, handler: @escaping SwiftTimerHandler) -> SwiftTimer {
         SwiftTimer(interval: interval, repeats: true, leeway: leeway, queue: queue, handler: handler)
     }
