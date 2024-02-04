@@ -37,6 +37,10 @@ public extension MKFloatingPoint {
         Darwin.floor(cgfValue)
     }
 
+    var cgfRound: CGFloat {
+        Darwin.round(cgfValue)
+    }
+
     var radians: CGFloat {
         cgfValue * .pi / 180
     }

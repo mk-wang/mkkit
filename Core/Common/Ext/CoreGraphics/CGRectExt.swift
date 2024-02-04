@@ -49,8 +49,8 @@ public extension CGRect {
     func scale(_ scale: CGSize) -> Self {
         .init(x: origin.x * scale.width,
               y: origin.y * scale.height,
-              width: size.width * scale.width,
-              height: size.height * scale.height)
+              width: (size.width * scale.width).cgfRound,
+              height: (size.height * scale.height).cgfRound)
     }
 }
 

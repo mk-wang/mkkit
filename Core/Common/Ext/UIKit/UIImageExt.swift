@@ -46,12 +46,6 @@ public extension UIImage {
 
 public extension UIImage {
     func cropped(to rect: CGRect) -> UIImage {
-        let selfSize = self.size
-        let rectSize = rect.size
-        
-        guard Int(rectSize.width) <= Int(selfSize.width), Int(rectSize.height) <= Int(selfSize.height) else {
-            return self
-        }
         let scaledRect = rect.applying(CGAffineTransform(scaleX: scale, y: scale))
 
         if let image = ciImage {
@@ -59,7 +53,7 @@ public extension UIImage {
         }
 
         guard let image = cgImage?.cropping(to: scaledRect) else { return self }
-        return UIImage(cgImage: image, scale: scale, orientation: imageOrientation)
+        return .init(cgImage: image, scale: scale, orientation: imageOrientation)
     }
 
     func scaled(to scale: CGFloat, opaque: Bool = false) -> UIImage? {
