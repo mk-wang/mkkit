@@ -19,7 +19,9 @@ extension AppDelegate {
                                 [UIApplication.LaunchOptionsKey: Any]?)
     {}
 
-    @objc open func onTerminate(_: UIApplication, completion: @escaping BackgroundTask.TaskCompletion) {
+    @objc open func onTerminate(_: UIApplication,
+                                completion: @escaping BackgroundTask.TaskCompletion)
+    {
         completion()
     }
 }
