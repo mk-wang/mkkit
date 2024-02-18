@@ -26,7 +26,12 @@ public extension ThemeChangeListener where Self: AnyObject {
 // MARK: - KeyboardChangeListener
 
 public protocol KeyboardChangeListener {
-    func onKeyboardChange(notification: Notification, hideKeyboard: Bool, keyboardSize: CGSize, duration: Double)
+//   let animationOptions = UIView.AnimationOptions(rawValue:curve)
+    func onKeyboardChange(notification: Notification,
+                          hideKeyboard: Bool,
+                          keyboardSize: CGSize,
+                          duration: Double?,
+                          curve: UInt?)
 }
 
 extension KeyboardChangeListener where Self: AnyObject {
@@ -38,10 +43,13 @@ extension KeyboardChangeListener where Self: AnyObject {
         }
 
         let hide = notification.name == UIResponder.keyboardWillHideNotification
-
-        let duration = (userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0.25
-
-        onKeyboardChange(notification: notification, hideKeyboard: hide, keyboardSize: size, duration: duration)
+        let duration = (userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
+        
+        var curve: UInt? = nil
+        if let raw = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt {
+            curve = raw << 16
+        }
+        onKeyboardChange(notification: notification, hideKeyboard: hide, keyboardSize: size, duration: duration, curve: curve)
     }
 
     // OpenCombine 还不支持 Publishers Merge
