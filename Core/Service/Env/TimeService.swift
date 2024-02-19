@@ -115,6 +115,7 @@ public class TimeService {
 
     private var timer: SwiftTimer?
     private var dayChangeObs: AnyCancellable?
+    private var appStateObs: AnyCancellable?
 
     public init() {
         let now = Date()
@@ -124,6 +125,15 @@ public class TimeService {
         dayChangeObs = centerCombine.publisher(for: .NSCalendarDayChanged)
             .sink { [weak self] _ in
                 self?.checkTime()
+            }
+
+        appStateObs = (UIApplication.shared.delegate as? AppDelegate)?.appStatePublisher
+            .sink { [weak self] state in
+                if state == .active {
+                    self?.startTimeCheck()
+                } else {
+                    self?.stopTimeCheck()
+                }
             }
     }
 }

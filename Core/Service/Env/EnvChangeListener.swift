@@ -26,7 +26,7 @@ public extension ThemeChangeListener where Self: AnyObject {
 // MARK: - KeyboardChangeListener
 
 public protocol KeyboardChangeListener {
-//   let animationOptions = UIView.AnimationOptions(rawValue:curve)
+    //   let animationOptions = UIView.AnimationOptions(rawValue:curve)
     func onKeyboardChange(notification: Notification,
                           hideKeyboard: Bool,
                           keyboardSize: CGSize,
@@ -44,7 +44,7 @@ extension KeyboardChangeListener where Self: AnyObject {
 
         let hide = notification.name == UIResponder.keyboardWillHideNotification
         let duration = (userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue
-        
+
         var curve: UInt? = nil
         if let raw = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt {
             curve = raw << 16

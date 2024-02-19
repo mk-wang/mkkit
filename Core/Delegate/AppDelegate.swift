@@ -16,13 +16,10 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     private let rootControllerSubject = CurrentValueSubject<UIViewController?, Never>(nil)
     public lazy var rootControllerPublisher = rootControllerSubject.eraseToAnyPublisher()
 
-    private lazy var appStateSubject = CurrentValueSubject<UIApplication.State, Never>(UIApplication.shared.applicationState)
+    private lazy var appStateSubject: CurrentValueSubject<UIApplication.State, Never> = .init(UIApplication.shared.applicationState)
+    public lazy var appStatePublisher = appStateSubject.eraseToAnyPublisher()
 
-    public lazy var appStatePublisher: AnyPublisher<UIApplication.State, Never> = appStateSubject
-        .eraseToAnyPublisher()
-
-    public lazy var appActivedPublisher: AnyPublisher<Void, Never> = appStateSubject
-        .removeDuplicatesAndDrop()
+    public lazy var appActivedPublisher = appStateSubject.removeDuplicatesAndDrop()
         .compactMap { $0 == .active ? () : nil }
         .debounceOnMain(for: 0.01)
         .eraseToAnyPublisher()
