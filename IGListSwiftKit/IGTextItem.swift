@@ -101,6 +101,6 @@ open class IGTextItemCell: HighlightCollectionViewCell {
     }
 
     public static func heightFor(item: IGTextItem, width: CGFloat) -> CGFloat {
-        item.text.textViewSize(font: item.textStyle.font, width: width).height
+        item.text.textViewSize(font: item.textStyle.font, width: width).height.cgfCeil
     }
 }
