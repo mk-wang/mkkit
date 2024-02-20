@@ -48,7 +48,6 @@ import OpenCombine
                 line: UInt = #line)
         {
             printWithConsole(text, tag: "ad",
-                             level: .info,
                              function: function,
                              file: file,
                              line: line)
@@ -63,7 +62,6 @@ import OpenCombine
                    line: UInt = #line)
         {
             printWithConsole(text, tag: "track",
-                             level: .info,
                              function: function,
                              file: file,
                              line: line)
@@ -78,7 +76,6 @@ import OpenCombine
                  line: UInt = #line)
         {
             printWithConsole(text, tag: "tts",
-                             level: .info,
                              function: function,
                              file: file,
                              line: line)
@@ -108,7 +105,6 @@ import OpenCombine
                  line: UInt = #line)
         {
             printWithConsole(text, tag: "tpa",
-                             level: .info,
                              function: function,
                              file: file,
                              line: line)
