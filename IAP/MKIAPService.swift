@@ -100,9 +100,8 @@ extension MKIAPService {
     }
 
     public func checkAtAppStart(completion: (([Purchase], [Purchase], IAPHelper.PurchaseResult) -> Void)? = nil) {
-        Logger.shared.iap("checkAtAppStart purchased  \(purchased) ")
-
         isPremium = purchased.isNotEmpty
+        Logger.shared.iap("checkAtAppStart purchased \(purchased); isPremium: \(isPremium)")
 
         do {
             IAPHelper.startObserving { [weak self] all, finished, result in
