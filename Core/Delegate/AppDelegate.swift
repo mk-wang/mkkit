@@ -38,7 +38,7 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
             guard let self else {
                 return
             }
-            self.afterWindow(application, window: self.window!, launchOptions: opts)
+            afterWindow(application, window: window!, launchOptions: opts)
         }
 
         return true

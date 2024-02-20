@@ -70,7 +70,7 @@ public extension VideoPreviewView {
             guard let self else {
                 return
             }
-            self.drawLayer.isHidden = !show
+            drawLayer.isHidden = !show
         }
     }
 

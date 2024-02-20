@@ -59,7 +59,7 @@
 --someAny true
 --stripunusedargs always
 --structthreshold 0
---swiftversion 5.7
+--swiftversion 5.8
 --tabwidth unspecified
 --throwcapturing 
 --trailingclosures 

@@ -39,10 +39,10 @@ public extension LangSubscribleUI {
                 langCancellable = Lang.publisher.sink { [weak self] _ in
                     guard let self else { return }
                     var text: String?
-                    if let builder = self.textBuilder {
+                    if let builder = textBuilder {
                         text = builder(key)
                     }
-                    self.langKeyChanged(key: key, text: text)
+                    langKeyChanged(key: key, text: text)
                 }
             } else {
                 langCancellable = nil

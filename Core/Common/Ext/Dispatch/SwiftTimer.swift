@@ -178,11 +178,11 @@ public class SwiftCountDownTimer {
             guard let self else {
                 return
             }
-            if self.leftTimes > 0 {
-                self.leftTimes = self.leftTimes - 1
-                self.handler(self, self.leftTimes)
+            if leftTimes > 0 {
+                leftTimes = leftTimes - 1
+                self.handler(self, leftTimes)
             } else {
-                self.internalTimer.suspend()
+                internalTimer.suspend()
             }
         }
     }

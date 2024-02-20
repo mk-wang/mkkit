@@ -33,8 +33,8 @@ open class CaptureSession {
         }
         set {
             DispatchQueue.main.async { [weak self] in
-                if let self, self.interruptSubject.value != newValue {
-                    self.interruptSubject.value = newValue
+                if let self, interruptSubject.value != newValue {
+                    interruptSubject.value = newValue
                 }
             }
         }
@@ -48,8 +48,8 @@ open class CaptureSession {
         }
         set {
             DispatchQueue.main.async { [weak self] in
-                if let self, self.runningSubject.value != newValue {
-                    self.runningSubject.value = newValue
+                if let self, runningSubject.value != newValue {
+                    runningSubject.value = newValue
                 }
             }
         }
@@ -69,9 +69,9 @@ open class CaptureSession {
                 return
             }
 
-            self.session.beginConfiguration()
+            session.beginConfiguration()
             configuration(self)
-            self.session.commitConfiguration()
+            session.commitConfiguration()
             callback?()
         }
     }
@@ -137,7 +137,7 @@ public extension CaptureSession {
             }
 
             let previousSessionPreset = session.sessionPreset
-            session.sessionPreset = self.preset
+            session.sessionPreset = preset
 
             if session.canAddInput(newInput) {
                 session.addInput(newInput)
@@ -171,10 +171,10 @@ public extension CaptureSession {
             }
 
             // Only setup observers and start the session running if setup succeeded.
-            self.addObservers()
-            self.session.startRunning()
-            let isRunning = self.session.isRunning
-            self.isRuning = isRunning
+            addObservers()
+            session.startRunning()
+            let isRunning = session.isRunning
+            isRuning = isRunning
         }
     }
 
@@ -184,9 +184,9 @@ public extension CaptureSession {
                 return
             }
 
-            self.session.stopRunning()
-            self.isRuning = self.session.isRunning
-            self.removeObservers()
+            session.stopRunning()
+            isRuning = session.isRunning
+            removeObservers()
         }
     }
 

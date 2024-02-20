@@ -42,38 +42,90 @@ import OpenCombine
             }
         }
 
-        func ad(_ text: String) {
-            debugWithConsole(text, tag: "ad") {
+        func ad(_ text: String,
+                function: String = #function,
+                file: String = #file,
+                line: UInt = #line)
+        {
+            printWithConsole(text, tag: "ad",
+                             level: .info,
+                             function: function,
+                             file: file,
+                             line: line)
+            {
                 Self.adConsole.kvValue
             }
         }
 
-        func track(_ text: String) {
-            debugWithConsole(text, tag: "track") {
+        func track(_ text: String,
+                   function: String = #function,
+                   file: String = #file,
+                   line: UInt = #line)
+        {
+            printWithConsole(text, tag: "track",
+                             level: .info,
+                             function: function,
+                             file: file,
+                             line: line)
+            {
                 Self.trackConsole.kvValue
             }
         }
 
-        func tts(_ text: String) {
-            debugWithConsole(text, tag: "tts") {
+        func tts(_ text: String,
+                 function: String = #function,
+                 file: String = #file,
+                 line: UInt = #line)
+        {
+            printWithConsole(text, tag: "tts",
+                             level: .info,
+                             function: function,
+                             file: file,
+                             line: line)
+            {
                 Self.ttsConsole.kvValue
             }
         }
 
-        func iap(_ text: String) {
-            debugWithConsole(text, tag: "iap") {
+        func iap(_ text: String,
+                 function: String = #function,
+                 file: String = #file,
+                 line: UInt = #line)
+        {
+            printWithConsole(text, tag: "iap",
+                             level: .info,
+                             function: function,
+                             file: file,
+                             line: line)
+            {
                 Self.iapConsole.kvValue
             }
         }
 
-        func tpa(_ text: String) {
-            debugWithConsole(text, tag: "tpa") {
+        func tpa(_ text: String,
+                 function: String = #function,
+                 file: String = #file,
+                 line: UInt = #line)
+        {
+            printWithConsole(text, tag: "tpa",
+                             level: .info,
+                             function: function,
+                             file: file,
+                             line: line)
+            {
                 Self.tpaConsole.kvValue
             }
         }
 
-        func debugWithConsole(_ text: String, tag: String, check: ValueBuilder<Bool>) {
-            debug(text, tag: tag)
+        func printWithConsole(_ text: String,
+                              tag: String,
+                              level: Level = .debug,
+                              function: String,
+                              file: String,
+                              line: UInt,
+                              check: ValueBuilder<Bool>)
+        {
+            log(level: level, message: text, tag: tag, function: function, file: file, line: line)
 
             guard check() else {
                 return
