@@ -14,19 +14,20 @@ import SwiftyStoreKit
 
 public extension MKIAPService {
     struct Config {
-        public let setPremiumAtLaunch: Bool
-        public let failAtLaunch: Bool
+        public let setPremiumIfPurchased: Bool
+        public let resetIfVerificationFailed: Bool
+
         public let passbyLocalVerification: Bool
         public let envBuilder: ValueBuilder<IAPEnvironment>?
 
-        public init(setPremiumAtLaunch: Bool,
-                    failAtLaunch: Bool,
+        public init(setPremiumIfPurchased: Bool,
+                    resetIfVerificationFailed: Bool,
                     passbyLocalVerification: Bool = false,
                     envBuilder: ValueBuilder<IAPEnvironment>? = nil)
         {
-            self.setPremiumAtLaunch = setPremiumAtLaunch
+            self.setPremiumIfPurchased = setPremiumIfPurchased
             self.passbyLocalVerification = passbyLocalVerification
-            self.failAtLaunch = failAtLaunch
+            self.resetIfVerificationFailed = resetIfVerificationFailed
             self.envBuilder = envBuilder
         }
     }
@@ -89,10 +90,10 @@ extension MKIAPService {
                            environment: iapEnv,
                            subscription: product.isSubscription)
         { [weak self] suc, info, error in
-            Logger.shared.iap("purchase \(productID) \(suc) error \(error?.localizedDescription ?? "")")
+            Logger.shared.iap("purchase \(productID) \(suc) error \(error?.localizedDescription ?? "null")")
 
             if suc {
-                self?.didPurchase([productID], override: false, setPremium: true)
+                self?.didPurchase([productID], override: false)
             }
             completion?(suc, info)
         }
@@ -102,33 +103,34 @@ extension MKIAPService {
         Logger.shared.iap("checkAtAppStart purchased  \(purchased) ")
 
         isPremium = purchased.isNotEmpty
-        let setPremium = config.setPremiumAtLaunch
 
-        IAPHelper.startObserving { [weak self] all, finished, result in
-            Logger.shared.iap("checkAtAppStart observing  \(result.purchased) ")
-            if !result.purchased.isEmpty {
-                self?.validatePurchase(setPremium: setPremium, forceRefresh: true)
+        do {
+            IAPHelper.startObserving { [weak self] all, finished, result in
+                Logger.shared.iap("checkAtAppStart observing  \(result.purchased) ")
+
+                if !result.purchased.isEmpty {
+                    self?.validatePurchase(forceRefresh: true)
+                }
+
+                completion?(all, finished, result)
             }
-
-            completion?(all, finished, result)
         }
 
         if isPremium {
-            validatePurchase(setPremium: config.failAtLaunch, forceRefresh: true)
+            validatePurchase(forceRefresh: true)
         }
 
         loadProducts()
     }
 
-    public func restorePurchase(setPremium: Bool, completion: ((Bool, RestoreInfo) -> Void)? = nil) {
+    public func restorePurchase(completion: ((Bool, RestoreInfo) -> Void)? = nil) {
         IAPHelper.restore { [weak self] info in
             let results = info.restoreResults
             let restoreSuc = results.restoredPurchases.isNotEmpty
             Logger.shared.iap("restorePurchase \(restoreSuc) ")
 
             if restoreSuc {
-                self?.validatePurchase(setPremium: setPremium,
-                                       forceRefresh: true,
+                self?.validatePurchase(forceRefresh: true,
                                        callback: { suc, receipt, result in
                                            info.receipt = receipt
                                            info.purchaseResult = result
@@ -162,7 +164,9 @@ extension MKIAPService {
         }?.update(skProduct: skProduct)
     }
 
-    func validatePurchase(setPremium: Bool, forceRefresh: Bool, callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil) {
+    func validatePurchase(forceRefresh: Bool,
+                          callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
+    {
         let environment = iapEnv
         var products = [String]()
         var subscriptions = [String]()
@@ -175,7 +179,7 @@ extension MKIAPService {
             } // TODO: handle not isAutoRenewable
         }
 
-        Logger.shared.iap("validatePurchase setPremium \(setPremium), forceRefresh \(forceRefresh)")
+        Logger.shared.iap("validatePurchase forceRefresh \(forceRefresh)")
 
         let passbyLocalVerification = config.passbyLocalVerification
 
@@ -189,10 +193,10 @@ extension MKIAPService {
 
             defer {
                 if let idSet {
-                    self?.didPurchase(idSet, override: true, setPremium: setPremium)
+                    self?.didPurchase(idSet, override: true)
                     callback?(true, receipt, result)
                 } else {
-                    self?.resetPurchase(setPremium: setPremium)
+                    self?.resetPurchase()
                     callback?(false, receipt, result)
                 }
             }
@@ -227,8 +231,8 @@ extension MKIAPService {
         return builder()
     }
 
-    func didPurchase(_ idSet: Set<String>, override: Bool, setPremium: Bool) {
-        Logger.shared.iap("didPurchase \(idSet), override \(override), setPremium: \(setPremium)")
+    func didPurchase(_ idSet: Set<String>, override: Bool) {
+        Logger.shared.iap("didPurchase \(idSet), override \(override)")
 
         if override {
             purchased = idSet
@@ -240,20 +244,20 @@ extension MKIAPService {
             }
         }
 
-        if setPremium {
+        if !isPremium, config.setPremiumIfPurchased {
             isPremium = true
         }
     }
 
     //
-    func resetPurchase(setPremium: Bool) {
-        Logger.shared.iap("resetPurchase, setPremium \(setPremium)")
+    func resetPurchase() {
+        Logger.shared.iap("resetPurchase")
 
         if purchased.isNotEmpty {
             purchased = []
         }
 
-        if setPremium {
+        if isPremium, config.resetIfVerificationFailed {
             isPremium = false
         }
     }
