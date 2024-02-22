@@ -80,6 +80,12 @@ Pod::Spec.new do |s|
     ss.source_files = 'YogaKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'YogaKit'
   end
+
+  s.subspec 'RSwift' do |ss|
+    ss.source_files = 'RSwift/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'R.swift'
+    ss.dependency 'MKKit/Core'
+  end
 end
 
 
