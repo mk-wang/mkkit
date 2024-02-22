@@ -27,4 +27,17 @@ public extension Dictionary {
     func get(_ key: Key, default: Value) -> Value {
         self[key] ?? `default`
     }
+
+    mutating func get(_ key: Key, putIfAbsent: Bool, builder: () -> Value) -> Value {
+        var value = self[key]
+
+        if value == nil {
+            value = builder()
+            if putIfAbsent {
+                self[key] = value!
+            }
+        }
+
+        return value!
+    }
 }
