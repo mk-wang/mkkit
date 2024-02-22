@@ -65,6 +65,7 @@ open class MKIAPService {
         }
         set {
             premiumSubject.value = newValue
+            Logger.shared.iap("isPremium \(newValue)")
         }
     }
 
@@ -101,7 +102,8 @@ extension MKIAPService {
 
     public func checkAtAppStart(completion: (([Purchase], [Purchase], IAPHelper.PurchaseResult) -> Void)? = nil) {
         isPremium = purchased.isNotEmpty
-        Logger.shared.iap("checkAtAppStart purchased \(purchased); isPremium: \(isPremium)")
+
+        Logger.shared.iap("checkAtAppStart purchased \(purchased)")
 
         do {
             IAPHelper.startObserving { [weak self] all, finished, result in

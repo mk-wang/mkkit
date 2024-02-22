@@ -164,6 +164,38 @@ public extension CaptureSession {
 }
 
 public extension CaptureSession {
+    static func checkPermission(mediaType: AVMediaType = .video,
+                                requestIfNotDetermined: Bool = true,
+                                callback: @escaping VoidFunction2<Bool, Bool>) // notDetermined, authed
+    {
+        let handler: VoidFunction2<Bool, Bool> = { notDetermined, authed in
+            DispatchQueue.mainAsync {
+                callback(notDetermined, authed)
+            }
+        }
+
+        let status = AVCaptureDevice.authorizationStatus(for: mediaType)
+        switch status {
+        case .notDetermined:
+            if requestIfNotDetermined {
+                AVCaptureDevice.requestAccess(for: mediaType) { authed in
+                    handler(true, authed)
+                }
+            } else {
+                handler(true, false)
+            }
+        case .denied,
+             .restricted:
+            handler(false, false)
+        case .authorized:
+            handler(false, true)
+        default:
+            break
+        }
+    }
+}
+
+public extension CaptureSession {
     func start() {
         runInSessionQueue { [weak self] in
             guard let self else {
