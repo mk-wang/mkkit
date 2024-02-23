@@ -2,98 +2,130 @@ import Foundation
 import MKKit
 import RswiftResources
 
-public extension RswiftResources.StringResource {
+// MARK: - TrKey
+
+public protocol TrKey {
+    var key: StaticString { get }
+}
+
+public extension TrKey {
     var tr: String {
         key.tr
+    }
+
+    func tr(for lang: Lang) -> String {
+        lang.bundle?.translate(for: key) ?? key.description
     }
 }
 
-public extension RswiftResources.StringResource1 {
-    var tr: String {
-        key.tr
+// MARK: - RswiftResources.StringResource + TrKey
+
+extension RswiftResources.StringResource: TrKey {}
+
+// MARK: - RswiftResources.StringResource1 + TrKey
+
+extension RswiftResources.StringResource1: TrKey {
+    public func tr(_ arg1: Arg1) -> String {
+        String(format: tr, arg1)
     }
 
-    func tr(_ arg1: Arg1) -> String {
-        String(format: key.tr, arg1)
-    }
-}
-
-public extension RswiftResources.StringResource2 {
-    var tr: String {
-        key.tr
-    }
-
-    func tr(_ arg1: Arg1, _ arg2: Arg2) -> String {
-        String(format: key.tr, arg1, arg2)
+    public func tr(for lang: Lang, _ arg1: Arg1) -> String {
+        String(format: tr(for: lang), arg1)
     }
 }
 
-public extension RswiftResources.StringResource3 {
-    var tr: String {
-        key.tr
+// MARK: - RswiftResources.StringResource2 + TrKey
+
+extension RswiftResources.StringResource2: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2) -> String {
+        String(format: tr, arg1, arg2)
     }
 
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3) -> String {
-        String(format: key.tr, arg1, arg2, arg3)
-    }
-}
-
-public extension RswiftResources.StringResource4 {
-    var tr: String {
-        key.tr
-    }
-
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4) -> String {
-        String(format: key.tr, arg1, arg2, arg3, arg4)
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2) -> String {
+        String(format: tr(for: lang), arg1, arg2)
     }
 }
 
-public extension RswiftResources.StringResource5 {
-    var tr: String {
-        key.tr
+// MARK: - RswiftResources.StringResource3 + TrKey
+
+extension RswiftResources.StringResource3: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3) -> String {
+        String(format: tr, arg1, arg2, arg3)
     }
 
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5) -> String {
-        String(format: key.tr, arg1, arg2, arg3, arg4, arg5)
-    }
-}
-
-public extension RswiftResources.StringResource6 {
-    var tr: String {
-        key.tr
-    }
-
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6) -> String {
-        String(format: key.tr, arg1, arg2, arg3, arg4, arg5, arg6)
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3) -> String {
+        String(format: tr(for: lang), arg1, arg2, arg3)
     }
 }
 
-public extension RswiftResources.StringResource7 {
-    var tr: String {
-        key.tr
+// MARK: - RswiftResources.StringResource4 + TrKey
+
+extension RswiftResources.StringResource4: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4)
     }
 
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7) -> String {
-        String(format: key.tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
-    }
-}
-
-public extension RswiftResources.StringResource8 {
-    var tr: String {
-        key.tr
-    }
-
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7, _ arg8: Arg8) -> String {
-        String(format: key.tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4) -> String {
+        String(format: tr(for: lang), arg1, arg2, arg3, arg4)
     }
 }
 
-public extension RswiftResources.StringResource9 {
-    var tr: String {
-        key.tr
+// MARK: - RswiftResources.StringResource5 + TrKey
+
+extension RswiftResources.StringResource5: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4, arg5)
     }
 
-    func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7, _ arg8: Arg8, _ arg9: Arg9) -> String {
-        String(format: key.tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5) -> String {
+        String(format: tr(for: lang), arg1, arg2, arg3, arg4, arg5)
+    }
+}
+
+// MARK: - RswiftResources.StringResource6 + TrKey
+
+extension RswiftResources.StringResource6: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4, arg5, arg6)
+    }
+
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6) -> String {
+        String(format: tr(for: lang), arg1, arg2, arg3, arg4, arg5, arg6)
+    }
+}
+
+// MARK: - RswiftResources.StringResource7 + TrKey
+
+extension RswiftResources.StringResource7: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+    }
+
+    public func tr(for _: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+    }
+}
+
+// MARK: - RswiftResources.StringResource8 + TrKey
+
+extension RswiftResources.StringResource8: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7, _ arg8: Arg8) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+    }
+
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7, _ arg8: Arg8) -> String {
+        String(format: tr(for: lang), arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+    }
+}
+
+// MARK: - RswiftResources.StringResource9 + TrKey
+
+extension RswiftResources.StringResource9: TrKey {
+    public func tr(_ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7, _ arg8: Arg8, _ arg9: Arg9) -> String {
+        String(format: tr, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
+    }
+
+    public func tr(for lang: Lang, _ arg1: Arg1, _ arg2: Arg2, _ arg3: Arg3, _ arg4: Arg4, _ arg5: Arg5, _ arg6: Arg6, _ arg7: Arg7, _ arg8: Arg8, _ arg9: Arg9) -> String {
+        String(format: tr(for: lang), arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
     }
 }
