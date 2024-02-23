@@ -58,7 +58,7 @@ public extension String {
 public extension String {
     func textViewSize(font: UIFont, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
         let attrString = NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
-        let drawSize = CGSize(width ?? CGFloat.greatestFiniteMagnitude, height ?? CGFloat.greatestFiniteMagnitude)
+        let drawSize = CGSize(width ?? .greatestFiniteMagnitude, height ?? .greatestFiniteMagnitude)
         let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
         let boundingRect = attrString.boundingRect(with: drawSize,
                                                    options: options,
