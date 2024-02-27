@@ -166,6 +166,7 @@ public extension CaptureSession {
 public extension CaptureSession {
     static func checkPermission(mediaType: AVMediaType = .video,
                                 requestIfNotDetermined: Bool = true,
+                                onRequestAccess: VoidFunction? = nil,
                                 callback: @escaping VoidFunction2<Bool, Bool>) // notDetermined, authed
     {
         let handler: VoidFunction2<Bool, Bool> = { notDetermined, authed in
@@ -181,6 +182,7 @@ public extension CaptureSession {
                 AVCaptureDevice.requestAccess(for: mediaType) { authed in
                     handler(true, authed)
                 }
+                onRequestAccess?()
             } else {
                 handler(true, false)
             }
