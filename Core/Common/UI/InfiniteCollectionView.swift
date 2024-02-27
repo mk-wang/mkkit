@@ -190,9 +190,9 @@ extension InfiniteCollectionView: UICollectionViewDelegate {
 public extension InfiniteCollectionView {
     override var dataSource: UICollectionViewDataSource? {
         didSet {
-            if !self.dataSource!.isEqual(self) {
+            if !dataSource!.isEqual(self) {
                 Logger.shared.error("WARNING: UICollectionView DataSource must not be modified.  Set infiniteDataSource instead.")
-                self.dataSource = self
+                dataSource = self
             }
         }
     }

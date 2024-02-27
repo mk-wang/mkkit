@@ -13,7 +13,7 @@ import UIKit
 public class VerticalAlignmentLabel: UILabel {
     public var verticalTextAlignment: VerticalTextAlignment = .top {
         didSet {
-            self.setNeedsDisplay()
+            setNeedsDisplay()
         }
     }
 

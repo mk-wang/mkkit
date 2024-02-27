@@ -147,8 +147,8 @@ open class BGHighLightView: BaseHighLightView {
                 weakSelf?.backgroundColor = target
             }, completion: nil
         )
-        subviews.forEach {
-            Self.updateState(view: $0, isHighLighted: highLighted)
+        for subview in subviews {
+            Self.updateState(view: subview, isHighLighted: highLighted)
         }
     }
 
@@ -170,8 +170,8 @@ open class BGHighLightView: BaseHighLightView {
         } else if let control = view as? UIControl {
             control.isHighlighted = isHighLighted
         }
-        view.subviews.forEach {
-            updateState(view: $0, isHighLighted: isHighLighted)
+        for subview in view.subviews {
+            updateState(view: subview, isHighLighted: isHighLighted)
         }
     }
 }

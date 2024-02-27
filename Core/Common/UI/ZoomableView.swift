@@ -107,7 +107,7 @@ open class ZoomableImageView: ZoomableView {
     open var imageBuilder: ((Bool) -> UIImage?)?
     open var isSelected: Bool = false {
         didSet {
-            self.image = imageBuilder?(isSelected)
+            image = imageBuilder?(isSelected)
         }
     }
 

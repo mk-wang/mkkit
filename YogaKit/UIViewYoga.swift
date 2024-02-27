@@ -21,7 +21,7 @@ public extension UIView {
 
     func addYGSubviews(_ builders: [YGViewBuilder]) {
         yoga.isEnabled = true
-        builders.forEach { builder in
+        for builder in builders {
             var view: UIView?
             switch builder {
             case let .view(subView, config):
@@ -47,7 +47,7 @@ public extension UIView {
             }
 
             if let view {
-                self.addSubview(view)
+                addSubview(view)
             }
         }
     }

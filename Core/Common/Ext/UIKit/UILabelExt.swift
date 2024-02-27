@@ -87,4 +87,3 @@ public extension UILabel {
         font = font.withSize(newFontSize)
     }
 }
-

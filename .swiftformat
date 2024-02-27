@@ -80,4 +80,4 @@
 --wraptypealiases preserve
 --xcodeindentation disabled
 --yodaswap always
---enable isEmpty,markTypes,sortSwitchCases,wrapEnumCases,wrapSwitchCases
+--enable isEmpty,markTypes,sortedSwitchCases,wrapEnumCases,wrapSwitchCases

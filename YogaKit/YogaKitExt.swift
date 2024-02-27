@@ -10,8 +10,8 @@ import YogaKit
 
 public extension UIView {
     func fixYGLayout() {
-        subviews.forEach {
-            let yoga = $0.yoga
+        for subview in subviews {
+            let yoga = subview.yoga
             if !yoga.isEnabled {
                 yoga.isIncludedInLayout = false
             }
@@ -75,8 +75,8 @@ public extension UIView {
     }
 
     func ygResetSubviews() {
-        subviews.forEach {
-            $0.ygResetSubviews()
+        for subview in subviews {
+            subview.ygResetSubviews()
         }
         ygReset()
     }

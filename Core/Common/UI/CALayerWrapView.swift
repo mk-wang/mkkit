@@ -14,7 +14,7 @@ open class CALayerWrapView: UIView {
         didSet {
             oldValue?.removeFromSuperlayer()
             if let wrapLayer {
-                wrapLayer.frame = self.bounds
+                wrapLayer.frame = bounds
                 layer.addSublayer(wrapLayer)
             }
         }
