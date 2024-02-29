@@ -363,19 +363,19 @@ extension String {
     ) -> CGFloat {
         var fontSize = maxFontSize
 
-        let list = texts.map { text in
+        for text in texts {
             let value = text.fontSizeThatFits(font: font,
                                               numberOfLines: numberOfLines,
                                               rectSize: rectSize,
                                               fitter: fitter,
-                                              maxFontSize: fontSize,
+                                              maxFontSize: maxFontSize,
                                               minFontScale: minFontScale)
             if fontSize > value {
                 fontSize = value
             }
-            return value
         }
-        return list.min(by: { $0 < $1 }) ?? maxFontSize
+
+        return fontSize
     }
 
     /**
@@ -413,7 +413,7 @@ extension String {
                                                    maxSize: maxFontSize,
                                                    size: rectSize,
                                                    constraintSize: constraintSize)
-        return (calculatedFontSize * 10.0).rounded(.down) / 10.0
+        return (calculatedFontSize * 10.0 - 2).rounded(.down) / 10.0
     }
 
     private static func binarySearch(string: String,
