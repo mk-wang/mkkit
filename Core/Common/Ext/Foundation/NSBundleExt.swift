@@ -17,9 +17,9 @@ public extension Bundle {
     }
 
     func translate(for key: CustomStringConvertible) -> String? {
-        let text = NSLocalizedString(key.description, tableName: nil, bundle: self, value: Self.kNotMatch, comment: "")
+        let text = localizedString(forKey: key.description, value: Self.kNotMatch, table: nil)
         return text == Self.kNotMatch ? nil : text
     }
 
-    private static let kNotMatch = "X__D)_OKmdQ@#~"
+    private static let kNotMatch = "!@#$%^&*)("
 }
