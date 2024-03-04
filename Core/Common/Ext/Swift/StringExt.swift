@@ -350,6 +350,25 @@ public extension String {
     }
 }
 
+public extension String {
+    var isDecimalDigits: Bool {
+        let characters = CharacterSet.decimalDigits
+        return CharacterSet(charactersIn: self).isSubset(of: characters)
+    }
+
+    var isNumber: Bool {
+        self.allSatisfy { character in
+            character.isNumber
+        }
+    }
+
+    var isWholeNumber: Bool {
+        self.allSatisfy { character in
+            character.isWholeNumber
+        }
+    }
+}
+
 // from https://raw.githubusercontent.com/tbaranes/FittableFontLabel/master/Source/UILabelExtension.swift
 extension String {
     public static func fontSizeThatFits(
