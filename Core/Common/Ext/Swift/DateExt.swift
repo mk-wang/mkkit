@@ -21,6 +21,10 @@ public extension Date {
         return calendar.date(from: components)!
     }
 
+    var timePassed: TimeInterval {
+        -timeIntervalSinceNow
+    }
+
     static let oneMinuteInterval: TimeInterval = 60
     static let oneHourInterval: TimeInterval = 60 * oneMinuteInterval
     static let oneDayInterval: TimeInterval = 24 * oneHourInterval

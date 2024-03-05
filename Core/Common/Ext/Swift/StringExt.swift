@@ -357,13 +357,13 @@ public extension String {
     }
 
     var isNumber: Bool {
-        self.allSatisfy { character in
+        allSatisfy { character in
             character.isNumber
         }
     }
 
     var isWholeNumber: Bool {
-        self.allSatisfy { character in
+        allSatisfy { character in
             character.isWholeNumber
         }
     }
