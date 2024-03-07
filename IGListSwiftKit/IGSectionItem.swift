@@ -28,7 +28,7 @@ open class IGSectionItemController<Item: IGSectionItem, Cell: UICollectionViewCe
     open var heightBlock: ((ListCollectionContext, Item, CGFloat) -> CGFloat)?
 
     open var configureBlock: ((Item, Cell) -> Void)?
-    open var onClick: VoidFunction?
+    open var onClick: (() -> Void)?
 
     public init(cellType: Cell.Type = Cell.self) {
         self.cellType = cellType
@@ -102,7 +102,8 @@ open class IGSectionItemListController<T, Item: IGSectionListItem<T>, Cell: UICo
     open var heightBlock: ((ListCollectionContext, Int, T, CGFloat) -> CGFloat)?
 
     open var configureBlock: ((Int, T, Cell) -> Void)?
-    open var onClick: VoidFunction2<Int, T>?
+    open var onClick: ((Int, T) -> Void)?
+    open var reuseIdentifierBuilder: ((Int, T) -> String)?
 
     public init(cellType: Cell.Type = Cell.self) {
         self.cellType = cellType
@@ -142,11 +143,13 @@ open class IGSectionItemListController<T, Item: IGSectionListItem<T>, Cell: UICo
     }
 
     override open func cellForItem(at index: Int) -> UICollectionViewCell {
-        guard let value = item?.items.at(index), let cell = collectionContext?.dequeueReusableCell(of: cellType,
-                                                                                                   for: self,
-                                                                                                   at: index) as? Cell
+        guard let value = item?.items.at(index),
+              let cell = collectionContext?.dequeueReusableCell(of: cellType,
+                                                                withReuseIdentifier: reuseIdentifierBuilder?(index, value),
+                                                                for: self,
+                                                                at: index) as? Cell
         else {
-            return UICollectionViewCell()
+            return .init()
         }
 
         configureBlock?(index, value, cell)
