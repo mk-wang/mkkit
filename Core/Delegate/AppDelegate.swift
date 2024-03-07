@@ -19,6 +19,9 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     private lazy var appStateSubject: CurrentValueSubject<UIApplication.State, Never> = .init(UIApplication.shared.applicationState)
     public lazy var appStatePublisher = appStateSubject.eraseToAnyPublisher()
 
+    private lazy var backgroundSubject: CurrentValueSubject<Bool, Never> = .init(false)
+    public lazy var backgroundPublisher = backgroundSubject.eraseToAnyPublisher()
+
     public lazy var appActivedPublisher = appStateSubject.removeDuplicatesAndDrop()
         .compactMap { $0 == .active ? () : nil }
         .debounceOnMain(for: 0.01)
@@ -48,12 +51,16 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - UIApplication.State + CustomStringConvertible
 
 extension AppDelegate {
-    open func refreshState(_ application: UIApplication, inActive: Bool? = nil) {
+    open func refreshActiveState(_ application: UIApplication, inActive: Bool? = nil) {
         var state = application.applicationState
         if let inActive {
             state = inActive ? .inactive : .active
         }
         appStateSubject.send(state)
+    }
+
+    open func refreshBackgroundState(_: UIApplication, background: Bool) {
+        backgroundSubject.send(background)
     }
 
     @objc open var rootController: UIViewController? {

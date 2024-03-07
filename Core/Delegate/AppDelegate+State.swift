@@ -11,19 +11,22 @@ import UIKit
 extension AppDelegate {
     open func applicationWillResignActive(_ application: UIApplication) {
         // 有些系统 applicationState 可能还是 acitve，所以强制设一下
-        refreshState(application, inActive: true)
+        refreshActiveState(application, inActive: true)
     }
 
     open func applicationDidBecomeActive(_ application: UIApplication) {
-        refreshState(application)
+        refreshActiveState(application)
     }
 
     open func applicationWillEnterForeground(_ application: UIApplication) {
-        refreshState(application)
+        refreshActiveState(application)
+
+        refreshBackgroundState(application, background: false)
     }
 
     open func applicationDidEnterBackground(_ application: UIApplication) {
-        refreshState(application)
+        refreshActiveState(application)
+        refreshBackgroundState(application, background: true)
     }
 
     open func applicationWillTerminate(_ application: UIApplication) {
