@@ -51,6 +51,7 @@ open class MKIAPService {
     }
 
     public let productList: [MKIAPProduct]
+    public let allProductList: [MKIAPProduct]
 
     public let config: Config
 
@@ -72,10 +73,12 @@ open class MKIAPService {
     public init(sharedSecret: String,
                 purchasedSubject: CurrentValueSubject<Set<String>, Never>,
                 productList: [MKIAPProduct],
+                allProductList: [MKIAPProduct],
                 config: Config)
     {
         self.sharedSecret = sharedSecret
         self.productList = productList
+        self.allProductList = allProductList
         self.purchasedSubject = purchasedSubject
         self.config = config
     }
@@ -172,7 +175,7 @@ extension MKIAPService {
         var products = [String]()
         var subscriptions = [String]()
 
-        for product in productList {
+        for product in allProductList {
             if !product.isSubscription {
                 products.append(product.id)
             } else if product.isAutoRenewable {
