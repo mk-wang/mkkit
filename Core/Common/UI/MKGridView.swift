@@ -22,9 +22,7 @@ open class MKGridView: UIView {
         let selfBounds = self.bounds
 
         if let flow = layout as? UICollectionViewFlowLayout {
-            let selfWidth = selfBounds.size.width
-            let count = CGFloat(config.itemPerLine)
-            let itemSpacing = floor((selfWidth - config.inset.horizontalSize - count * config.itemSize.width) / (count - 1))
+            let itemSpacing = config.itemSpacing(for: selfBounds.size.width)
 
             flow.scrollDirection = .vertical
             flow.minimumInteritemSpacing = itemSpacing
@@ -149,7 +147,25 @@ public extension MKGridView {
     }
 }
 
-// MARK: MKGridView.Cell
+public extension MKGridView.GridConfig {
+    var estimatedHeight: CGFloat {
+        var height = inset.verticalSize
+        let lineCount = Int((itemCount + itemPerLine - 1) / itemPerLine)
+
+        if lineCount > 0 {
+            height += CGFloat(lineCount) * (lineSpacing + itemSize.height) - lineSpacing
+        }
+
+        return ceil(height)
+    }
+
+    func itemSpacing(for width: CGFloat) -> CGFloat {
+        let count = CGFloat(itemPerLine)
+        return floor((width - inset.horizontalSize - count * itemSize.width) / (count - 1))
+    }
+}
+
+// MARK: - MKGridView.Cell
 
 extension MKGridView {
     open class Cell: UICollectionViewCell {
