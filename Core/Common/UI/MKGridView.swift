@@ -67,7 +67,7 @@ open class MKGridView: UIView {
     }
 
     public func reloadData() {
-        guard !isEmptyBounds else {
+        guard listView.superview != nil else {
             return
         }
 
