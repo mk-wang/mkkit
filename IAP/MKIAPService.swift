@@ -87,9 +87,13 @@ open class MKIAPService {
 }
 
 extension MKIAPService {
-    public func purchase(product: MKIAPProduct, completion: ((Bool, PurchaseInfo?) -> Void)? = nil) {
+    public func purchase(product: MKIAPProduct,
+                         verifiyProductIds: Set<String>,
+                         completion: ((Bool, PurchaseInfo?) -> Void)? = nil)
+    {
         let productID = product.id
         IAPHelper.purchase(productID: productID,
+                           verifiyProductIds: verifiyProductIds,
                            secret: sharedSecret,
                            environment: iapEnv,
                            subscription: product.isSubscription)

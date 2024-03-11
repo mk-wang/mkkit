@@ -51,6 +51,8 @@ public extension IAPHelper {
         public let finished: Set<String>?
     }
 
+    static let deferredError: Error = NSError(domain: "ipa.mkkit", code: -1)
+
     static func startObserving(completion: @escaping ([Purchase], [Purchase], PurchaseResult) -> Void) {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             var failed = Set<String>()
@@ -90,6 +92,7 @@ public extension IAPHelper {
     }
 
     static func purchase(productID: String,
+                         verifiyProductIds: Set<String>?,
                          secret: String,
                          environment: IAPEnvironment,
                          subscription: Bool,
@@ -102,7 +105,6 @@ public extension IAPHelper {
                                        quantity: quantity,
                                        atomically: atomically)
         { purchaseResult in
-
             switch purchaseResult {
             case let .success(detail):
                 guard environment != .local else {
@@ -112,10 +114,12 @@ public extension IAPHelper {
                 var info = PurchaseInfo()
                 info.details = detail
                 if subscription {
-                    verifySubscription(productID: productID,
-                                       secret: secret,
-                                       validDuration: validDuration,
-                                       environment: environment)
+                    var ids = verifiyProductIds ?? [productID]
+                    verifySubscriptions(productIds: ids,
+                                        secret: secret,
+                                        forceRefresh: true,
+                                        validDuration: validDuration,
+                                        environment: environment)
                     { suc, receipt, result, error in
                         if suc {
                             info.receipt = receipt
@@ -139,9 +143,12 @@ public extension IAPHelper {
                         }
                     }
                 }
-
             case let .error(error: error):
                 completion(false, nil, error)
+            case let .deferred(purchase: purchase):
+                var info = PurchaseInfo()
+                info.details = purchase
+                completion(false, info, deferredError)
             }
         }
     }
@@ -201,20 +208,23 @@ public extension IAPHelper {
         }
     }
 
-    static func verifySubscription(productID: String,
-                                   secret: String,
-                                   validDuration: TimeInterval? = nil,
-                                   environment: IAPEnvironment,
-                                   completion: @escaping (Bool, ReceiptInfo?, VerifySubscriptionResult?, Error?) -> Void)
+    static func verifySubscriptions(productIds: Set<String>,
+                                    secret: String,
+                                    forceRefresh: Bool,
+                                    validDuration: TimeInterval? = nil,
+                                    environment: IAPEnvironment,
+                                    completion: @escaping (Bool, ReceiptInfo?, VerifySubscriptionResult?, Error?) -> Void)
     {
         let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
-        SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
+        SwiftyStoreKit.verifyReceipt(using: appleValidator,
+                                     forceRefresh: forceRefresh)
+        { result in
             switch result {
             case let .success(receipt):
-                let purchaseResult = SwiftyStoreKit.verifySubscription(
+                let purchaseResult = SwiftyStoreKit.verifySubscriptions(
                     ofType: validDuration == nil ? .autoRenewable : .nonRenewing(validDuration: validDuration!),
-                    productId: productID,
+                    productIds: productIds,
                     inReceipt: receipt
                 )
 
@@ -230,6 +240,21 @@ public extension IAPHelper {
                 completion(false, nil, nil, error)
             }
         }
+    }
+
+    static func verifySubscription(productID: String,
+                                   secret: String,
+                                   forceRefresh: Bool,
+                                   validDuration: TimeInterval? = nil,
+                                   environment: IAPEnvironment,
+                                   completion: @escaping (Bool, ReceiptInfo?, VerifySubscriptionResult?, Error?) -> Void)
+    {
+        verifySubscriptions(productIds: [productID],
+                            secret: secret,
+                            forceRefresh: forceRefresh,
+                            validDuration: validDuration,
+                            environment: environment,
+                            completion: completion)
     }
 
     static func verifyPurchase(products: [String]? = nil,
