@@ -179,7 +179,7 @@ public extension IAPHelper {
     }
 
     static func getList(productList: [String], completion: @escaping (RetrieveResults) -> Void) {
-        SwiftyStoreKit.retrieveProductsInfo(Set<String>.init(productList), completion: completion)
+        SwiftyStoreKit.retrieveProductsInfo(.init(productList), completion: completion)
     }
 
     static func verifyPurchase(productID: String,

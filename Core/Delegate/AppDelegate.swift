@@ -30,8 +30,6 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     open func application(_ application: UIApplication,
                           didFinishLaunchingWithOptions opts: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
-        SelfLoader.loadAll()
-
         beforeWindow(application)
 
         window = UIWindow(frame: UIScreen.main.bounds)
