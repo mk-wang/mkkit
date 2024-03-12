@@ -17,7 +17,11 @@ public extension Bundle {
     }
 
     func translate(for key: CustomStringConvertible) -> String? {
-        let text = localizedString(forKey: key.description, value: Self.kNotMatch, table: nil)
+        translate(for: key.description)
+    }
+
+    func translate(for key: String) -> String? {
+        let text = localizedString(forKey: key, value: Self.kNotMatch, table: nil)
         return text == Self.kNotMatch ? nil : text
     }
 

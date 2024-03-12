@@ -13,8 +13,13 @@ public extension TrKey {
         key.tr
     }
 
+    var trKey: String {
+        key.description
+    }
+
     func tr(for lang: Lang) -> String {
-        lang.bundle?.translate(for: key) ?? key.description
+        let key = trKey
+        return lang.bundle?.translate(for: key) ?? key
     }
 }
 

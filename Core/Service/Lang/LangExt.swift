@@ -50,18 +50,20 @@ public extension CustomStringConvertible {
     var tr: String {
         let currentBundle = Lang.current.bundle
 
-        if let text = currentBundle?.translate(for: self) {
+        let key = description
+
+        if let text = currentBundle?.translate(for: key) {
             return text
         }
 
         let defaultBundle = Lang.default.bundle
         if currentBundle != defaultBundle {
-            if let text = defaultBundle?.translate(for: self) {
+            if let text = defaultBundle?.translate(for: key) {
                 return text
             }
         }
 
-        return description
+        return key
     }
 }
 
