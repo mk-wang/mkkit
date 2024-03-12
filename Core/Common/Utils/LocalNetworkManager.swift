@@ -18,7 +18,7 @@ open class LocalNetworkManager: NSObject {
         case denied
         case authed
 
-        public var isDone: Bool {
+        public var isDetected: Bool {
             self == .denied || self == .authed
         }
     }
