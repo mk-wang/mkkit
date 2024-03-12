@@ -132,6 +132,7 @@ public extension IAPHelper {
                 } else {
                     verifyPurchase(productID: productID,
                                    secret: secret,
+                                   forceRefresh: true,
                                    environment: environment)
                     { suc, receipt, result, error in
                         if suc {
@@ -184,12 +185,15 @@ public extension IAPHelper {
 
     static func verifyPurchase(productID: String,
                                secret: String,
+                               forceRefresh: Bool,
                                environment: IAPEnvironment,
                                completion: @escaping (Bool, ReceiptInfo?, VerifyPurchaseResult?, Error?) -> Void)
     {
         let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
-        SwiftyStoreKit.verifyReceipt(using: appleValidator) { verifyResult in
+        SwiftyStoreKit.verifyReceipt(using: appleValidator,
+                                     forceRefresh: forceRefresh)
+        { verifyResult in
             switch verifyResult {
             case let .success(receipt):
                 let purchaseResult = SwiftyStoreKit.verifyPurchase(
