@@ -92,12 +92,12 @@ private extension LocalNetworkManager {
 
             switch newState {
             case let .failed(error):
-                appLogger.debug("localNetwork fail \(error)")
+                Logger.shared.debug("localNetwork fail \(error)")
             case .cancelled,
                  .ready:
                 break
             case let .waiting(error):
-                appLogger.debug("localNetwork denied \(error)")
+                Logger.shared.debug("localNetwork denied \(error)")
                 stop()
                 state = .denied
             default:
