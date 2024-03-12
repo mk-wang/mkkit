@@ -48,7 +48,7 @@ open class LocalNetworkManager: NSObject {
         doAuthorization()
     }
 
-    static var needAuth: Bool {
+    public static var needAuth: Bool {
         #if targetEnvironment(simulator)
             return false
         #endif
