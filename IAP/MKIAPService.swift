@@ -145,6 +145,9 @@ extension MKIAPService {
                                            completion?(suc, info)
                                        })
             } else {
+                if let error = results.restoreFailedPurchases.first?.0 as? NSError {
+                    Logger.shared.iap("restore fail \(error)")
+                }
                 completion?(false, info)
             }
         }
