@@ -122,7 +122,7 @@ public func formatMessage(level: Logger.Level,
         tagInfo = ": \(tag)"
     }
 //    return "[\(level)\(tagInfo)] \(function) \(message)"
-    return "[\(Lang.current.rawValue) \(AppInfo.shortVersion)] [\(level)\(tagInfo)] \(file)#\(line) \(message)"
+    return "[\(Lang.current.rawValue) \(AppInfo.systemVersion) \(AppInfo.shortVersion)] [\(level)\(tagInfo)] \(file)#\(line) \(message)"
 }
 
 // MARK: - Printer
