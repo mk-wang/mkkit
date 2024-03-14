@@ -23,7 +23,7 @@ open class LocalNetworkManager: NSObject {
         }
     }
 
-    private let stateSubject: CurrentValueSubject<AuthState, Never> = .init(LocalNetworkManager.needAuth ? .authed : .unkown)
+    private let stateSubject: CurrentValueSubject<AuthState, Never> = .init(LocalNetworkManager.needAuth ? .unkown : .authed)
     public lazy var statePublisher = stateSubject.eraseToAnyPublisher()
 
     private(set) var state: AuthState {

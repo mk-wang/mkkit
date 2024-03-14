@@ -27,6 +27,12 @@ public extension String {
 }
 
 public extension String {
+    func convert(predicate: ValueBuilder1<Bool, String>, builder: ValueBuilder1<String, String>) -> String {
+        predicate(self) ? builder(self) : self
+    }
+}
+
+public extension String {
     func rot(n: UInt8) -> String {
         String(unicodeScalars.map {
             let value = rotNumber(UInt32($0.value), n: n)

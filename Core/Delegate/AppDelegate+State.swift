@@ -20,7 +20,6 @@ extension AppDelegate {
 
     open func applicationWillEnterForeground(_ application: UIApplication) {
         refreshActiveState(application)
-
         refreshBackgroundState(application, background: false)
     }
 
