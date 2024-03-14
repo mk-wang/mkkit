@@ -231,3 +231,26 @@ public extension MKModalView {
         return modalView
     }
 }
+
+public extension MKModalView {
+    @discardableResult
+    static func showBottomSheet<T: UIView>(_ contentView: T,
+                                           touchToDismiss: Bool = true,
+                                           in container: UIView?,
+                                           configure: ((MKModalView, T) -> Void)? = nil) -> MKModalView?
+    {
+        guard let superView = container ?? ScreenUtil.window else {
+            return nil
+        }
+        let box = PassTouchView(frame: superView.bounds)
+        box.addSnpSubview(contentView)
+
+        return MKModalView.showFromBottom(box, in: container) { modalView, _ in
+            if !touchToDismiss {
+                modalView.dismissOnBackgroundTap = false
+            }
+
+            configure?(modalView, contentView)
+        }
+    }
+}
