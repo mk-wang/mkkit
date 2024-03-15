@@ -50,8 +50,8 @@ open class MKIAPService {
         }
     }
 
-    public let productList: [MKIAPProduct]
-    public let allProductList: [MKIAPProduct]
+    public let productListBuilder: ValueBuilder<[MKIAPProduct]>
+    public let allProductListBuiler: ValueBuilder<[MKIAPProduct]>
 
     public let config: Config
 
@@ -72,18 +72,18 @@ open class MKIAPService {
 
     public init(sharedSecret: String,
                 purchasedSubject: CurrentValueSubject<Set<String>, Never>,
-                productList: [MKIAPProduct],
-                allProductList: [MKIAPProduct],
+                productListBuilder: @escaping ValueBuilder<[MKIAPProduct]>,
+                allProductListBuiler: @escaping ValueBuilder<[MKIAPProduct]>,
                 config: Config)
     {
         self.sharedSecret = sharedSecret
-        self.productList = productList
-        self.allProductList = allProductList
+        self.productListBuilder = productListBuilder
+        self.allProductListBuiler = allProductListBuiler
         self.purchasedSubject = purchasedSubject
         self.config = config
     }
 
-    public lazy var productIDList = productList.map(\.id)
+    public var productIDList: [String] { productListBuilder().map(\.id) }
 }
 
 extension MKIAPService {
@@ -127,8 +127,6 @@ extension MKIAPService {
         if isPremium {
             validatePurchase(forceRefresh: true)
         }
-
-        loadProducts()
     }
 
     public func restorePurchase(completion: ((Bool, RestoreInfo) -> Void)? = nil) {
@@ -170,6 +168,7 @@ extension MKIAPService {
     }
 
     func updateSKProduct(skProduct: SKProduct) {
+        let productList = productListBuilder()
         productList.first {
             $0.id == skProduct.productIdentifier
         }?.update(skProduct: skProduct)
@@ -182,6 +181,7 @@ extension MKIAPService {
         var products = [String]()
         var subscriptions = [String]()
 
+        let allProductList = allProductListBuiler()
         for product in allProductList {
             if !product.isSubscription {
                 products.append(product.id)
