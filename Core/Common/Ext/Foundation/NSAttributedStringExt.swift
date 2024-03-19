@@ -11,14 +11,19 @@ import UIKit
 // MARK: - Properties
 
 public extension NSAttributedString {
-    func textViewSize(width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
-        let drawSize = CGSize(width ?? CGFloat.greatestFiniteMagnitude, height ?? CGFloat.greatestFiniteMagnitude)
+    func textViewSize(font: UIFont? = nil, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
+        let drawSize = CGSize(width ?? .greatestFiniteMagnitude, height ?? .greatestFiniteMagnitude)
         let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
+        let boundingRect = self.boundingRect(with: drawSize,
+                                             options: options,
+                                             context: nil)
 
-        let boundingRect = boundingRect(with: drawSize,
-                                        options: options,
-                                        context: nil)
-        return boundingRect.size
+        var height = boundingRect.size.height
+        if fixBottomPadding, let font {
+            //  https://developer.apple.com/documentation/uikit/uifont
+            height += boundingRect.origin.y - font.descender
+        }
+        return CGSize(boundingRect.size.width, height)
     }
 }
 

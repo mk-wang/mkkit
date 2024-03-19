@@ -64,18 +64,7 @@ public extension String {
 public extension String {
     func textViewSize(font: UIFont, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
         let attrString = NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
-        let drawSize = CGSize(width ?? .greatestFiniteMagnitude, height ?? .greatestFiniteMagnitude)
-        let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
-        let boundingRect = attrString.boundingRect(with: drawSize,
-                                                   options: options,
-                                                   context: nil)
-
-        var height = boundingRect.size.height
-        if fixBottomPadding {
-            //  https://developer.apple.com/documentation/uikit/uifont
-            height += boundingRect.origin.y - font.descender
-        }
-        return CGSize(boundingRect.size.width, height)
+        return attrString.textViewSize(font: font, fixBottomPadding: fixBottomPadding, width: width, height: height)
     }
 }
 
