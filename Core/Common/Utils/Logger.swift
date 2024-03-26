@@ -28,7 +28,7 @@ open class Logger {
                       line: UInt = #line)
     {
         log(level: .debug,
-            message: message().description,
+            message: message,
             tag: tag,
             function: function,
             file: file,
@@ -42,7 +42,7 @@ open class Logger {
                      line: UInt = #line)
     {
         log(level: .info,
-            message: message().description,
+            message: message,
             tag: tag,
             function: function,
             file: file,
@@ -56,7 +56,7 @@ open class Logger {
                       line: UInt = #line)
     {
         log(level: .error,
-            message: message().description,
+            message: message,
             tag: tag,
             function: function,
             file: file,
@@ -64,7 +64,7 @@ open class Logger {
     }
 
     public func log(level: Level,
-                    message: String,
+                    message: () -> CustomStringConvertible,
                     tag: String?,
                     function: String,
                     file: String,
@@ -74,7 +74,9 @@ open class Logger {
             return
         }
 
-        printers.forEach { $0.write(level: level, message: message, tag: tag, function: function, file: file, line: line) }
+        let value = message()
+        let text = (value as? String) ?? value.description
+        printers.forEach { $0.write(level: level, message: text, tag: tag, function: function, file: file, line: line) }
     }
 
     public enum Level: Int8 {

@@ -121,7 +121,7 @@ import OpenCombine
                               line: UInt,
                               check: ValueBuilder<Bool>)
         {
-            log(level: level, message: text, tag: tag, function: function, file: file, line: line)
+            log(level: level, message: { text }, tag: tag, function: function, file: file, line: line)
 
             guard check() else {
                 return
