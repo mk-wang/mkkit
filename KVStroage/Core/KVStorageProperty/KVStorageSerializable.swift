@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - KVStorageSerializable
 
-public protocol KVStorageSerializable: Equatable {
+public protocol KVStorageSerializable {
     /// The type of the value that is stored in `UserDefaults`.
     associatedtype KVValue
 

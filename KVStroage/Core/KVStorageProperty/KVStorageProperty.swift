@@ -8,7 +8,7 @@ import OpenCombine
 // MARK: - KVStorageProperty
 
 @propertyWrapper
-public struct KVStorageProperty<T: KVStorageSerializable> {
+public struct KVStorageProperty<T: KVStorageSerializable & Equatable> {
     private let storage: KVStorage
     private let subject: CurrentValueSubject<T, Never>
     var cancellable: AnyCancellable?
@@ -52,8 +52,8 @@ public struct KVStorageProperty<T: KVStorageSerializable> {
         self.storage = storage
 
         let value = storage.getSerializable(for: key) ?? wrappedValue
-        subject = CurrentValueSubject<T, Never>(value)
 
+        subject = CurrentValueSubject<T, Never>(value)
         cancellable = subject.removeDuplicatesAndDrop().sink(receiveValue: { newValue in
             storage.saveSerializable(newValue, for: key)
         })
@@ -63,7 +63,7 @@ public struct KVStorageProperty<T: KVStorageSerializable> {
 // MARK: - KVStorageOptionalProperty
 
 @propertyWrapper
-public struct KVStorageOptionalProperty<T: KVStorageSerializable> {
+public struct KVStorageOptionalProperty<T: KVStorageSerializable & Equatable> {
     private let storage: KVStorage
     private let subject: CurrentValueSubject<T?, Never>
     var cancellable: AnyCancellable?
