@@ -26,6 +26,8 @@ public class BoolMerge: Publisher {
     let subjuct = CurrentValueSubject<Bool, Never>(false)
     let operate: Operate
 
+    public var onValuesUpdate: VoidFunction1<[Bool]>?
+
     var value: Bool {
         get {
             subjuct.value
@@ -45,17 +47,23 @@ public class BoolMerge: Publisher {
 
         for (index, publihser) in list.enumerated() {
             publihser.sink { [weak self] in
-                self?.values[index] = $0
-                self?.checkValues()
+                self?.update(value: $0, index: index)
             }.store(in: &cancellableSet)
         }
     }
 
-    public func receive<Subscriber>(subscriber: Subscriber) where Subscriber: OpenCombine.Subscriber, Never == Subscriber.Failure, Bool == Subscriber.Input {
+    public func receive<Subscriber>(subscriber: Subscriber) where Subscriber: OpenCombine.Subscriber,
+        Never == Subscriber.Failure,
+        Bool == Subscriber.Input
+    {
         subjuct.subscribe(subscriber)
     }
 
-    func checkValues() {
+    private func update(value: Bool, index: Int) {
+        values[index] = value
+
+        onValuesUpdate?(values)
+
         if operate == .and {
             for value in values {
                 if !value {
@@ -63,7 +71,7 @@ public class BoolMerge: Publisher {
                     return
                 }
             }
-            value = true
+            self.value = true
         } else {
             for value in values {
                 if value {
@@ -71,7 +79,7 @@ public class BoolMerge: Publisher {
                     return
                 }
             }
-            value = false
+            self.value = false
         }
     }
 }
