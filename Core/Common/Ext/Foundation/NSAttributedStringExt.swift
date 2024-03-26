@@ -14,9 +14,9 @@ public extension NSAttributedString {
     func textViewSize(font: UIFont? = nil, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
         let drawSize = CGSize(width ?? .greatestFiniteMagnitude, height ?? .greatestFiniteMagnitude)
         let options: NSStringDrawingOptions = [.usesFontLeading, .usesLineFragmentOrigin]
-        let boundingRect = self.boundingRect(with: drawSize,
-                                             options: options,
-                                             context: nil)
+        let boundingRect = boundingRect(with: drawSize,
+                                        options: options,
+                                        context: nil)
 
         var height = boundingRect.size.height
         if fixBottomPadding, let font {
