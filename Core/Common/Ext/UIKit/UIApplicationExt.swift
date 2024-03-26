@@ -17,6 +17,7 @@ public extension UIApplication {
 public extension UIApplication {
     @discardableResult func openURL(_ url: URL?, completion: ((Bool) -> Void)? = nil) -> Bool {
         guard let url, canOpenURL(url) else {
+            completion?(false)
             return false
         }
         DispatchQueue.main.async {
@@ -45,21 +46,9 @@ public extension UIApplication {
         return openURL(URL(string: str as String), completion: completion)
     }
 
-    // 不跳出App
-    @discardableResult func openApp(appleId: String, completion: ((Bool) -> Void)? = nil) -> Bool {
-        var urlStr = "https://apps.apple.com/app/id\(appleId)"
-        let url = URL(string: urlStr)
-        return openURL(url, completion: completion)
-    }
-
-    // 打开app store
-    @discardableResult func openAppStore(appleId: String, writeReview: Bool = false, completion: ((Bool) -> Void)? = nil) -> Bool {
-        var urlStr = "itms-apps://itunes.apple.com/app/itunes-u/id\(appleId)"
-        if writeReview {
-            urlStr += "?action=write-review"
-        }
-        let url = URL(string: urlStr)
-        return openURL(url, completion: completion)
+    // open App Store
+    @discardableResult func openAppStore(writeReview: Bool = false, completion: ((Bool) -> Void)? = nil) -> Bool {
+        openURL(writeReview ? AppInfo.reviewURL : AppInfo.downloadURL, completion: completion)
     }
 }
 

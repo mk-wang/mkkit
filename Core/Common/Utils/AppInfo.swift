@@ -49,9 +49,8 @@ public enum AppInfo {
 }
 
 public extension AppInfo {
-    static var downloadURL: URL {
-        URL(string: "https://apps.apple.com/app/id\(appleId)")!
-    }
+    static let downloadURL: URL = .init(string: "https://apps.apple.com/app/id\(appleId)")!
+    static let reviewURL: URL = .init(string: "itms-apps://itunes.apple.com/app/itunes-u/id\(appleId)?action=write-review")!
 
     static let bundleIdentifier = Bundle.main.bundleIdentifier!
 
