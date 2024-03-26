@@ -23,7 +23,7 @@ open class CaptureSession {
 
     public private(set) var videoInput: AVCaptureDeviceInput?
 
-    private var keyValueObservations = [NSKeyValueObservation]()
+    private var kvObservations = [NSKeyValueObservation]()
 
     private let interruptSubject = CurrentValueSubject<Interrupt, Never>(.none)
     public private(set) lazy var interruptPublisher = interruptSubject.eraseToAnyPublisher()
@@ -225,14 +225,13 @@ public extension CaptureSession {
     }
 
     private func addObservers() {
-        var keyValueObservation: NSKeyValueObservation
-
         weak var weakSelf = self
-        keyValueObservation = session.observe(\.isRunning, options: .new) { _, change in
+
+        let observation = session.observe(\.isRunning, options: .new) { _, change in
             guard let isSessionRunning = change.newValue else { return }
             weakSelf?.isRuning = isSessionRunning
         }
-        keyValueObservations.append(keyValueObservation)
+        kvObservations.append(observation)
 
         let notificationCenter = NotificationCenter.default
 
@@ -246,10 +245,11 @@ public extension CaptureSession {
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
 
-        for keyValueObservation in keyValueObservations {
-            keyValueObservation.invalidate()
+        for observation in kvObservations {
+            observation.invalidate()
         }
-        keyValueObservations.removeAll()
+
+        kvObservations.removeAll()
     }
 
     @objc
