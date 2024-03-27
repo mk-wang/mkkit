@@ -77,6 +77,6 @@ public extension UIApplication {
     @available(iOS 13.0, *)
     static var focusedScene: UIWindowScene? {
         shared.connectedScenes
-            .first { $0.activationState == .foregroundActive && $0 is UIWindowScene } as? UIWindowScene
+            .first { $0 is UIWindowScene && $0.activationState == .foregroundActive } as? UIWindowScene
     }
 }
