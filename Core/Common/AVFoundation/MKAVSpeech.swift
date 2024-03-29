@@ -156,9 +156,10 @@ public extension MKAVSpeech {
     }
 
     func stop() {
-        if synthesizer.isSpeaking {
-            synthesizer.stopSpeaking(at: .immediate)
-        }
+//        if synthesizer.isSpeaking {
+//            synthesizer.stopSpeaking(at: .immediate)
+//        }
+        synthesizer.stopSpeaking(at: .immediate)
     }
 }
 
