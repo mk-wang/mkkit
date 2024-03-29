@@ -49,7 +49,7 @@ public extension NSAttributedString {
     }
 
     var struckthrough: NSAttributedString {
-        applying(attributes: [.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)])
+        applying(attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
     }
 
     var center: NSAttributedString {
@@ -90,9 +90,9 @@ public extension NSAttributedString {
     func applying(attributes: [Key: Any]) -> NSAttributedString {
         guard !string.isEmpty else { return self }
 
-        let copy = NSMutableAttributedString(attributedString: self)
-        copy.addAttributes(attributes, range: NSRange(0 ..< length))
-        return copy
+        let mStr: NSMutableAttributedString = (self as? NSMutableAttributedString) ?? .init(attributedString: self)
+        mStr.addAttributes(attributes, range: NSRange(0 ..< length))
+        return mStr
     }
 
     func colored(with color: UIColor) -> NSAttributedString {
