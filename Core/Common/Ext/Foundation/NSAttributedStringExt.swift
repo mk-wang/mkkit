@@ -102,7 +102,7 @@ public extension NSAttributedString {
     func applyingParagraph(configure: (NSMutableParagraphStyle) -> Void) -> NSAttributedString {
         let paragraph = NSMutableParagraphStyle()
         configure(paragraph)
-        let attrs = [NSAttributedString.Key.paragraphStyle: paragraph]
+        let attrs = [Key.paragraphStyle: paragraph]
         return applying(attributes: attrs)
     }
 
@@ -210,7 +210,7 @@ public extension NSMutableAttributedString {
     func addParagraph(configure: (NSMutableParagraphStyle) -> Void) {
         let paragraph = NSMutableParagraphStyle()
         configure(paragraph)
-        let attrs = [NSAttributedString.Key.paragraphStyle: paragraph]
+        let attrs = [Key.paragraphStyle: paragraph]
         return addAttributes(attributes: attrs)
     }
 }

@@ -63,7 +63,7 @@ public extension String {
 
 public extension String {
     func textViewSize(font: UIFont, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
-        let attrString = NSAttributedString(string: self, attributes: [NSAttributedString.Key.font: font])
+        let attrString = NSAttributedString(string: self, attributes: [.font: font])
         return attrString.textViewSize(font: font, fixBottomPadding: fixBottomPadding, width: width, height: height)
     }
 }
@@ -442,7 +442,7 @@ extension String {
         let fontSize = (minSize + maxSize) / 2
         let newFont = font.withSize(fontSize)
         //        var attributes = currentAttributedStringAttributes()
-        //        attributes[NSAttributedString.Key.font] = font.withSize(fontSize)
+        //        attributes[Key.font] = font.withSize(fontSize)
         //        let textSize = string.boundingRect(with: constraintSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil).size
         let textSize = string.textViewSize(font: newFont, width: constraintSize.width, height: constraintSize.height)
         let state = numberOfLines == 1 ? singleLineSizeState(rectSize: textSize, size: size, fitter: fitter)

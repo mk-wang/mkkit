@@ -38,7 +38,7 @@ public extension UILabel {
         let text = (text ?? "") as NSString
         let textSize = text.boundingRect(with: maxSize,
                                          options: .usesLineFragmentOrigin,
-                                         attributes: [NSAttributedString.Key.font: font], context: nil)
+                                         attributes: [.font: font], context: nil)
         let linesRoundedUp = Int(ceil(textSize.height / charSize))
         return linesRoundedUp
     }
@@ -51,7 +51,7 @@ public extension UILabel {
         let attributeTxt = NSMutableAttributedString(string: txtLabel)
         let range: NSRange = attributeTxt.mutableString.range(of: searchedText, options: .caseInsensitive)
 
-        attributeTxt.addAttribute(NSAttributedString.Key.backgroundColor, value: color, range: range)
+        attributeTxt.addAttribute(.backgroundColor, value: color, range: range)
 
         attributedText = attributeTxt
     }

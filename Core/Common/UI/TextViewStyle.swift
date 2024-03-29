@@ -36,10 +36,10 @@ public extension TextViewStyle {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = textAlignment
         paragraphConfigure?(paragraph)
-        return [NSAttributedString.Key.font: font,
-                NSAttributedString.Key.foregroundColor: color,
-                NSAttributedString.Key.backgroundColor: backgroundColor,
-                NSAttributedString.Key.paragraphStyle: paragraph]
+        return [.font: font,
+                .foregroundColor: color,
+                .backgroundColor: backgroundColor,
+                .paragraphStyle: paragraph]
     }
 }
 
