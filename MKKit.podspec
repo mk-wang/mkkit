@@ -86,6 +86,18 @@ Pod::Spec.new do |s|
     ss.dependency 'R.swift'
     ss.dependency 'MKKit/Core'
   end
+  
+  s.subspec 'Logger' do |ss|
+    ss.source_files = 'Logger/Logger/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'MKKit/Core'
+  end
+  
+  s.subspec 'Logger+DDPrinter' do |ss|
+    ss.source_files = 'Logger/DDPrinter/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'CocoaLumberjack'
+    ss.dependency 'SSZipArchive'
+    ss.dependency 'MKKit/Logger'
+  end
 end
 
 
