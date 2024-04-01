@@ -86,11 +86,11 @@ open class Logger {
     }
 }
 
-extension Logger.Level {
+public extension Logger.Level {
     #if DEBUG_BUILD
-        static let `default`: Self = .debug
+        static var `default`: Self = .debug
     #else
-        static let `default`: Self = .info
+        static var `default`: Self = .info
     #endif
 }
 
