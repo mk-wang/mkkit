@@ -11,8 +11,6 @@ import os.log
 // MARK: - Logger
 
 open class Logger {
-    var level: Level = .default
-
     private var printers = [Printer]()
 
     public init() {}
