@@ -87,7 +87,7 @@ open class Logger {
 }
 
 extension Logger.Level {
-    #if DEBUG
+    #if DEBUG_BUILD
         static let `default`: Self = .debug
     #else
         static let `default`: Self = .info
