@@ -8,8 +8,8 @@
 import Foundation
 import OpenCombine
 
-#if DEBUG_BUILD
-    public extension Logger {
+public extension Logger {
+    #if DEBUG_BUILD
         private static let console: GHConsole = .shared()
 
         @KVStorageProperty(key: "debug.logs", storage: UserDefaultsStorage())
@@ -42,109 +42,121 @@ import OpenCombine
             }
         }
 
-        func ad(_ text: String,
-                function: String = #function,
-                file: String = #file,
-                line: UInt = #line)
-        {
-            printWithConsole(text, tag: "ad",
-                             function: function,
-                             file: file,
-                             line: line)
-            {
-                Self.adConsole.kvValue
-            }
-        }
-
-        func track(_ text: String,
-                   function: String = #function,
-                   file: String = #file,
-                   line: UInt = #line)
-        {
-            printWithConsole(text, tag: "track",
-                             function: function,
-                             file: file,
-                             line: line)
-            {
-                Self.trackConsole.kvValue
-            }
-        }
-
-        func tts(_ text: String,
-                 function: String = #function,
-                 file: String = #file,
-                 line: UInt = #line)
-        {
-            printWithConsole(text, tag: "tts",
-                             function: function,
-                             file: file,
-                             line: line)
-            {
-                Self.ttsConsole.kvValue
-            }
-        }
-
-        func iap(_ text: String,
-                 function: String = #function,
-                 file: String = #file,
-                 line: UInt = #line)
-        {
-            printWithConsole(text, tag: "iap",
-                             level: .info,
-                             function: function,
-                             file: file,
-                             line: line)
-            {
-                Self.iapConsole.kvValue
-            }
-        }
-
-        func tpa(_ text: String,
-                 function: String = #function,
-                 file: String = #file,
-                 line: UInt = #line)
-        {
-            printWithConsole(text, tag: "tpa",
-                             function: function,
-                             file: file,
-                             line: line)
-            {
-                Self.tpaConsole.kvValue
-            }
-        }
-
-        func printWithConsole(_ text: String,
-                              tag: String,
-                              level: Level = .debug,
-                              function: String,
-                              file: String,
-                              line: UInt,
-                              check: ValueBuilder<Bool>)
-        {
-            log(level: level, message: { text }, tag: tag, function: function, file: file, line: line)
-
-            guard check() else {
-                return
-            }
-
-            console(text, tag: tag)
-        }
-
         func console(_ text: String, tag: String) {
             guard Self.showConsole.kvValue else {
                 return
             }
             Self.console.print("\(tag): \(text)")
         }
+    #endif
+
+    func ad(_ text: String,
+            function: String = #function,
+            file: String = #file,
+            line: UInt = #line)
+    {
+        printWithConsole(text, tag: "ad",
+                         function: function,
+                         file: file,
+                         line: line)
+        {
+            #if DEBUG_BUILD
+                Self.adConsole.kvValue
+            #else
+                nil
+            #endif
+        }
     }
-#else
-    public extension Logger {
-        static func setupConsole() {}
-        func ad(_: String) {}
-        func track(_: String) {}
-        func tts(_: String) {}
-        func iap(_: String) {}
-        func debugWithConsole(_: String, tag _: String, check _: ValueBuilder<Bool>) {}
-        func console(_: String, tag _: String) {}
+
+    func track(_ text: String,
+               function: String = #function,
+               file: String = #file,
+               line: UInt = #line)
+    {
+        printWithConsole(text, tag: "track",
+                         function: function,
+                         file: file,
+                         line: line)
+        {
+            #if DEBUG_BUILD
+                Self.trackConsole.kvValue
+            #else
+                nil
+            #endif
+        }
     }
-#endif
+
+    func tts(_ text: String,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line)
+    {
+        printWithConsole(text, tag: "tts",
+                         function: function,
+                         file: file,
+                         line: line)
+        {
+            #if DEBUG_BUILD
+                Self.ttsConsole.kvValue
+            #else
+                nil
+            #endif
+        }
+    }
+
+    func iap(_ text: String,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line)
+    {
+        printWithConsole(text, tag: "iap",
+                         level: .info,
+                         function: function,
+                         file: file,
+                         line: line)
+        {
+            #if DEBUG_BUILD
+                Self.iapConsole.kvValue
+            #else
+                nil
+            #endif
+        }
+    }
+
+    func tpa(_ text: String,
+             function: String = #function,
+             file: String = #file,
+             line: UInt = #line)
+    {
+        printWithConsole(text, tag: "tpa",
+                         function: function,
+                         file: file,
+                         line: line)
+        {
+            #if DEBUG_BUILD
+                Self.tpaConsole.kvValue
+            #else
+                nil
+            #endif
+        }
+    }
+
+    func printWithConsole(_ text: String,
+                          tag: String,
+                          level: Level = .debug,
+                          function: String,
+                          file: String,
+                          line: UInt,
+                          check: ValueBuilder<Bool?>)
+    {
+        log(level: level, message: { text }, tag: tag, function: function, file: file, line: line)
+
+        #if DEBUG_BUILD
+            guard check() ?? false else {
+                return
+            }
+
+            console(text, tag: tag)
+        #endif
+    }
+}
