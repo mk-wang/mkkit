@@ -33,6 +33,8 @@ open class LocalNetworkManager: NSObject {
         set {
             if stateSubject.value != newValue {
                 stateSubject.value = newValue
+
+                Logger.shared.debug("localNetwork state \(newValue)")
             }
         }
     }
@@ -43,7 +45,7 @@ open class LocalNetworkManager: NSObject {
     public var isDenied: Bool {
         stateSubject.value == .denied
     }
-    
+
     public func requestAuthorization() {
         guard Self.needAuth, #available(iOS 14, *) else {
             state = .authed
@@ -80,6 +82,7 @@ private extension LocalNetworkManager {
         guard state != .checking else {
             return
         }
+        Logger.shared.debug("localNetwork doAuthorization")
 
         state = .checking
 
