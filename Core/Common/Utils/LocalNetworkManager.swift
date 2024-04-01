@@ -40,6 +40,10 @@ open class LocalNetworkManager: NSObject {
     private var netService: NetService?
     private var _browser: AnyObject?
 
+    public var isDenied: Bool {
+        stateSubject.value == .denied
+    }
+    
     public func requestAuthorization() {
         guard Self.needAuth, #available(iOS 14, *) else {
             state = .authed
