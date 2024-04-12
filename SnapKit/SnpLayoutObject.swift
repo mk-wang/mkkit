@@ -31,6 +31,11 @@ public extension SnpLayoutObject {
         list?.add(config)
     }
 
+    var hasSnpConfigs: Bool {
+        let list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray
+        return list?.isNotEmpty ?? false
+    }
+
     func cleanSnpConfigs() {
         var list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray
         list?.removeAllObjects()

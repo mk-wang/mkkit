@@ -169,11 +169,11 @@ public extension UIView {
         let contentView = UIView()
         contentView.addSnpConfig { [unowned(unsafe) self] _, make in
             if vertical {
-                make.top.bottom.equalToSuperview()
-                make.left.right.equalTo(self)
+                make.verticalEdges.equalToSuperview()
+                make.horizontalEdges.equalTo(self)
             } else {
-                make.left.right.equalToSuperview()
-                make.top.bottom.equalTo(self)
+                make.horizontalEdges.equalToSuperview()
+                make.verticalEdges.equalTo(self)
             }
         }
         scrollView.addSnpSubview(contentView)

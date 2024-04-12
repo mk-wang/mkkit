@@ -16,8 +16,9 @@ open class SizedView: UIView {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
-        if !bounds.isEmpty {
-            sizeSubject.send(bounds.size)
+        let rect = bounds
+        if !rect.isEmpty, rect != .zero {
+            sizeSubject.send(rect.size)
         }
     }
 }
