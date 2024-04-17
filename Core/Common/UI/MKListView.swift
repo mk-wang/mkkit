@@ -371,6 +371,7 @@ open class MKPagedListView: UIView {
         }
 
         box.onIndexChange = {
+            weakSelf?.currentPage = $1
             weakSelf?.onIndexChange?($0, $1, $2)
         }
 
@@ -397,6 +398,7 @@ open class MKPagedListView: UIView {
         defer {
             onOffsetChange?(scrollView)
         }
+        
         guard let fact = config.scaleFact else {
             return
         }

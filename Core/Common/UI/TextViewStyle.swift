@@ -94,6 +94,13 @@ public extension UITextView {
         textAlignment = style.textAlignment
         backgroundColor = style.backgroundColor
     }
+    
+    func aplayTextStyle(style: TextViewStyle) {
+        font = style.font
+        textColor = style.color
+        textAlignment = style.textAlignment
+        backgroundColor = style.backgroundColor
+    }
 }
 
 public extension UIButton {

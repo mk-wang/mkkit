@@ -188,6 +188,17 @@ open class OverlayHighlightView: BaseHighLightView {
             }
         }
     }
+    
+    open var overlayColorBuilder: ValueBuilder<UIColor?>? {
+        didSet {
+            cleanHighlightHandler()
+            
+            if let overlayColor = overlayColorBuilder?() {
+                addHighlightHandler(OverlayViewHighlightHandler(overlayColor))
+            }
+        }
+    }
+
 
     override open func updateHighlightStateUI(highLighted: Bool) {
         handleHighlightState(highLighted: highLighted)

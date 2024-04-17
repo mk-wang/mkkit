@@ -20,7 +20,11 @@ public extension UIImage {
 }
 
 public extension UIImage {
-    func tint(color: UIColor) -> UIImage {
+    func tint(color: UIColor?) -> UIImage {
+        guard let color else {
+            return self
+        }
+        
         if #available(iOS 13.0, *) {
             return self.withTintColor(color)
         } else {
