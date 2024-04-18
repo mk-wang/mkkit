@@ -51,7 +51,7 @@ open class MKIAPService {
     }
 
     public let productListBuilder: ValueBuilder<[MKIAPProduct]>
-    public let allProductListBuiler: ValueBuilder<[MKIAPProduct]>
+    public let allProductListBuiler: ValueBuilder<[MKIAPProductSimple]>
 
     public let config: Config
 
@@ -73,7 +73,7 @@ open class MKIAPService {
     public init(sharedSecret: String,
                 purchasedSubject: CurrentValueSubject<Set<String>, Never>,
                 productListBuilder: @escaping ValueBuilder<[MKIAPProduct]>,
-                allProductListBuiler: @escaping ValueBuilder<[MKIAPProduct]>,
+                allProductListBuiler: @escaping ValueBuilder<[MKIAPProductSimple]>,
                 config: Config)
     {
         self.sharedSecret = sharedSecret
@@ -182,6 +182,7 @@ extension MKIAPService {
         var subscriptions = [String]()
 
         let allProductList = allProductListBuiler()
+        
         for product in allProductList {
             if !product.isSubscription {
                 products.append(product.id)
