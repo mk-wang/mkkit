@@ -89,6 +89,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'Logger' do |ss|
     ss.source_files = 'Logger/Logger/**/*.{h,m,c,swift,hpp}'
+    ss.resources = 'Logger/**/*.bundle'
     ss.dependency 'MKKit/Core'
   end
   

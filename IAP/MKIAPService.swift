@@ -193,7 +193,6 @@ extension MKIAPService {
         Logger.shared.iap("validatePurchase forceRefresh \(forceRefresh)")
 
         let passbyLocalVerification = config.passbyLocalVerification
-
         IAPHelper.verifyPurchase(products: products,
                                  subscriptions: subscriptions,
                                  secret: sharedSecret,
