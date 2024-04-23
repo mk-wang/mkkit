@@ -132,7 +132,7 @@ public extension Lang {
         let voices = AVSpeechSynthesisVoice.speechVoices()
 
         let name = speechName
-        let lang = self.speechLang
+        let lang = speechLang
         let list = voices.filter { $0.language == lang }
 
         return list.first { $0.identifier.contains(name) } ?? list.first
