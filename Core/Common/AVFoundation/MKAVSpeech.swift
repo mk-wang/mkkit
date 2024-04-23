@@ -41,7 +41,7 @@ public extension Lang {
         case .ko:
             return "com.apple.ttsbundle.Yuna-compact"
         case .tr:
-            return "com.apple.ttsbundle.Luciana-compact"
+            return "com.apple.ttsbundle.Yelda-compact"
         case .ar:
             return "com.apple.ttsbundle.Maged-compact"
         case .id:
@@ -136,28 +136,35 @@ public extension Lang {
         let voices = AVSpeechSynthesisVoice.speechVoices()
 
         let name = speechName
-        let newName = (name as NSString).replacingOccurrences(of: "-", with: "") as String // Ting-Ting => Tingting
-        let doubleCheck = name != newName
+        var names: [String] = [name]
+
+        if name.contains("-") {
+            let name = (name as NSString).replacingOccurrences(of: "-", with: "") as String // Ting-Ting => Tingting
+            names.append(name)
+        }
 
         let lang = speechLang
-        let list = voices.filter { $0.language == lang }
+        var first: AVSpeechSynthesisVoice?
 
-        if let voice = list.first { voice in
+        for voice in voices {
+            guard voice.language == lang else {
+                continue
+            }
+
+            if first == nil {
+                first = voice
+            }
+
             let identifier = voice.identifier
 
-            if identifier.range(of: name, options: [.caseInsensitive]) != nil {
-                return true
+            for name in names {
+                if identifier.range(of: name, options: [.caseInsensitive]) != nil {
+                    return voice
+                }
             }
-
-            if doubleCheck, identifier.range(of: newName, options: [.caseInsensitive]) != nil {
-                return true
-            }
-
-            return false
-        } {
-            voice
         }
-        return list.first
+
+        return first
     }
 }
 
