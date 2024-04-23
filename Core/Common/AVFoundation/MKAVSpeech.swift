@@ -179,15 +179,10 @@ open class MKAVSpeech: NSObject {
         synthesizer.isSpeaking
     }
 
-    public init(lang: Lang) {
+    public init(lang: Lang, voice: AVSpeechSynthesisVoice?) {
         self.lang = lang
+        self.voice = voice
         synthesizer = AVSpeechSynthesizer()
-
-        do {
-            voice = lang.voiceByMatch
-        } catch {
-            Logger.shared.error("AVSpeechSynthesisVoice with \(lang)")
-        }
 
         super.init()
 
