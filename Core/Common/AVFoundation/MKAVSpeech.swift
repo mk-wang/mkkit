@@ -115,6 +115,31 @@ public extension Lang {
     var canSpeeh: Bool {
         speechLang.isNotEmpty
     }
+
+    var voice: AVSpeechSynthesisVoice? {
+        if let voice = AVSpeechSynthesisVoice(identifier: speechId) {
+            return voice
+        }
+
+        if let voice = AVSpeechSynthesisVoice(language: speechLang) {
+            return voice
+        }
+
+        return nil
+    }
+
+    var voiceByMatch: AVSpeechSynthesisVoice? {
+        let voices = AVSpeechSynthesisVoice.speechVoices()
+
+        let name = speechName
+        if let voice = voices.first(where: { $0.name == name }) {
+            return voice
+        } else if let voice = voices.first(where: { $0.language == speechLang }) {
+            return voice
+        }
+
+        return nil
+    }
 }
 
 // MARK: - MKAVSpeech
@@ -133,7 +158,7 @@ open class MKAVSpeech: NSObject {
         synthesizer = AVSpeechSynthesizer()
 
         do {
-            voice = lang.voiceByMatchAll
+            voice = lang.voiceByMatch
         } catch {
             Logger.shared.error("AVSpeechSynthesisVoice with \(lang)")
         }
@@ -141,33 +166,6 @@ open class MKAVSpeech: NSObject {
         super.init()
 
         synthesizer.delegate = self
-    }
-}
-
-private extension Lang {
-    var voice: AVSpeechSynthesisVoice? {
-        if let voice = AVSpeechSynthesisVoice(identifier: speechId) {
-            return voice
-        }
-
-        if let voice = AVSpeechSynthesisVoice(language: speechLang) {
-            return voice
-        }
-
-        return nil
-    }
-
-    var voiceByMatchAll: AVSpeechSynthesisVoice? {
-        let voices = AVSpeechSynthesisVoice.speechVoices()
-
-        let name = speechName
-        if let voice = voices.first(where: { $0.name == name }) {
-            return voice
-        } else if let voice = voices.first(where: { $0.language == speechLang }) {
-            return voice
-        }
-
-        return nil
     }
 }
 
@@ -198,7 +196,7 @@ public extension MKAVSpeech {
     }
 }
 
-// MARK: - MKAVSpeech + AVSpeechSynthesizerDelegate
+// MARK: AVSpeechSynthesizerDelegate
 
 extension MKAVSpeech: AVSpeechSynthesizerDelegate {
     public func speechSynthesizer(_: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
