@@ -100,7 +100,11 @@ public extension Lang {
         case .tr:
             return "tr-TR"
         case .ar:
-            return "ar-001"
+            if #available(iOS 17.0, *) {
+                return "ar-001"
+            } else {
+                return "ar-SA"
+            }
         case .id:
             return "id-ID"
         case .pl:
@@ -131,12 +135,27 @@ public extension Lang {
     var voiceByMatch: AVSpeechSynthesisVoice? {
         let voices = AVSpeechSynthesisVoice.speechVoices()
 
-        let name = (speechName as NSString).replacingOccurrences(of: "-", with: "") // Tingting / Ting-Ting
+        let name = speechName
+        let newName = (name as NSString).replacingOccurrences(of: "-", with: "") as String // Ting-Ting => Tingting
+        let doubleCheck = name != newName
+
         let lang = speechLang
         let list = voices.filter { $0.language == lang }
 
-        if let voice = list.first { $0.identifier.range(of: name, options: [.caseInsensitive]) != nil } {
-            return voice
+        if let voice = list.first { voice in
+            let identifier = voice.identifier
+
+            if identifier.range(of: name, options: [.caseInsensitive]) != nil {
+                return true
+            }
+
+            if doubleCheck, identifier.range(of: newName, options: [.caseInsensitive]) != nil {
+                return true
+            }
+
+            return false
+        } {
+            voice
         }
         return list.first
     }
