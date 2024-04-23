@@ -100,7 +100,7 @@ public extension Lang {
         case .tr:
             return "tr-TR"
         case .ar:
-            return "ar-SA"
+            return "ar-001"
         case .id:
             return "id-ID"
         case .pl:
