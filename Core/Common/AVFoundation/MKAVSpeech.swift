@@ -131,11 +131,14 @@ public extension Lang {
     var voiceByMatch: AVSpeechSynthesisVoice? {
         let voices = AVSpeechSynthesisVoice.speechVoices()
 
-        let name = speechName
+        let name = (speechName as NSString).replacingOccurrences(of: "-", with: "") // Tingting / Ting-Ting
         let lang = speechLang
         let list = voices.filter { $0.language == lang }
 
-        return list.first { $0.identifier.contains(name) } ?? list.first
+        if let voice = list.first { $0.identifier.range(of: name, options: [.caseInsensitive]) != nil } {
+            return voice
+        }
+        return list.first
     }
 }
 
