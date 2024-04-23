@@ -15,7 +15,7 @@ public extension Lang {
         case .en:
             return "com.apple.ttsbundle.Samantha-compact"
         case .uk:
-            return "com.apple.ttsbundle.Daria-compact"
+            return "com.apple.ttsbundle.Daniel-compact"
         case .fr:
             return "com.apple.ttsbundle.Amelie-compact"
         case .zh_Hans:
