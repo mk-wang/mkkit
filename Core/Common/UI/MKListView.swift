@@ -398,7 +398,7 @@ open class MKPagedListView: UIView {
         defer {
             onOffsetChange?(scrollView)
         }
-        
+
         guard let fact = config.scaleFact else {
             return
         }

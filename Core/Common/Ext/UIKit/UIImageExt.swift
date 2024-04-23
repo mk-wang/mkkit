@@ -24,7 +24,7 @@ public extension UIImage {
         guard let color else {
             return self
         }
-        
+
         if #available(iOS 13.0, *) {
             return self.withTintColor(color)
         } else {

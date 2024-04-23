@@ -19,9 +19,9 @@ open class IDGeneration<T> {
                 lockBuilder: ValueBuilder<NSLocking?>? = nil,
                 idBuilder: @escaping ValueBuilder1<T, T>)
     {
-        self.current = defaultIdBuilder()
-        self.lock = lockBuilder?()
-        self.valueBuilder = idBuilder
+        current = defaultIdBuilder()
+        lock = lockBuilder?()
+        valueBuilder = idBuilder
     }
 
     open func generate() -> T {

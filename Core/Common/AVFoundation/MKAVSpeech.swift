@@ -12,10 +12,10 @@ import OpenCombine
 public extension Lang {
     var speechId: String {
         switch self {
-        case .en,
-             .uk:
-//            return AVSpeechSynthesisVoiceIdentifierAlex
+        case .en:
             return "com.apple.ttsbundle.Samantha-compact"
+        case .uk:
+            return "com.apple.ttsbundle.Daria-compact"
         case .fr:
             return "com.apple.ttsbundle.Amelie-compact"
         case .zh_Hans:
@@ -55,11 +55,24 @@ public extension Lang {
         }
     }
 
+    var speechName: String {
+        let id = speechId
+        guard id.isNotEmpty,
+              let end = id.lastIndex(of: "-"),
+              let point = id.lastIndex(of: ".")
+        else {
+            return ""
+        }
+        let start = id.index(after: point)
+        return .init(id[start ..< end])
+    }
+
     var speechLang: String {
         switch self {
-        case .en,
-             .uk:
+        case .en:
             return "en-US"
+        case .uk:
+            return "en-GB"
         case .fr:
             return "fr-CA"
         case .zh_Hans:
@@ -120,11 +133,7 @@ open class MKAVSpeech: NSObject {
         synthesizer = AVSpeechSynthesizer()
 
         do {
-            var voice = AVSpeechSynthesisVoice(identifier: lang.speechId)
-            if voice == nil {
-                voice = AVSpeechSynthesisVoice(language: lang.speechLang)
-            }
-            self.voice = voice
+            voice = lang.voiceByMatchAll
         } catch {
             Logger.shared.error("AVSpeechSynthesisVoice with \(lang)")
         }
@@ -132,6 +141,33 @@ open class MKAVSpeech: NSObject {
         super.init()
 
         synthesizer.delegate = self
+    }
+}
+
+private extension Lang {
+    var voice: AVSpeechSynthesisVoice? {
+        if let voice = AVSpeechSynthesisVoice(identifier: speechId) {
+            return voice
+        }
+
+        if let voice = AVSpeechSynthesisVoice(language: speechLang) {
+            return voice
+        }
+
+        return nil
+    }
+
+    var voiceByMatchAll: AVSpeechSynthesisVoice? {
+        let voices = AVSpeechSynthesisVoice.speechVoices()
+
+        let name = speechName
+        if let voice = voices.first(where: { $0.name == name }) {
+            return voice
+        } else if let voice = voices.first(where: { $0.language == speechLang }) {
+            return voice
+        }
+
+        return nil
     }
 }
 
@@ -162,7 +198,7 @@ public extension MKAVSpeech {
     }
 }
 
-// MARK: AVSpeechSynthesizerDelegate
+// MARK: - MKAVSpeech + AVSpeechSynthesizerDelegate
 
 extension MKAVSpeech: AVSpeechSynthesizerDelegate {
     public func speechSynthesizer(_: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {

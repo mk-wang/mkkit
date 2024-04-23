@@ -182,7 +182,7 @@ extension MKIAPService {
         var subscriptions = [String]()
 
         let allProductList = allProductListBuiler()
-        
+
         for product in allProductList {
             if !product.isSubscription {
                 products.append(product.id)
