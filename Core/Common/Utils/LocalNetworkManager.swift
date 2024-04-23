@@ -1,6 +1,5 @@
 //
 //  LocalNetworkManager.swift
-//  TVRemote
 //
 //  Created by MK on 2024/3/12.
 //  https://www.jianshu.com/p/0daf226a1536

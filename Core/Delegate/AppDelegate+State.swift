@@ -1,6 +1,5 @@
 //
 //  AppDelegate+State.swift
-//  FaceYoga
 //
 //  Created by MK on 2023/3/13.
 //
