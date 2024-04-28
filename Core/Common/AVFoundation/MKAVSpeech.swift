@@ -193,7 +193,7 @@ open class MKAVSpeech: NSObject {
 public extension MKAVSpeech {
     @discardableResult
     func speech(text: String, speed: Float = 1.0, volume: Float = 1.0) -> AVSpeechUtterance? {
-        // 别的项目这样处理 ， 我不知道为什么
+        // why?
         let converted = (text as NSString).replacingOccurrences(of: "-", with: " ")
         let utterance = AVSpeechUtterance(string: converted)
         utterance.rate *= speed
@@ -213,7 +213,9 @@ public extension MKAVSpeech {
 //        if synthesizer.isSpeaking {
 //            synthesizer.stopSpeaking(at: .immediate)
 //        }
-        synthesizer.stopSpeaking(at: .immediate)
+        DispatchQueue.main.async { [weak self] in
+            self?.synthesizer.stopSpeaking(at: .immediate)
+        }
     }
 }
 
