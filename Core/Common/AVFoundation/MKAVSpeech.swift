@@ -139,7 +139,7 @@ public extension Lang {
         var names: [String] = [name]
 
         if name.contains("-") {
-            let name = (name as NSString).replacingOccurrences(of: "-", with: "") as String // Ting-Ting => Tingting
+            let name = name.replacingOccurrences(of: "-", with: "") // Ting-Ting => Tingting
             names.append(name)
         }
 
@@ -193,9 +193,7 @@ open class MKAVSpeech: NSObject {
 public extension MKAVSpeech {
     @discardableResult
     func speech(text: String, speed: Float = 1.0, volume: Float = 1.0) -> AVSpeechUtterance? {
-        // why?
-        let converted = (text as NSString).replacingOccurrences(of: "-", with: " ")
-        let utterance = AVSpeechUtterance(string: converted)
+        let utterance = AVSpeechUtterance(string: text)
         utterance.rate *= speed
         utterance.volume = volume
         utterance.voice = voice

@@ -275,8 +275,7 @@ public extension String {
 
 public extension String {
     var localizableText: String {
-        var text = self
-        text = text.replacingOccurrences(of: #"\"#, with: #"\\"#)
+        var text = self.replacingOccurrences(of: #"\"#, with: #"\\"#)
         text = text.replacingOccurrences(of: "\n", with: #"\n"#)
         text = text.replacingOccurrences(of: #"""#, with: #"\""#)
         return text

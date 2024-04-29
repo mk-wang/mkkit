@@ -12,7 +12,7 @@ public extension Dictionary {
     /// values of the keys that are already set
     ///
     /// - parameter dictionaries: A comma seperated list of dictionaries
-    mutating func merge<K, V>(dictionaries: [K: V]...) {
+    mutating func merge(dictionaries: [Key: Value]...) {
         for dict in dictionaries {
             for (key, value) in dict {
                 updateValue(value as! Value, forKey: key as! Key)

@@ -39,11 +39,11 @@ public extension UIApplication {
     }
 
     @discardableResult func openSetting(completion: ((Bool) -> Void)? = nil) -> Bool {
-        var str = "i9xdUjjRjlyzmSliin".rot(n: 6) as NSString
-        str = str.replacingOccurrences(of: "X", with: "-") as NSString
-        str = str.replacingOccurrences(of: "Y", with: ":") as NSString
-        str = str.substring(from: 4) as NSString
-        return openURL(URL(string: str as String), completion: completion)
+        var str = "i9xdUjjRjlyzmSliin".rot(n: 6)
+        str = str.replacingOccurrences(of: "X", with: "-")
+        str = str.replacingOccurrences(of: "Y", with: ":")
+        str = str.substring(from: 4)!
+        return openURL(URL(string: str), completion: completion)
     }
 
     // open App Store

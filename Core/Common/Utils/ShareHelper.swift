@@ -1,6 +1,5 @@
 //
 //  ShareHelper.swift
-//  YXPDF
 //
 //  Created by MK on 2022/6/5.
 //
