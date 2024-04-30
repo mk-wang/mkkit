@@ -82,6 +82,16 @@ public extension UIView {
         view.applySnpConfigs()
     }
 
+    func insertSnpSubview(_ view: UIView, belowSubview siblingSubview: UIView) {
+        insertSubview(view, belowSubview: siblingSubview)
+        view.applySnpConfigs()
+    }
+
+    func insertSnpSubview(_ view: UIView, aboveSubview siblingSubview: UIView) {
+        insertSubview(view, aboveSubview: siblingSubview)
+        view.applySnpConfigs()
+    }
+
     func addSnpLayoutGuide(_ guide: UILayoutGuide) {
         addLayoutGuide(guide)
         guide.applySnpConfigs()

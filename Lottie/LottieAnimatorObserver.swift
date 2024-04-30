@@ -14,11 +14,11 @@ public class LottieAnimatorObserver {
 
     private var displayLink: CADisplayLink?
 
-    private weak var animationView: AnimationView?
+    private weak var animationView: LottieAnimationView?
     public var onProgressChanged: ProgressChangeBlock?
     private var lastProgress: CGFloat = -1
 
-    public init(animationView: AnimationView, onProgressChanged: ProgressChangeBlock?) {
+    public init(animationView: LottieAnimationView, onProgressChanged: ProgressChangeBlock?) {
         self.animationView = animationView
         self.onProgressChanged = onProgressChanged
     }

@@ -136,19 +136,27 @@ public extension UIView {
 }
 
 public extension UIView {
-    var snapshot: UIImage {
+    func snapshot(update: Bool) -> UIImage {
         let renderer = UIGraphicsImageRenderer(size: frame.size)
         return renderer.image { _ in
-            drawHierarchy(in: bounds, afterScreenUpdates: false)
+            drawHierarchy(in: bounds, afterScreenUpdates: update)
         }
     }
 
     var snapshotByLayer: UIImage? {
+        guard let layer = layer.presentation() else {
+            return nil
+        }
+
         UIGraphicsBeginImageContextWithOptions(bounds.size, isOpaque, 0.0)
-        defer { UIGraphicsEndImageContext() }
+        defer {
+            UIGraphicsEndImageContext()
+        }
+
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
+
         layer.render(in: context)
         return UIGraphicsGetImageFromCurrentImageContext()
     }
