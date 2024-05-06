@@ -10,13 +10,9 @@ public final class CombineInfo {
 
 public extension NSObject {
     var combineInfo: CombineInfo {
-        if let info = getAssociatedObject(&AssociatedKeys.kCombineInfo) as? CombineInfo {
-            return info
-        }
-
-        let info = CombineInfo()
-        setAssociatedObject(&AssociatedKeys.kCombineInfo, info)
-        return info
+        getOrMakeAssociatedObject(&AssociatedKeys.kCombineInfo,
+                                  type: CombineInfo.self,
+                                  builder: { .init() })
     }
 }
 
