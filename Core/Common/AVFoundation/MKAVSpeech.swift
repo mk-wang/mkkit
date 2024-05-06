@@ -315,7 +315,6 @@ public extension Lang {
 // MARK: - MKAVSpeech
 
 open class MKAVSpeech: NSObject {
-    public let lang: Lang
     public let synthesizer: AVSpeechSynthesizer
     public let voice: AVSpeechSynthesisVoice?
 
@@ -323,8 +322,7 @@ open class MKAVSpeech: NSObject {
         synthesizer.isSpeaking
     }
 
-    public init(lang: Lang, voice: AVSpeechSynthesisVoice?) {
-        self.lang = lang
+    public init(voice: AVSpeechSynthesisVoice?) {
         self.voice = voice
         synthesizer = AVSpeechSynthesizer()
 
