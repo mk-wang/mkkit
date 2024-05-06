@@ -283,7 +283,7 @@ public extension Lang {
                 return voice
             }
 
-            if byName, setting.name == style.nameOf(identifier: voice.identifier) {
+            if byName, style.nameOf(identifier: voice.identifier) == setting.name {
                 return voice
             }
         }
@@ -306,7 +306,7 @@ public extension Lang {
 
                 assert(lang.matchVoice(byIdentifier: true, byName: false, byLanguage: false)?.identifier == setting.identifier, "matchVoice byIdentifier \(lang)")
                 assert(lang.matchVoice(byIdentifier: false, byName: true, byLanguage: false)?.identifier == setting.identifier, "matchVoice byName \(lang)")
-                assert(lang.matchVoice(byIdentifier: false, byName: false, byLanguage: true)?.language == setting.language, "matchVoice check language \(lang)")
+                assert(lang.matchVoice(byIdentifier: false, byName: false, byLanguage: true)?.language == setting.language, "matchVoice byLanguage \(lang)")
             }
         }
     #endif

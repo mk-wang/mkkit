@@ -25,7 +25,7 @@ public extension LangSubscribleUI {
             getAssociatedObject(&AssociatedKeys.kLangCancellable) as? AnyCancellable
         }
         set {
-            setAssociatedObject(&AssociatedKeys.kLangCancellable, newValue, .OBJC_ASSOCIATION_RETAIN)
+            setAssociatedObject(&AssociatedKeys.kLangCancellable, newValue)
         }
     }
 
@@ -34,7 +34,7 @@ public extension LangSubscribleUI {
             getAssociatedObject(&AssociatedKeys.kLangKey) as? String
         }
         set {
-            setAssociatedObject(&AssociatedKeys.kLangKey, newValue, .OBJC_ASSOCIATION_RETAIN)
+            setAssociatedObject(&AssociatedKeys.kLangKey, newValue)
             if let key = newValue {
                 langCancellable = Lang.publisher.sink { [weak self] _ in
                     guard let self else { return }
@@ -55,7 +55,7 @@ public extension LangSubscribleUI {
             getAssociatedObject(&AssociatedKeys.kTextBuilder) as? TextBuilder
         }
         set {
-            setAssociatedObject(&AssociatedKeys.kTextBuilder, newValue, .OBJC_ASSOCIATION_RETAIN)
+            setAssociatedObject(&AssociatedKeys.kTextBuilder, newValue)
         }
     }
 

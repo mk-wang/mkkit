@@ -104,7 +104,7 @@ extension CALayer {
     }
 
     private func associate(color: AppThemeCGColor?, key: UnsafeRawPointer) {
-        setAssociatedObject(key, color, .OBJC_ASSOCIATION_RETAIN)
+        setAssociatedObject(key, color)
     }
 }
 
@@ -157,11 +157,11 @@ public extension CALayer {
     }
 
     func makeAnimationsPersistent() {
-        var object = objc_getAssociatedObject(self, &AssociatedKeys.persistentHelperKey)
+        var object = getAssociatedObject(&AssociatedKeys.persistentHelperKey)
+
         if object == nil {
             object = LayerPersistentHelper(with: self)
-            let nonatomic = objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC
-            objc_setAssociatedObject(self, &AssociatedKeys.persistentHelperKey, object, nonatomic)
+            setAssociatedObject(&AssociatedKeys.persistentHelperKey, object)
         }
     }
 }
