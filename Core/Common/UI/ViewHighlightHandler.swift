@@ -15,12 +15,10 @@ public protocol ViewHighlightHandler {
 
 public extension UIView {
     func addHighlightHandler(_ handler: ViewHighlightHandler) {
-        var list = handlers
-        if list == nil {
-            list = NSMutableArray()
-            setAssociatedObject(&AssociatedKeys.kHandlers, list)
-        }
-        list?.add(handler)
+        let list = getOrMakeAssociatedObject(&AssociatedKeys.kHandlers,
+                                             type: NSMutableArray.self,
+                                             builder: { .init() })
+        list.add(handler)
     }
 
     func cleanHighlightHandler() {

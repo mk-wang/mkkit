@@ -23,12 +23,10 @@ public protocol SnpLayoutObject: NSObject {
 
 public extension SnpLayoutObject {
     func addSnpConfig(_ config: @escaping SnapKitConfigure) {
-        var list = getAssociatedObject(&AssociatedKeys.kSnapConfig) as? NSMutableArray
-        if list == nil {
-            list = NSMutableArray()
-            setAssociatedObject(&AssociatedKeys.kSnapConfig, list)
-        }
-        list?.add(config)
+        let list = getOrMakeAssociatedObject(&AssociatedKeys.kSnapConfig,
+                                             type: NSMutableArray.self,
+                                             builder: { .init() })
+        list.add(config)
     }
 
     var hasSnpConfigs: Bool {

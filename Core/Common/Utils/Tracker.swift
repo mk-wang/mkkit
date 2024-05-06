@@ -66,18 +66,10 @@ public extension UIResponder {
         }
     }
 
-    var trackSet: Set<String> {
-        get {
-            if let aSet = getAssociatedObject(&AssociatedKeys.kTrackSet) as? Set<String> {
-                return aSet
-            }
-            let aSet = Set<String>()
-            self.trackSet = aSet
-            return aSet
-        }
-        set {
-            setAssociatedObject(&AssociatedKeys.kTrackSet, newValue)
-        }
+    var trackSet: NSMutableSet {
+        getOrMakeAssociatedObject(&AssociatedKeys.kTrackSet,
+                                  type: NSMutableSet.self,
+                                  builder: { .init() })
     }
 }
 
