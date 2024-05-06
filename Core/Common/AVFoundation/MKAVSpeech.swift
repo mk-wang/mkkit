@@ -9,145 +9,269 @@ import Foundation
 import MKKit
 import OpenCombine
 
-public extension Lang {
-    var speechId: String {
-        switch self {
-        case .en:
-            return "com.apple.ttsbundle.Samantha-compact"
-        case .uk:
-            return "com.apple.ttsbundle.Daniel-compact"
-        case .fr:
-            return "com.apple.ttsbundle.Amelie-compact"
-        case .zh_Hans:
-            return "com.apple.ttsbundle.Ting-Ting-compact"
-        case .zh_Hant:
-            return "com.apple.ttsbundle.Mei-Jia-compact"
-        case .it:
-            return "com.apple.ttsbundle.Alice-compact"
-        case .es:
-            return "com.apple.ttsbundle.Monica-compact"
-        case .es_mx:
-            return "com.apple.ttsbundle.Paulina-compact"
-        case .de:
-            return "com.apple.ttsbundle.Anna-compact"
-        case .pt_BR:
-            return "com.apple.ttsbundle.Luciana-compact"
-        case .pt_PT:
-            return "com.apple.ttsbundle.Joana-compact"
-        case .ru:
-            return "com.apple.ttsbundle.Milena-compact"
-        case .ja:
-            return "com.apple.ttsbundle.Kyoko-compact"
-        case .ko:
-            return "com.apple.ttsbundle.Yuna-compact"
-        case .tr:
-            return "com.apple.ttsbundle.Yelda-compact"
-        case .ar:
-            return "com.apple.ttsbundle.Maged-compact"
-        case .id:
-            return "com.apple.ttsbundle.Damayanti-compact"
-        case .pl:
-            return "com.apple.ttsbundle.Zosia-compact"
-        case .ro:
-            return "com.apple.ttsbundle.Ioana-compact"
-        case .fa:
-            return "" // TODO:
-        }
+public extension MKAVSpeech {
+    struct VoiceSetting {
+        let name: String
+        let identifier: String
+        let language: String
     }
 
-    var speechName: String {
-        let id = speechId
+    enum VoiceStyle {
+        case old
+        case ios16
+
+        public static let current: Self = {
+            if #available(iOS 16.0, *) {
+                return .ios16
+            } else {
+                return .old
+            }
+        }()
+    }
+}
+
+public extension MKAVSpeech.VoiceStyle {
+    func nameOf(identifier id: String) -> String? {
         guard id.isNotEmpty,
-              let end = id.lastIndex(of: "-"),
-              let point = id.lastIndex(of: ".")
+              let lastPoint = id.lastIndex(of: "."),
+              let end = self == .old ? id.lastIndex(of: "-") : id.endIndex
         else {
-            return ""
+            return nil
         }
-        let start = id.index(after: point)
+
+        let start = id.index(after: lastPoint)
         return .init(id[start ..< end])
     }
 
-    var speechLang: String {
-        switch self {
+    func settingOf(lang: Lang) -> MKAVSpeech.VoiceSetting? {
+        var name: String?
+        var identifier: String?
+        var language: String?
+
+        let style = self
+        switch lang {
         case .en:
-            return "en-US"
+            language = "en-US"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Samantha-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.en-US.Samantha"
+            }
         case .uk:
-            return "en-GB"
+            language = "en-GB"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Daniel-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.en-GB.Daniel"
+            }
         case .fr:
-            return "fr-CA"
+            language = "fr-CA"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Amelie-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.fr-CA.Amelie"
+            }
         case .zh_Hans:
-            return "zh-CN"
+            language = "zh-CN"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Ting-Ting-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.zh-CN.Tingting"
+            }
         case .zh_Hant:
-            return "zh-TW"
+            language = "zh-TW"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Mei-Jia-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.zh-TW.Meijia"
+            }
         case .it:
-            return "it-IT"
+            language = "it-IT"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Alice-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.it-IT.Alice"
+            }
         case .es:
-            return "es-ES"
+            language = "es-ES"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Monica-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.es-ES.Monica"
+            }
         case .es_mx:
-            return "es-MX"
+            language = "es-MX"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Paulina-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.es-MX.Paulina"
+            }
         case .de:
-            return "de-DE"
+            language = "de-DE"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Anna-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.de-DE.Anna"
+            }
         case .pt_BR:
-            return "pt-BR"
+            language = "pt-BR"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Luciana-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.pt-BR.Luciana"
+            }
         case .pt_PT:
-            return "pt-PT"
+            language = "pt-PT"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Joana-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.pt-PT.Joana"
+            }
         case .ru:
-            return "ru-RU"
+            language = "ru-RU"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Milena-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.ru-RU.Milena"
+            }
         case .ja:
-            return "ja-JP"
+            language = "ja-JP"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Kyoko-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.ja-JP.Kyoko"
+            }
         case .ko:
-            return "ko-KR"
+            language = "ko-KR"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Yuna-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.ko-KR.Yuna"
+            }
         case .tr:
-            return "tr-TR"
+            language = "tr-TR"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Yelda-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.tr-TR.Yelda"
+            }
         case .ar:
-            if #available(iOS 17.0, *) {
-                return "ar-001"
-            } else {
-                return "ar-SA"
+            switch style {
+            case .old:
+                language = "ar-SA"
+                identifier = "com.apple.ttsbundle.Maged-compact"
+            case .ios16:
+                language = "ar-001"
+                identifier = "com.apple.voice.compact.ar-001.Maged"
             }
         case .id:
-            return "id-ID"
+            language = "id-ID"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Damayanti-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.id-ID.Damayanti"
+            }
         case .pl:
-            return "pl-PL"
+            language = "pl-PL"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Zosia-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.pl-PL.Zosia"
+            }
         case .ro:
-            return "ro-RO"
+            language = "ro-RO"
+
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Ioana-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.ro-RO.Ioana"
+            }
         case .fa:
-            return ""
+            break
         }
+
+        guard let identifier, let language else {
+            return nil
+        }
+
+        guard let name = nameOf(identifier: identifier) else {
+            return nil
+        }
+
+        return .init(name: name, identifier: identifier, language: language)
+    }
+}
+
+public extension Lang {
+    var canSpeak: Bool {
+        self != .fa
     }
 
-    var canSpeeh: Bool {
-        speechLang.isNotEmpty
-    }
+    func newVoice(byIdentifier: Bool = true, byLanguage: Bool = true) -> AVSpeechSynthesisVoice? {
+        let style: MKAVSpeech.VoiceStyle = .current
 
-    var voice: AVSpeechSynthesisVoice? {
-        if let voice = AVSpeechSynthesisVoice(identifier: speechId) {
+        guard let setting = style.settingOf(lang: self) else {
+            return nil
+        }
+
+        if byIdentifier, let voice = AVSpeechSynthesisVoice(identifier: setting.identifier) {
             return voice
         }
 
-        if let voice = AVSpeechSynthesisVoice(language: speechLang) {
+        if byLanguage, let voice = AVSpeechSynthesisVoice(language: setting.language) {
             return voice
         }
 
         return nil
     }
 
-    var voiceByMatch: AVSpeechSynthesisVoice? {
-        let voices = AVSpeechSynthesisVoice.speechVoices()
+    func matchVoice(byIdentifier: Bool = true, byName: Bool = true, byLanguage: Bool = true) -> AVSpeechSynthesisVoice? {
+        let style: MKAVSpeech.VoiceStyle = .current
 
-        let name = speechName
-        var names: [String] = [name]
-
-        if name.contains("-") {
-            let name = name.replacingOccurrences(of: "-", with: "") // Ting-Ting => Tingting
-            names.append(name)
+        guard let setting = style.settingOf(lang: self) else {
+            return nil
         }
 
-        let lang = speechLang
+        let voices = AVSpeechSynthesisVoice.speechVoices()
         var first: AVSpeechSynthesisVoice?
 
         for voice in voices {
-            guard voice.language == lang else {
+            guard voice.language == setting.language else {
                 continue
             }
 
@@ -155,16 +279,34 @@ public extension Lang {
                 first = voice
             }
 
-            let identifier = voice.identifier
+            if byIdentifier, voice.identifier == setting.identifier {
+                return voice
+            }
 
-            for name in names {
-                if identifier.range(of: name, options: [.caseInsensitive]) != nil {
-                    return voice
-                }
+            if byName, setting.name == style.nameOf(identifier: voice.identifier) {
+                return voice
             }
         }
 
-        return first
+        return byLanguage ? first : nil
+    }
+
+    static func testAllVoices() {
+        let style: MKAVSpeech.VoiceStyle = .current
+
+        for lang in Lang.allCases {
+            guard let setting = style.settingOf(lang: lang) else {
+                assert(!lang.canSpeak, "cannot speak \(lang)")
+                continue
+            }
+
+            assert(lang.newVoice(byIdentifier: true, byLanguage: false)?.identifier == setting.identifier, "newVoice byIdentifier \(lang)")
+            assert(lang.newVoice(byIdentifier: false, byLanguage: true)?.language == setting.language, "newVoice byLanguage \(lang)")
+
+            assert(lang.matchVoice(byIdentifier: true, byName: false, byLanguage: false)?.identifier == setting.identifier, "matchVoice byIdentifier \(lang)")
+            assert(lang.matchVoice(byIdentifier: false, byName: true, byLanguage: false)?.identifier == setting.identifier, "matchVoice byName \(lang)")
+            assert(lang.matchVoice(byIdentifier: false, byName: false, byLanguage: true)?.language == setting.language, "matchVoice check language \(lang)")
+        }
     }
 }
 

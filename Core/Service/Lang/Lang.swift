@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Lang
 
-public enum Lang: String {
+public enum Lang: String, CaseIterable {
     case en
     case fr
     case it
