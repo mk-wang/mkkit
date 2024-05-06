@@ -350,12 +350,7 @@ public extension MKAVSpeech {
     }
 
     func stop() {
-//        if synthesizer.isSpeaking {
-//            synthesizer.stopSpeaking(at: .immediate)
-//        }
-        DispatchQueue.main.async { [weak self] in
-            self?.synthesizer.stopSpeaking(at: .immediate)
-        }
+        synthesizer.stopSpeaking(at: .immediate)
     }
 }
 
