@@ -291,23 +291,25 @@ public extension Lang {
         return byLanguage ? first : nil
     }
 
-    static func testAllVoices() {
-        let style: MKAVSpeech.VoiceStyle = .current
+    #if DEBUG_BUILD
+        static func testAllVoices() {
+            let style: MKAVSpeech.VoiceStyle = .current
 
-        for lang in Lang.allCases {
-            guard let setting = style.settingOf(lang: lang) else {
-                assert(!lang.canSpeak, "cannot speak \(lang)")
-                continue
+            for lang in Lang.allCases {
+                guard let setting = style.settingOf(lang: lang) else {
+                    assert(!lang.canSpeak, "cannot speak \(lang)")
+                    continue
+                }
+
+                assert(lang.newVoice(byIdentifier: true, byLanguage: false)?.identifier == setting.identifier, "newVoice byIdentifier \(lang)")
+                assert(lang.newVoice(byIdentifier: false, byLanguage: true)?.language == setting.language, "newVoice byLanguage \(lang)")
+
+                assert(lang.matchVoice(byIdentifier: true, byName: false, byLanguage: false)?.identifier == setting.identifier, "matchVoice byIdentifier \(lang)")
+                assert(lang.matchVoice(byIdentifier: false, byName: true, byLanguage: false)?.identifier == setting.identifier, "matchVoice byName \(lang)")
+                assert(lang.matchVoice(byIdentifier: false, byName: false, byLanguage: true)?.language == setting.language, "matchVoice check language \(lang)")
             }
-
-            assert(lang.newVoice(byIdentifier: true, byLanguage: false)?.identifier == setting.identifier, "newVoice byIdentifier \(lang)")
-            assert(lang.newVoice(byIdentifier: false, byLanguage: true)?.language == setting.language, "newVoice byLanguage \(lang)")
-
-            assert(lang.matchVoice(byIdentifier: true, byName: false, byLanguage: false)?.identifier == setting.identifier, "matchVoice byIdentifier \(lang)")
-            assert(lang.matchVoice(byIdentifier: false, byName: true, byLanguage: false)?.identifier == setting.identifier, "matchVoice byName \(lang)")
-            assert(lang.matchVoice(byIdentifier: false, byName: false, byLanguage: true)?.language == setting.language, "matchVoice check language \(lang)")
         }
-    }
+    #endif
 }
 
 // MARK: - MKAVSpeech
