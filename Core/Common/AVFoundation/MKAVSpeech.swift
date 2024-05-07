@@ -11,7 +11,6 @@ import OpenCombine
 
 public extension MKAVSpeech {
     struct VoiceSetting {
-        let name: String
         let identifier: String
         let language: String
     }
@@ -44,7 +43,10 @@ public extension MKAVSpeech.VoiceStyle {
     }
 
     func settingOf(lang: Lang) -> MKAVSpeech.VoiceSetting? {
-        var name: String?
+        guard lang.canSpeak else {
+            return nil
+        }
+
         var identifier: String?
         var language: String?
 
@@ -221,7 +223,7 @@ public extension MKAVSpeech.VoiceStyle {
             case .ios16:
                 identifier = "com.apple.voice.compact.ro-RO.Ioana"
             }
-        case .fa:
+        default:
             break
         }
 
@@ -229,11 +231,7 @@ public extension MKAVSpeech.VoiceStyle {
             return nil
         }
 
-        guard let name = nameOf(identifier: identifier) else {
-            return nil
-        }
-
-        return .init(name: name, identifier: identifier, language: language)
+        return .init(identifier: identifier, language: language)
     }
 }
 
@@ -242,7 +240,9 @@ public extension Lang {
         self != .fa
     }
 
-    func newVoice(byIdentifier: Bool = true, byLanguage: Bool = true) -> AVSpeechSynthesisVoice? {
+    func newVoice(byIdentifier: Bool = true,
+                  byLanguage: Bool = true) -> AVSpeechSynthesisVoice?
+    {
         let style: MKAVSpeech.VoiceStyle = .current
 
         guard let setting = style.settingOf(lang: self) else {
@@ -260,7 +260,10 @@ public extension Lang {
         return nil
     }
 
-    func matchVoice(byIdentifier: Bool = true, byName: Bool = true, byLanguage: Bool = true) -> AVSpeechSynthesisVoice? {
+    func matchVoice(byIdentifier: Bool = true,
+                    byName: Bool = true,
+                    byLanguage: Bool = true) -> AVSpeechSynthesisVoice?
+    {
         let style: MKAVSpeech.VoiceStyle = .current
 
         guard let setting = style.settingOf(lang: self) else {
@@ -268,27 +271,33 @@ public extension Lang {
         }
 
         let voices = AVSpeechSynthesisVoice.speechVoices()
-        var first: AVSpeechSynthesisVoice?
 
-        for voice in voices {
-            guard voice.language == setting.language else {
-                continue
-            }
+        if byIdentifier,
+           let voice = voices.first(where: { $0.identifier == setting.identifier })
+        {
+            return voice
+        }
 
-            if first == nil {
-                first = voice
-            }
+        if byName,
+           let name = style.nameOf(identifier: setting.identifier),
+           let voice = voices.first(where: { style.nameOf(identifier: $0.identifier) == name })
+        {
+            return voice
+        }
 
-            if byIdentifier, voice.identifier == setting.identifier {
+        if byLanguage {
+            if let voice = voices.first(where: { $0.language == setting.language }) {
                 return voice
             }
 
-            if byName, style.nameOf(identifier: voice.identifier) == setting.name {
+            if let country = setting.language.components(separatedBy: "-").first,
+               let voice = voices.first(where: { $0.language.starts(with: country) })
+            {
                 return voice
             }
         }
 
-        return byLanguage ? first : nil
+        return nil
     }
 
     #if DEBUG_BUILD
