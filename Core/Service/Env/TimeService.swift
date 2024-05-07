@@ -127,14 +127,15 @@ public class TimeService {
                 self?.checkTime()
             }
 
-        appStateObs = (UIApplication.shared.delegate as? AppDelegate)?.appStatePublisher
-            .sink { [weak self] state in
-                if state == .active {
+        appStateObs = (UIApplication.shared.delegate as? AppDelegate)?.isActivePublisher
+            .sink { [weak self] in
+                if $0 {
                     self?.startTimeCheck()
                 } else {
                     self?.stopTimeCheck()
                 }
             }
+        startTimeCheck()
     }
 }
 

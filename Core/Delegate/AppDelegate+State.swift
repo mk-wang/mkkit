@@ -6,28 +6,44 @@
 
 import UIKit
 
+// MARK: - AppDelegate.State
+
+public extension AppDelegate {
+    enum State: Int {
+        case none = -1
+        case active = 0
+        case inactive
+        case background
+        case foreground
+        case terminate
+
+        var isActive: Bool {
+            self == .foreground || self == .active
+        }
+    }
+}
+
 // Life Cycle
 extension AppDelegate {
     open func applicationWillResignActive(_ application: UIApplication) {
-        // 有些系统 applicationState 可能还是 acitve，所以强制设一下
-        refreshActiveState(application, inActive: true)
+        refreshActiveState(application, state: .inactive)
     }
 
     open func applicationDidBecomeActive(_ application: UIApplication) {
-        refreshActiveState(application)
+        refreshActiveState(application, state: .active)
     }
 
     open func applicationWillEnterForeground(_ application: UIApplication) {
-        refreshActiveState(application)
-        refreshBackgroundState(application, background: false)
+        refreshActiveState(application, state: .foreground)
     }
 
     open func applicationDidEnterBackground(_ application: UIApplication) {
-        refreshActiveState(application)
-        refreshBackgroundState(application, background: true)
+        refreshActiveState(application, state: .background)
     }
 
     open func applicationWillTerminate(_ application: UIApplication) {
+        refreshActiveState(application, state: .terminate)
+
         BackgroundTask.run(application: application) { [weak self] completion in
             self?.onTerminate(application, completion: completion)
         }

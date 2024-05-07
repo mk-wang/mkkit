@@ -16,15 +16,39 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     private let rootControllerSubject = CurrentValueSubject<UIViewController?, Never>(nil)
     public lazy var rootControllerPublisher = rootControllerSubject.eraseToAnyPublisher()
 
-    private lazy var appStateSubject: CurrentValueSubject<UIApplication.State, Never> = .init(UIApplication.shared.applicationState)
-    public lazy var appStatePublisher = appStateSubject.eraseToAnyPublisher()
+    private lazy var appStateSubject: CurrentValueSubject<AppDelegate.State, Never> = .init(.none)
+    public lazy var appStatePublisher = appStateSubject.filter { $0 != .none }.eraseToAnyPublisher()
 
-    private lazy var backgroundSubject: CurrentValueSubject<Bool, Never> = .init(false)
-    public lazy var backgroundPublisher = backgroundSubject.eraseToAnyPublisher()
+    // app 是否处于 isActive 状态，不包含第一次 app 启动
+    public lazy var isActivePublisher: AnyPublisher<Bool, Never> = appStatePublisher
+        .map(\.isActive)
+        .removeDuplicatesAndDrop()
+        .eraseToAnyPublisher()
 
-    public lazy var appActivedPublisher = appStateSubject.removeDuplicatesAndDrop()
-        .compactMap { $0 == .active ? () : nil }
-        .debounceOnMain(for: 0.01)
+    // app 处于 active 状态，不包含第一次 app 启动
+    public lazy var appActivePublisher: AnyPublisher<Void, Never> = isActivePublisher
+        .removeDuplicatesAndDrop()
+        .compactMap { $0 ? () : nil }
+        .eraseToAnyPublisher()
+
+    // app 是否处于 foreground 状态，不包含第一次 app 启动
+    public lazy var isForegroundPublisher: AnyPublisher<Bool, Never> = appStateSubject
+        .compactMap {
+            switch $0 {
+            case .background:
+                return false
+            case .foreground:
+                return true
+            default:
+                return nil
+            }
+        }
+        .removeDuplicates()
+        .eraseToAnyPublisher()
+
+    // app 处于 foreground 状态，不包含第一次 app 启动
+    public lazy var appForegroundPublisher: AnyPublisher<Void, Never> = isForegroundPublisher
+        .compactMap { $0 ? () : nil }
         .eraseToAnyPublisher()
 
     open func application(_ application: UIApplication,
@@ -49,16 +73,12 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - UIApplication.State + CustomStringConvertible
 
 extension AppDelegate {
-    open func refreshActiveState(_ application: UIApplication, inActive: Bool? = nil) {
-        var state = application.applicationState
-        if let inActive {
-            state = inActive ? .inactive : .active
-        }
-        appStateSubject.send(state)
+    public var state: AppDelegate.State {
+        appStateSubject.value
     }
 
-    open func refreshBackgroundState(_: UIApplication, background: Bool) {
-        backgroundSubject.send(background)
+    open func refreshActiveState(_: UIApplication, state: AppDelegate.State) {
+        appStateSubject.send(state)
     }
 
     @objc open var rootController: UIViewController? {
