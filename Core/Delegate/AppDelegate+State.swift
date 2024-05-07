@@ -49,20 +49,3 @@ extension AppDelegate {
         }
     }
 }
-
-// MARK: - UIApplication.State + CustomStringConvertible
-
-extension UIApplication.State: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .active:
-            return "active"
-        case .inactive:
-            return "inactive"
-        case .background:
-            return "background"
-        @unknown default:
-            return "unknown"
-        }
-    }
-}

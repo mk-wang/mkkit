@@ -9,6 +9,8 @@ import OpenCombine
 import UIKit
 
 extension AppDelegate {
+    public static let shared = UIApplication.shared.delegate as? AppDelegate
+
     @objc open func beforeWindow(_: UIApplication) {}
 
     @objc open func setupWindow(window _: UIWindow) {}

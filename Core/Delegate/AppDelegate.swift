@@ -19,10 +19,6 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
     private lazy var appStateSubject: CurrentValueSubject<AppDelegate.State, Never> = .init(.none)
     public lazy var appStatePublisher = appStateSubject.filter { $0 != .none }.eraseToAnyPublisher()
 
-    public var state: AppDelegate.State {
-        appStateSubject.value
-    }
-
     // app 是否处于 isActive 状态，不包含第一次 app 启动
     public lazy var isActivePublisher: AnyPublisher<Bool, Never> = appStatePublisher
         .map(\.isActive)
@@ -77,8 +73,11 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - UIApplication.State + CustomStringConvertible
 
 extension AppDelegate {
+    public var state: AppDelegate.State {
+        appStateSubject.value
+    }
+
     open func refreshActiveState(_: UIApplication, state: AppDelegate.State) {
-        Logger.shared.debug("AppDelegate.State \(state)")
         appStateSubject.send(state)
     }
 
