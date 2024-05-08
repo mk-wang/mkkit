@@ -22,6 +22,8 @@ open class DatabaseTable {
         self.name = name
         table = SQLite.Table(name)
     }
+
+    open func setup() throws {}
 }
 
 public extension DatabaseTable {
