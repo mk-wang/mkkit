@@ -99,6 +99,12 @@ Pod::Spec.new do |s|
     ss.dependency 'SSZipArchive'
     ss.dependency 'MKKit/Logger'
   end
+  
+  s.subspec 'Database' do |ss|
+    ss.source_files = 'Database/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'SQLite.swift'
+    ss.dependency 'MKKit/Core'
+  end
 end
 
 
