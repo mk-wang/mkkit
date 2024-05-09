@@ -21,17 +21,17 @@ extension AppTheme: Codable {}
 public extension AppTheme {
     static var `default`: Self {
         if #available(iOS 13.0, *) {
-            return .system
+            .system
         } else {
-            return .light
+            .light
         }
     }
 
     static var isSytemSupported: Bool {
         if #available(iOS 13.0, *) {
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
@@ -50,11 +50,11 @@ extension AppTheme: CustomStringConvertible {
     public var description: String {
         switch self {
         case .dark:
-            return "dark"
+            "dark"
         case .light:
-            return "light"
+            "light"
         case .system:
-            return "system"
+            "system"
         }
     }
 }

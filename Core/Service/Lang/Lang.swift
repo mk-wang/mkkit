@@ -69,53 +69,53 @@ extension Lang: CustomStringConvertible {
     public var description: String {
         switch self {
         case .en:
-            return "English"
+            "English"
         case .fr:
-            return "Français"
+            "Français"
         case .zh_Hans:
-            return "简体中文"
+            "简体中文"
         case .zh_Hant:
-            return "繁體中文"
+            "繁體中文"
         case .id:
-            return "Indonesia"
+            "Indonesia"
         case .it:
-            return "Italiano"
+            "Italiano"
         case .es:
-            return "Español"
+            "Español"
         case .de:
-            return "Deutsch"
+            "Deutsch"
         case .pt_BR:
-            return "Português (Brasil)"
+            "Português (Brasil)"
         case .ru:
-            return "Русский"
+            "Русский"
         case .ja:
-            return "日本語"
+            "日本語"
         case .ko:
-            return "한국어"
+            "한국어"
         case .tr:
-            return "Türkçe"
+            "Türkçe"
         case .ar:
-            return "العربية"
+            "العربية"
         case .fa:
-            return "فارسی"
+            "فارسی"
         case .es_mx:
-            return "Español (México)"
+            "Español (México)"
         case .ro:
-            return "Român"
+            "Român"
         case .pt_PT:
-            return "Português"
+            "Português"
         case .pl:
-            return "Polski"
+            "Polski"
         case .uk:
-            return "Українська"
+            "Українська"
         }
     }
 
     public var fixName: String {
         if self == .pt_BR {
-            return Lang.pt_PT.description
+            Lang.pt_PT.description
         } else {
-            return description
+            description
         }
     }
 }
@@ -124,19 +124,19 @@ public extension Lang {
     var androidName: String {
         switch self {
         case .zh_Hans:
-            return "zh_CN"
+            "zh_CN"
         case let x where x.rawValue.hasPrefix("zh-"):
-            return "zh_TW"
+            "zh_TW"
         case .pt_BR,
              .pt_PT:
-            return "pt"
+            "pt"
         case .id:
-            return "in_ID"
+            "in_ID"
         case .pl,
              .uk:
-            return rawValue // TODO:
+            rawValue // TODO:
         default:
-            return rawValue
+            rawValue
         }
     }
 }
@@ -145,45 +145,45 @@ public extension Lang {
     var flagEmoji: String {
         switch self {
         case .en:
-            return "🇺🇸"
+            "🇺🇸"
         case .fr:
-            return "🇫🇷"
+            "🇫🇷"
         case .it:
-            return "🇮🇹"
+            "🇮🇹"
         case .es:
-            return "🇪🇸"
+            "🇪🇸"
         case .de:
-            return "🇩🇪"
+            "🇩🇪"
         case .ru:
-            return "🇷🇺"
+            "🇷🇺"
         case .ja:
-            return "🇯🇵"
+            "🇯🇵"
         case .ko:
-            return "🇰🇷"
+            "🇰🇷"
         case .tr:
-            return "🇹🇷"
+            "🇹🇷"
         case .ar:
-            return "🇸🇦"
+            "🇸🇦"
         case .fa:
-            return "🇮🇷"
+            "🇮🇷"
         case .pt_BR:
-            return "🇧🇷"
+            "🇧🇷"
         case .zh_Hans:
-            return "🇨🇳"
+            "🇨🇳"
         case .zh_Hant:
-            return "🇨🇳"
+            "🇨🇳"
         case .id:
-            return "🇮🇩"
+            "🇮🇩"
         case .es_mx:
-            return "🇲🇽"
+            "🇲🇽"
         case .ro:
-            return "🇷🇴"
+            "🇷🇴"
         case .pt_PT:
-            return "🇵🇹"
+            "🇵🇹"
         case .pl:
-            return "🇵🇱"
+            "🇵🇱"
         case .uk:
-            return "🇺🇦"
+            "🇺🇦"
         }
     }
 }

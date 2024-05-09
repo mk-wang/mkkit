@@ -52,22 +52,22 @@ public enum VibrateHelper {
 extension VibrateHelper.Haptic {
     public var iOS13: Bool {
         if #available(iOS 13.0, *) {
-            return self == .soft || self == .rigid
+            self == .soft || self == .rigid
         } else {
-            return false
+            false
         }
     }
 
     var notification: UINotificationFeedbackGenerator.FeedbackType? {
         switch self {
         case .error:
-            return .error
+            .error
         case .success:
-            return .success
+            .success
         case .warning:
-            return .warning
+            .warning
         default:
-            return nil
+            nil
         }
     }
 

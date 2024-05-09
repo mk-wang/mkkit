@@ -13,15 +13,15 @@ public extension UIInterfaceOrientation {
     var videoOrientation: AVCaptureVideoOrientation? {
         switch self {
         case .portrait:
-            return .portrait
+            .portrait
         case .portraitUpsideDown:
-            return .portraitUpsideDown
+            .portraitUpsideDown
         case .landscapeLeft:
-            return .landscapeLeft
+            .landscapeLeft
         case .landscapeRight:
-            return .landscapeRight
+            .landscapeRight
         default:
-            return nil
+            nil
         }
     }
 }
@@ -30,15 +30,15 @@ public extension UIDeviceOrientation {
     var videoOrientation: AVCaptureVideoOrientation? {
         switch self {
         case .portrait:
-            return .portrait
+            .portrait
         case .portraitUpsideDown:
-            return .portraitUpsideDown
+            .portraitUpsideDown
         case .landscapeLeft:
-            return .landscapeLeft
+            .landscapeLeft
         case .landscapeRight:
-            return .landscapeRight
+            .landscapeRight
         default:
-            return nil
+            nil
         }
     }
 }

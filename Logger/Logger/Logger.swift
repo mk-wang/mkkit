@@ -96,11 +96,11 @@ extension Logger.Level {
     var osType: OSLogType {
         switch self {
         case .debug:
-            return .debug
+            .debug
         case .info:
-            return .info
+            .info
         case .error:
-            return .error
+            .error
         }
     }
 }
@@ -251,11 +251,11 @@ extension Logger.Level {
     var osLoggerLevel: OSLogType {
         switch self {
         case .debug:
-            return .debug
+            .debug
         case .info:
-            return .info
+            .info
         case .error:
-            return .error
+            .error
         }
     }
 }

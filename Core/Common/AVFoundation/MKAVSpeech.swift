@@ -19,13 +19,11 @@ public extension MKAVSpeech {
         case old
         case ios16
 
-        public static let current: Self = {
-            if #available(iOS 16.0, *) {
-                return .ios16
-            } else {
-                return .old
-            }
-        }()
+        public static let current: Self = if #available(iOS 16.0, *) {
+            .ios16
+        } else {
+            .old
+        }
     }
 }
 

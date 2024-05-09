@@ -306,13 +306,13 @@ extension CaptureSession.Interrupt: Comparable {
     public static func < (lhs: CaptureSession.Interrupt, rhs: CaptureSession.Interrupt) -> Bool {
         switch (lhs, rhs) {
         case (.none, .none):
-            return true
+            true
         case let (.reason(l), .reason(r)):
-            return l == r
+            l == r
         case (.end, .end):
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

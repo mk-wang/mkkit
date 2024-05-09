@@ -97,9 +97,9 @@ public extension UIEdgeInsets {
 
     static func only(top: CGFloat = 0, start: CGFloat = 0, bottom: CGFloat = 0, end: CGFloat = 0) -> Self {
         if Lang.current.isRTL {
-            return UIEdgeInsets(top: top, left: end, bottom: bottom, right: start)
+            UIEdgeInsets(top: top, left: end, bottom: bottom, right: start)
         } else {
-            return UIEdgeInsets(top: top, left: start, bottom: bottom, right: end)
+            UIEdgeInsets(top: top, left: start, bottom: bottom, right: end)
         }
     }
 

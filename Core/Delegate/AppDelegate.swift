@@ -36,11 +36,11 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
         .compactMap {
             switch $0 {
             case .background:
-                return false
+                false
             case .foreground:
-                return true
+                true
             default:
-                return nil
+                nil
             }
         }
         .removeDuplicates()

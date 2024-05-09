@@ -88,9 +88,9 @@ public extension AppInfo {
 
     static var localeRegion: String? {
         if #available(iOS 16, *) {
-            return Locale.current.region?.identifier
+            Locale.current.region?.identifier
         } else {
-            return Locale.current.regionCode
+            Locale.current.regionCode
         }
     }
 

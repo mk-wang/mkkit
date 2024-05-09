@@ -29,11 +29,11 @@ public extension AppTheme {
     var dmStyle: DMUserInterfaceStyle {
         switch self {
         case .light:
-            return DMUserInterfaceStyle.light
+            DMUserInterfaceStyle.light
         case .dark:
-            return DMUserInterfaceStyle.dark
+            DMUserInterfaceStyle.dark
         case .system:
-            return DMUserInterfaceStyle.unspecified
+            DMUserInterfaceStyle.unspecified
         }
     }
 }

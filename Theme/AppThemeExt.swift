@@ -32,22 +32,21 @@ public extension AppTheme {
     var isDark: Bool? {
         switch self {
         case .light:
-            return false
+            false
         case .dark:
-            return true
+            true
         case .system:
-            return Self.service.isDark
+            Self.service.isDark
         }
     }
 }
 
 extension AppTheme {
     static let darkStatusBarStyle: UIStatusBarStyle = {
-        var style: UIStatusBarStyle!
-        if #available(iOS 13.0, *) {
-            style = .darkContent
+        var style: UIStatusBarStyle! = if #available(iOS 13.0, *) {
+            .darkContent
         } else {
-            style = .default
+            .default
         }
         return style
     }()

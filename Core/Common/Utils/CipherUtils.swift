@@ -18,9 +18,9 @@ public enum CipherUtils {
         var ccOpt: CCOperation {
             switch self {
             case .encrypt:
-                return CCOperation(kCCEncrypt)
+                CCOperation(kCCEncrypt)
             case .decrypt:
-                return CCOperation(kCCDecrypt)
+                CCOperation(kCCDecrypt)
             }
         }
     }
@@ -34,9 +34,9 @@ public enum CipherUtils {
         var rawValue: Int {
             switch self {
             case .bits128:
-                return kCCKeySizeAES128
+                kCCKeySizeAES128
             case .bits256:
-                return kCCKeySizeAES256
+                kCCKeySizeAES256
             }
         }
     }

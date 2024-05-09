@@ -18,9 +18,9 @@ open class SelectedItems<T> {
 
     open var selectedIndexPublisher: AnyPublisher<Int?, Never> {
         if removeDuplicates {
-            return subject.removeDuplicates().eraseToAnyPublisher()
+            subject.removeDuplicates().eraseToAnyPublisher()
         } else {
-            return subject.eraseToAnyPublisher()
+            subject.eraseToAnyPublisher()
         }
     }
 

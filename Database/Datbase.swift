@@ -73,9 +73,9 @@ public extension Database {
         public var value: T? {
             switch self {
             case .empty:
-                return nil
+                nil
             case let .data(value):
-                return value
+                value
             }
         }
 

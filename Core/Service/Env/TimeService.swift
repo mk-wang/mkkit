@@ -90,13 +90,13 @@ extension DayTime: Equatable {}
 public extension Hour {
     var dayTime: DayTime {
         if hour >= DayTime.evening.rawValue {
-            return .evening
+            .evening
         } else if hour >= DayTime.afternoon.rawValue {
-            return .afternoon
+            .afternoon
         } else if hour >= DayTime.morning.rawValue {
-            return .morning
+            .morning
         } else {
-            return .evening
+            .evening
         }
     }
 }

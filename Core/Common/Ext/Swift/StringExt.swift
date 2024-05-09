@@ -215,9 +215,9 @@ public extension String {
 
     func changeFirstChar(upCase: Bool) -> Self {
         if count > 2 {
-            return String(prefix(1)).changeFirstChar(upCase: upCase) + substring(from: 1)!
+            String(prefix(1)).changeFirstChar(upCase: upCase) + substring(from: 1)!
         } else {
-            return upCase ? localizedCapitalized : localizedLowercase
+            upCase ? localizedCapitalized : localizedLowercase
         }
     }
 
@@ -333,9 +333,9 @@ public extension String {
 public extension String {
     var fileURL: URL {
         if #available(iOS 16.0, *) {
-            return .init(filePath: self)
+            .init(filePath: self)
         } else {
-            return .init(fileURLWithPath: self)
+            .init(fileURLWithPath: self)
         }
     }
 
@@ -468,11 +468,11 @@ extension String {
 
     private static func singleLineSizeState(rectSize: CGSize, size: CGSize, fitter: CGFloat) -> FontSizeState {
         if rectSize.width >= size.width + fitter, rectSize.width <= size.width {
-            return .fit
+            .fit
         } else if rectSize.width > size.width {
-            return .tooBig
+            .tooBig
         } else {
-            return .tooSmall
+            .tooSmall
         }
     }
 
@@ -483,11 +483,11 @@ extension String {
             rectSize.width > size.width + fitter &&
             rectSize.width < size.width - fitter
         {
-            return .fit
+            .fit
         } else if rectSize.height > size.height || rectSize.width > size.width {
-            return .tooBig
+            .tooBig
         } else {
-            return .tooSmall
+            .tooSmall
         }
     }
 

@@ -42,15 +42,15 @@ extension UIInterfaceOrientation {
     var toMask: UIInterfaceOrientationMask {
         switch self {
         case .portrait:
-            return .portrait
+            .portrait
         case .landscapeLeft:
-            return .landscapeLeft
+            .landscapeLeft
         case .landscapeRight:
-            return .landscapeRight
+            .landscapeRight
         case .portraitUpsideDown:
-            return .portraitUpsideDown
+            .portraitUpsideDown
         default:
-            return .allButUpsideDown
+            .allButUpsideDown
         }
     }
 

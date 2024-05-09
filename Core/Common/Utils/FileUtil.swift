@@ -160,9 +160,9 @@ public extension FileUtil {
     // 标准化，试着移除 /private（有时候不起作用）
     static func standardizedURL(url: URL) -> URL {
         if url.isFileURL {
-            return (url as NSURL).standardizingPath!
+            (url as NSURL).standardizingPath!
         } else {
-            return url.standardized
+            url.standardized
         }
     }
 

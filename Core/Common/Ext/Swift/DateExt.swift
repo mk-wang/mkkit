@@ -585,26 +585,26 @@ public extension Date {
             var components: Set<Calendar.Component> {
                 switch component {
                 case .second:
-                    return [.year, .month, .day, .hour, .minute, .second]
+                    [.year, .month, .day, .hour, .minute, .second]
 
                 case .minute:
-                    return [.year, .month, .day, .hour, .minute]
+                    [.year, .month, .day, .hour, .minute]
 
                 case .hour:
-                    return [.year, .month, .day, .hour]
+                    [.year, .month, .day, .hour]
 
                 case .weekOfMonth,
                      .weekOfYear:
-                    return [.yearForWeekOfYear, .weekOfYear]
+                    [.yearForWeekOfYear, .weekOfYear]
 
                 case .month:
-                    return [.year, .month]
+                    [.year, .month]
 
                 case .year:
-                    return [.year]
+                    [.year]
 
                 default:
-                    return []
+                    []
                 }
             }
 
@@ -768,11 +768,11 @@ public extension Date {
         var format: String {
             switch style {
             case .oneLetter:
-                return "EEEEE"
+                "EEEEE"
             case .threeLetters:
-                return "EEE"
+                "EEE"
             case .full:
-                return "EEEE"
+                "EEEE"
             }
         }
         dateFormatter.setLocalizedDateFormatFromTemplate(format)
@@ -793,11 +793,11 @@ public extension Date {
         var format: String {
             switch style {
             case .oneLetter:
-                return "MMMMM"
+                "MMMMM"
             case .threeLetters:
-                return "MMM"
+                "MMM"
             case .full:
-                return "MMMM"
+                "MMMM"
             }
         }
         dateFormatter.setLocalizedDateFormatFromTemplate(format)

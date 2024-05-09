@@ -44,15 +44,15 @@ import Foundation
         fileprivate var avFoundationCategory: AVAudioSession.Category {
             switch self {
             case .ambient:
-                return .ambient
+                .ambient
             case .soloAmbient:
-                return .soloAmbient
+                .soloAmbient
             case .playback:
-                return .playback
+                .playback
             case .record:
-                return .record
+                .record
             case .playAndRecord:
-                return .playAndRecord
+                .playAndRecord
             }
         }
     }
