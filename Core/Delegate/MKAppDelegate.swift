@@ -1,5 +1,5 @@
 //
-//  AppDelegate.swift
+//  MKAppDelegate.swift
 //
 //  Created by MK on 2022/3/16.
 //
@@ -8,15 +8,15 @@ import MKKit
 import OpenCombine
 import UIKit
 
-// MARK: - AppDelegate
+// MARK: - MKAppDelegate
 
-open class AppDelegate: UIResponder, UIApplicationDelegate {
+open class MKAppDelegate: UIResponder, UIApplicationDelegate {
     public var window: UIWindow?
 
     private let rootControllerSubject = CurrentValueSubject<UIViewController?, Never>(nil)
     public lazy var rootControllerPublisher = rootControllerSubject.eraseToAnyPublisher()
 
-    private lazy var appStateSubject: CurrentValueSubject<AppDelegate.State, Never> = .init(.none)
+    private lazy var appStateSubject: CurrentValueSubject<MKAppDelegate.State, Never> = .init(.none)
     public lazy var appStatePublisher = appStateSubject.filter { $0 != .none }.eraseToAnyPublisher()
 
     // app 是否处于 isActive 状态，不包含第一次 app 启动
@@ -72,12 +72,12 @@ open class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - UIApplication.State + CustomStringConvertible
 
-extension AppDelegate {
-    public var state: AppDelegate.State {
+extension MKAppDelegate {
+    public var state: MKAppDelegate.State {
         appStateSubject.value
     }
 
-    open func refreshActiveState(_: UIApplication, state: AppDelegate.State) {
+    open func refreshActiveState(_: UIApplication, state: MKAppDelegate.State) {
         appStateSubject.send(state)
     }
 

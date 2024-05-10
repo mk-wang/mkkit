@@ -127,7 +127,7 @@ public class TimeService {
                 self?.checkTime()
             }
 
-        appStateObs = AppDelegate.shared?.isActivePublisher
+        appStateObs = MKAppDelegate.shared?.isActivePublisher
             .sink { [weak self] in
                 if $0 {
                     self?.startTimeCheck()

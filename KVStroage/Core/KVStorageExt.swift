@@ -51,12 +51,16 @@ public class KVStorageBuilder {
         self.keyBuilder = keyBuilder
     }
 
-    private var storage: KVStorage? {
-        builder()
-    }
+    private lazy var storage: KVStorage? = builder()
 
     private func fixedKey(_ text: String) -> String {
         keyBuilder?(text) ?? text
+    }
+}
+
+public extension KVStorageBuilder {
+    static var dummyStorage: KVStorageBuilder {
+        KVStorageBuilder(builder: { nil }, keyBuilder: { $0 })
     }
 }
 

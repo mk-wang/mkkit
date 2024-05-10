@@ -1,5 +1,5 @@
 //
-//  AppDelegate+Shared.swift
+//  MKAppDelegate+Shared.swift
 //
 //  Created by MK on 2021/6/11.
 //
@@ -8,8 +8,8 @@ import MKKit
 import OpenCombine
 import UIKit
 
-extension AppDelegate {
-    public static let shared = UIApplication.shared.delegate as? AppDelegate
+extension MKAppDelegate {
+    public static let shared = UIApplication.shared.delegate as? MKAppDelegate
 
     @objc open func beforeWindow(_: UIApplication) {}
 

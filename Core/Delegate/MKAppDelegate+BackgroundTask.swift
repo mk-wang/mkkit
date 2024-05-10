@@ -1,5 +1,5 @@
 //
-//  AppDelegate+BackgroundTask.swift
+//  MKAppDelegate+BackgroundTask.swift
 //  MKKit
 //
 //  Created by MK on 2024/2/1.
@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-// MARK: - AppDelegate.BackgroundTask
+// MARK: - MKAppDelegate.BackgroundTask
 
-extension AppDelegate {
+extension MKAppDelegate {
     open class BackgroundTask {
         private weak var application: UIApplication?
         private var identifier: UIBackgroundTaskIdentifier = .invalid
@@ -45,15 +45,15 @@ extension AppDelegate {
     }
 }
 
-public extension AppDelegate.BackgroundTask {
+public extension MKAppDelegate.BackgroundTask {
     typealias TaskCompletion = () -> Void
 
     // The handler should call TaskCompletion when it is done
     @discardableResult
     class func run(application: UIApplication,
-                   handler: (@escaping TaskCompletion) -> Void) -> AppDelegate.BackgroundTask
+                   handler: (@escaping TaskCompletion) -> Void) -> MKAppDelegate.BackgroundTask
     {
-        let task = AppDelegate.BackgroundTask(application: application)
+        let task = MKAppDelegate.BackgroundTask(application: application)
         task.begin()
 
         handler { [weak task] in

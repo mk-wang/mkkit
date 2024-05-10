@@ -96,6 +96,7 @@ Pod::Spec.new do |s|
   s.subspec 'Logger+DDPrinter' do |ss|
     ss.source_files = 'Logger/DDPrinter/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'CocoaLumberjack'
+    ss.dependency 'CocoaLumberjack/Swift'
     ss.dependency 'SSZipArchive'
     ss.dependency 'MKKit/Logger'
   end

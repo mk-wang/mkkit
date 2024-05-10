@@ -1,6 +1,5 @@
 //
 //  LottieAnimatorObserver.swift
-//  FaceYoga
 //
 //  Created by MK on 2023/10/16.
 //

@@ -1,14 +1,14 @@
 //
-//  AppDelegate+State.swift
+//  MKAppDelegate+State.swift
 //
 //  Created by MK on 2023/3/13.
 //
 
 import UIKit
 
-// MARK: - AppDelegate.State
+// MARK: - MKAppDelegate.State
 
-public extension AppDelegate {
+public extension MKAppDelegate {
     enum State: Int {
         case none = -1
         case active = 0
@@ -24,7 +24,7 @@ public extension AppDelegate {
 }
 
 // Life Cycle
-extension AppDelegate {
+extension MKAppDelegate {
     open func applicationWillResignActive(_ application: UIApplication) {
         refreshActiveState(application, state: .inactive)
     }
