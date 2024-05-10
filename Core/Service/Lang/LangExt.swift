@@ -10,7 +10,7 @@ import OpenCombine
 
 public extension Lang {
     private static var service: LangService {
-        AppServiceManager.findService(LangService.self)!
+        MKAppDelegate.shared!.findService(LangService.self)!
     }
 
     static var current: Lang {
@@ -41,9 +41,6 @@ extension LangService: AppSerivce {
     public func initBeforeWindow() {
         lang.configDirection()
     }
-
-    public func initAfterWindow(window _: UIWindow) {}
-    public func onExit() {}
 }
 
 public extension CustomStringConvertible {

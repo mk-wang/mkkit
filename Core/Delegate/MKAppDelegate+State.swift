@@ -35,17 +35,35 @@ extension MKAppDelegate {
 
     open func applicationWillEnterForeground(_ application: UIApplication) {
         refreshActiveState(application, state: .foreground)
+
+        for service in appServices {
+            service.onForeground()
+        }
     }
 
     open func applicationDidEnterBackground(_ application: UIApplication) {
         refreshActiveState(application, state: .background)
+
+        for service in appServices {
+            service.onBackground()
+        }
     }
 
     open func applicationWillTerminate(_ application: UIApplication) {
         refreshActiveState(application, state: .terminate)
 
         BackgroundTask.run(application: application) { [weak self] completion in
-            self?.onTerminate(application, completion: completion)
+            guard let self else {
+                return
+            }
+
+            if let window {
+                for service in appServices {
+                    service.onExit()
+                }
+            }
+
+            onTerminate(application, completion: completion)
         }
     }
 }

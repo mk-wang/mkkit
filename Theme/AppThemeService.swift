@@ -34,8 +34,6 @@ public class AppThemeService {
     }
 }
 
-// MARK: AppSerivce
-
 public extension AppThemeService {
     func config() {
         let current = themeSubject.value

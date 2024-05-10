@@ -26,8 +26,6 @@ open class LangService {
     public let system: Lang?
 }
 
-// MARK: AppSerivce
-
 public extension LangService {
     var lang: Lang {
         get {

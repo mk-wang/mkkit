@@ -11,7 +11,7 @@ import UIKit
 
 public extension AppTheme {
     private static var service: AppThemeService {
-        AppServiceManager.findService(AppThemeService.self)!
+        MKAppDelegate.shared!.findService(AppThemeService.self)!
     }
 
     static var current: Self {
@@ -70,6 +70,4 @@ extension AppThemeService: AppSerivce {
     public func initAfterWindow(window: UIWindow) {
         darkConfig(window: window)
     }
-
-    public func onExit() {}
 }

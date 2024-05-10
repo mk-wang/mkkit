@@ -42,7 +42,4 @@ extension EnvService: AppSerivce {
                 self?.onLocalChange()
             }.store(in: &cancellableSet)
     }
-
-    public func initAfterWindow(window _: UIWindow) {}
-    public func onExit() {}
 }

@@ -19,6 +19,8 @@ open class MKAppDelegate: UIResponder, UIApplicationDelegate {
     private lazy var appStateSubject: CurrentValueSubject<MKAppDelegate.State, Never> = .init(.none)
     public lazy var appStatePublisher = appStateSubject.filter { $0 != .none }.eraseToAnyPublisher()
 
+    public private(set) var appServices = [AppSerivce]()
+
     // app 是否处于 isActive 状态，不包含第一次 app 启动
     public lazy var isActivePublisher: AnyPublisher<Bool, Never> = appStatePublisher
         .map(\.isActive)
@@ -54,16 +56,26 @@ open class MKAppDelegate: UIResponder, UIApplicationDelegate {
     open func application(_ application: UIApplication,
                           didFinishLaunchingWithOptions opts: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        for service in appServices {
+            service.initBeforeWindow()
+        }
+
         beforeWindow(application)
 
-        window = UIWindow(frame: UIScreen.main.bounds)
-        setupWindow(window: window!)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        self.window = window
+        setupWindow(window: window)
 
         DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
-            afterWindow(application, window: window!, launchOptions: opts)
+
+            for service in appServices {
+                service.initAfterWindow(window: window)
+            }
+
+            afterWindow(application, window: window, launchOptions: opts)
         }
 
         return true
@@ -89,5 +101,20 @@ extension MKAppDelegate {
             window?.rootViewController = newValue
             rootControllerSubject.value = newValue
         }
+    }
+}
+
+public extension MKAppDelegate {
+    func addAppService(_ service: AppSerivce) {
+        appServices.append(service)
+    }
+
+    func findService<T: AppSerivce>(_: T.Type = T.self) -> T? {
+        for service in appServices {
+            if let service = service as? T {
+                return service
+            }
+        }
+        return nil
     }
 }
