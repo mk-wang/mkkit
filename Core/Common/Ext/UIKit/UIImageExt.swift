@@ -65,42 +65,39 @@ public extension UIImage {
     }
 
     func scaled(to scale: CGFloat, opaque: Bool = false) -> UIImage? {
-        let toWidth = size.width * scale
-        let toHeight = size.height * scale
-        return scaled(toWidth: toWidth, toHeight: toHeight, opaque: opaque)
+        let size = size * scale
+        return scaled(to: size, opaque: opaque)
     }
 
-    func scaled(to target: CGSize, opaque: Bool = false) -> UIImage? {
+    func scaled(fit target: CGSize, opaque: Bool = false) -> UIImage? {
         let scale = min(target.width / size.width, target.height / size.height)
         return scaled(to: scale, opaque: opaque)
     }
 
-    func scaled(toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
-        let scale = toHeight / size.height
-        let newWidth = size.width * scale
-        return scaled(toWidth: newWidth, toHeight: toHeight, opaque: opaque)
+    func scaled(fitHeight target: CGFloat, opaque: Bool = false) -> UIImage? {
+        let scale = target / size.height
+        return scaled(to: scale, opaque: opaque)
     }
 
-    func scaled(toWidth: CGFloat, opaque: Bool = false) -> UIImage? {
-        let scale = toWidth / size.width
-        let newHeight = size.height * scale
-        return scaled(toWidth: toWidth, toHeight: newHeight, opaque: opaque)
+    func scaled(fitWidth target: CGFloat, opaque: Bool = false) -> UIImage? {
+        let scale = target / size.width
+        return scaled(to: scale, opaque: opaque)
     }
 
-    func scaled(toWidth: CGFloat, toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
-        let size: CGSize = .init(width: toWidth, height: toHeight)
+    func scaled(to size: CGSize, opaque: Bool = false) -> UIImage? {
         guard size.isNotEmpty else {
             return nil
         }
 
+        let rect = size.toRect()
         #if !os(watchOS)
             return UIGraphicsImageRenderer(size: size).image { [weak self] _ in
-                self?.draw(in: size.toRect())
+                self?.draw(in: rect)
             }
         #endif
 
         UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
-        draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        draw(in: rect)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage
