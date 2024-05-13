@@ -144,7 +144,7 @@ public extension UIView {
     }
 
     var snapshotByLayer: UIImage? {
-        guard let layer = layer.presentation() else {
+        guard let layer = layer.presentation(), bounds.size.isNotEmpty else {
             return nil
         }
 

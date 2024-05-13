@@ -8,6 +8,16 @@
 import CoreGraphics
 
 public extension CGSize {
+    var isEmpty: Bool {
+        width == 0 || height == 0
+    }
+
+    var isNotEmpty: Bool {
+        !isEmpty
+    }
+
+    var area: CGFloat { width * height }
+
     func scale(width: CGFloat) -> Self {
         CGSize(width: width, height: height * (width / self.width))
     }

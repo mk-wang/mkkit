@@ -88,6 +88,21 @@ public extension UIImage {
     }
 
     func scaled(toWidth: CGFloat, toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
+        guard toWidth > 1, toHeight > 1 else {
+            return nil
+        }
+
+        #if !os(watchOS)
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = scale
+            let size: CGSize = .init(width: toWidth, height: toHeight)
+            return UIGraphicsImageRenderer(size: size, format: format).image { [weak self] context in
+                UIColor.clear.setFill()
+                context.fill(context.format.bounds)
+                self?.draw(in: size.toRect())
+            }
+        #endif
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: toWidth, height: toHeight), opaque, scale)
         draw(in: CGRect(x: 0, y: 0, width: toWidth, height: toHeight))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -104,6 +119,10 @@ public extension UIImage {
                                      y: destRect.origin.y.rounded(),
                                      width: destRect.width.rounded(),
                                      height: destRect.height.rounded())
+
+        guard roundedDestRect.size.isNotEmpty else {
+            return nil
+        }
 
         UIGraphicsBeginImageContextWithOptions(roundedDestRect.size, false, scale)
         guard let contextRef = UIGraphicsGetCurrentContext() else { return nil }
@@ -127,6 +146,10 @@ public extension UIImage {
                                      y: destRect.origin.y.rounded(),
                                      width: destRect.width.rounded(),
                                      height: destRect.height.rounded())
+
+        guard roundedDestRect.size.isNotEmpty else {
+            return nil
+        }
 
         UIGraphicsBeginImageContextWithOptions(roundedDestRect.size, false, scale)
         guard let contextRef = UIGraphicsGetCurrentContext() else { return nil }
@@ -181,10 +204,10 @@ public extension UIImage {
             if #available(tvOS 10.0, *) {
                 let format = UIGraphicsImageRendererFormat()
                 format.scale = scale
-                return UIGraphicsImageRenderer(size: size, format: format).image { context in
+                return UIGraphicsImageRenderer(size: size, format: format).image { [weak self] context in
                     color.setFill()
                     context.fill(drawRect)
-                    draw(in: drawRect, blendMode: blendMode, alpha: alpha)
+                    self?.draw(in: drawRect, blendMode: blendMode, alpha: alpha)
                 }
             }
         #endif
@@ -205,10 +228,10 @@ public extension UIImage {
             if #available(tvOS 10.0, *) {
                 let format = UIGraphicsImageRendererFormat()
                 format.scale = scale
-                return UIGraphicsImageRenderer(size: size, format: format).image { context in
+                return UIGraphicsImageRenderer(size: size, format: format).image { [weak self] context in
                     backgroundColor.setFill()
                     context.fill(context.format.bounds)
-                    draw(at: .zero)
+                    self?.draw(at: .zero)
                 }
             }
         #endif
@@ -234,6 +257,10 @@ public extension UIImage {
             radius
         } else {
             maxRadius
+        }
+
+        guard size.isNotEmpty else {
+            return nil
         }
 
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
@@ -306,7 +333,15 @@ public extension UIImage {
     /// - Parameters:
     ///   - color: image fill color.
     ///   - size: image size.
-    convenience init(color: UIColor, size: CGSize) {
+    convenience init?(color: UIColor, size: CGSize) {
+        guard size.isNotEmpty else {
+            return nil
+        }
+
+        guard size.isNotEmpty else {
+            return nil
+        }
+
         UIGraphicsBeginImageContextWithOptions(size, false, 1)
 
         defer {
@@ -327,10 +362,16 @@ public extension UIImage {
 
 public extension UIImage {
     static func circleWith(size: CGSize, backgroundColor: UIColor) -> UIImage? {
+        guard size.isNotEmpty else {
+            return nil
+        }
+
         defer {
             UIGraphicsEndImageContext()
         }
-
+        guard size.isNotEmpty else {
+            return nil
+        }
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
