@@ -88,23 +88,19 @@ public extension UIImage {
     }
 
     func scaled(toWidth: CGFloat, toHeight: CGFloat, opaque: Bool = false) -> UIImage? {
-        guard toWidth > 1, toHeight > 1 else {
+        let size: CGSize = .init(width: toWidth, height: toHeight)
+        guard size.isNotEmpty else {
             return nil
         }
 
         #if !os(watchOS)
-            let format = UIGraphicsImageRendererFormat()
-            format.scale = scale
-            let size: CGSize = .init(width: toWidth, height: toHeight)
-            return UIGraphicsImageRenderer(size: size, format: format).image { [weak self] context in
-                UIColor.clear.setFill()
-                context.fill(context.format.bounds)
+            return UIGraphicsImageRenderer(size: size).image { [weak self] _ in
                 self?.draw(in: size.toRect())
             }
         #endif
 
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: toWidth, height: toHeight), opaque, scale)
-        draw(in: CGRect(x: 0, y: 0, width: toWidth, height: toHeight))
+        UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
+        draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage
