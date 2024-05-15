@@ -33,6 +33,10 @@ public extension Lang {
     static var list: [Lang] {
         service.langList
     }
+
+    static func reset() {
+        current = .default
+    }
 }
 
 // MARK: - LangService + AppSerivce

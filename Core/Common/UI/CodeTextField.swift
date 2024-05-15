@@ -14,8 +14,9 @@ import UIKit
 
 open class CodeTextField: UITextField, UITextFieldDelegate {
     public struct CursorConfig {
-        let size: CGSize
-        let color: UIColor
+        public let size: CGSize
+        public let color: UIColor
+
         public init(size: CGSize, color: UIColor) {
             self.size = size
             self.color = color
@@ -128,7 +129,8 @@ open class CodeTextField: UITextField, UITextFieldDelegate {
             return
         }
 
-        if #available(iOS 17.0, *) {
+        // 默认宽度 2, 不需要改
+        if #available(iOS 17.0, *), cursorConfig.size.width - 2 > 0.1 {
             if let cursorView = self.findFirstSubview(UITextCursorView.self) as? UIView,
                let shapeView = cursorView.subviews.first
             {
