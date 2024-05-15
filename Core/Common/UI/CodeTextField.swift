@@ -128,8 +128,8 @@ open class CodeTextField: UITextField, UITextFieldDelegate {
             return
         }
 
-        if #available(iOS 17.4, *) {
-            if let cursorView = self.findFirstSubview(UIStandardTextCursorView.self),
+        if #available(iOS 17.0, *) {
+            if let cursorView = self.findFirstSubview(UITextCursorView.self) as? UIView,
                let shapeView = cursorView.subviews.first
             {
                 cursorfixed = true
