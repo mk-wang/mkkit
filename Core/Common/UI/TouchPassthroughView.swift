@@ -1,5 +1,5 @@
 //
-//  PassTouchView.swift
+//  TouchPassthroughView.swift
 //  MKKit
 //
 //  Created by MK on 2023/8/8.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class PassTouchView: UIView {
+open class TouchPassthroughView: UIView {
     public enum PassMode {
         case none
         case contain

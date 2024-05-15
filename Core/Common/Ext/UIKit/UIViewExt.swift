@@ -224,7 +224,7 @@ public extension UIView {
 }
 
 public extension UIView {
-    func findFirstSubview<T: UIView>(_ type: T.Type, except: [UIView] = []) -> T? {
+    func findFirstSubview<T>(_ type: T.Type, except: [UIView] = []) -> T? {
         for subview in subviews {
             guard !except.contains(subview) else {
                 continue

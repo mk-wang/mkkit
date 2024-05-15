@@ -8,7 +8,7 @@ import UIKit
 
 // MARK: - MKModalView
 
-open class MKModalView: PassTouchView {
+open class MKModalView: TouchPassthroughView {
     public enum Style {
         case bottom
         case top
@@ -26,8 +26,8 @@ open class MKModalView: PassTouchView {
     public var willShowCallback: ((MKModalView?) -> Void)?
     public var didShowCallback: ((MKModalView?) -> Void)?
 
-    public private(set) lazy var bgTouchView: PassTouchView = {
-        let view = PassTouchView()
+    public private(set) lazy var bgTouchView: TouchPassthroughView = {
+        let view = TouchPassthroughView()
         view.frame = self.bounds
         view.passMode = .none
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -242,7 +242,7 @@ public extension MKModalView {
         guard let superView = container ?? ScreenUtil.window else {
             return nil
         }
-        let box = PassTouchView(frame: superView.bounds)
+        let box = TouchPassthroughView(frame: superView.bounds)
         box.addSnpSubview(contentView)
 
         return MKModalView.showFromBottom(box, in: container) { modalView, _ in
