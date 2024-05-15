@@ -95,7 +95,7 @@ public extension UITextView {
         backgroundColor = style.backgroundColor
     }
 
-    func aplayTextStyle(style: TextViewStyle) {
+    func applyTextStyle(style: TextViewStyle) {
         font = style.font
         textColor = style.color
         textAlignment = style.textAlignment
