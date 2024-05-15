@@ -96,7 +96,7 @@ open class IGTextItemCell: HighlightCollectionViewCell {
     open func update(by item: IGTextItem?) {
         textlbl?.text = item?.text
         if let style = item?.textStyle {
-            textlbl?.aplayTextStyle(style: style)
+            textlbl?.applyTextStyle(style: style)
         }
     }
 

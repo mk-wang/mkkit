@@ -74,10 +74,10 @@ public extension UILabel {
         self.init()
         self.text = text
         self.numberOfLines = numberOfLines
-        aplayTextStyle(style: style)
+        applyTextStyle(style: style)
     }
 
-    func aplayTextStyle(style: TextViewStyle) {
+    func applyTextStyle(style: TextViewStyle) {
         font = style.font
         textColor = style.color
         textAlignment = style.textAlignment
