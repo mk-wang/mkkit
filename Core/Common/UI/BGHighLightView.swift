@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - BaseHighLightView
 
-open class BaseHighLightView: UIView {
+open class BaseHighLightView: MKBaseView {
     private var highLightTimer: SwiftTimer?
     private var highLightedDate: Date?
     private var unhighLightTimer: SwiftTimer?
