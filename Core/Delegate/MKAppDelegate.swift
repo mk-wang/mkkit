@@ -21,6 +21,8 @@ open class MKAppDelegate: UIResponder, UIApplicationDelegate {
 
     public private(set) var appServices = [AppSerivce]()
 
+    var urlHandlers: [MKAppURLHandler] = []
+
     // app 是否处于 isActive 状态，不包含第一次 app 启动
     public lazy var isActivePublisher: AnyPublisher<Bool, Never> = appStatePublisher
         .map(\.isActive)
