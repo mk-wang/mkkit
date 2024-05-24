@@ -297,9 +297,9 @@ public extension UIView {
 }
 
 public extension UIView {
-    func compressionLayout(for axis: NSLayoutConstraint.Axis) {
-        setContentHuggingPriority(.required, for: axis)
-        setContentCompressionResistancePriority(.required, for: axis)
+    func compressionLayout(_ priority: UILayoutPriority = .required, for axis: NSLayoutConstraint.Axis) {
+        setContentHuggingPriority(priority, for: axis)
+        setContentCompressionResistancePriority(priority, for: axis)
     }
 
     func pinEdges(to other: UIView) {
