@@ -34,7 +34,7 @@ public extension KVStorageSerializable where Self: RawRepresentable, Self.RawVal
     }
 }
 
-extension KVStorage {
+public extension KVStorage {
     func saveSerializable<T: KVStorageSerializable>(_ value: T, for key: String) {
         T.write(storage: self, value: value.kvValue, key: key)
     }

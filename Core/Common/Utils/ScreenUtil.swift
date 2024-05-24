@@ -144,19 +144,23 @@ public extension MKFloatingPoint {
     }
 
     var rwMin: CGFloat {
-        CGFloat.minimum(CGFloat(1), ScreenUtil.ratio.x) * cgfValue
+        let value = cgfValue
+        return min(value, value.rw)
     }
 
     var rwMax: CGFloat {
-        CGFloat.maximum(CGFloat(1), ScreenUtil.ratio.x) * cgfValue
+        let value = cgfValue
+        return max(value, value.rw)
     }
 
     var rhMin: CGFloat {
-        CGFloat.minimum(CGFloat(1), ScreenUtil.ratio.y) * cgfValue
+        let value = cgfValue
+        return min(value, value.rh)
     }
 
     var rhMax: CGFloat {
-        CGFloat.maximum(CGFloat(1), ScreenUtil.ratio.y) * cgfValue
+        let value = cgfValue
+        return max(value, value.rh)
     }
 
     var rwsMin: CGFloat {
@@ -197,6 +201,11 @@ public extension CGSize {
         let scale = ScreenUtil.ratio.x
         return .init(width: width * scale, height: height * scale)
     }
+
+    var rh: Self {
+        let scale = ScreenUtil.ratio.y
+        return .init(width: width * scale, height: height * scale)
+    }
 }
 
 public extension CGPoint {
@@ -204,11 +213,24 @@ public extension CGPoint {
         let scale = ScreenUtil.ratio.x
         return .init(x: x * scale, y: y * scale)
     }
+
+    var rh: Self {
+        let scale = ScreenUtil.ratio.y
+        return .init(x: x * scale, y: y * scale)
+    }
 }
 
 public extension UIEdgeInsets {
     var rw: Self {
         let scale = ScreenUtil.ratio.x
+        return .init(top: top * scale,
+                     left: left * scale,
+                     bottom: bottom * scale,
+                     right: right * scale)
+    }
+
+    var rh: Self {
+        let scale = ScreenUtil.ratio.y
         return .init(top: top * scale,
                      left: left * scale,
                      bottom: bottom * scale,
