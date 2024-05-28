@@ -49,16 +49,27 @@ public extension ScreenUtil {
 public extension ScreenUtil {
     static let navBarHeight: CGFloat = UINavigationBar().intrinsicContentSize.height
 
+    private static var _statusBarHeight: CGFloat?
+
     static var statusBarHeight: CGFloat {
+        if let _statusBarHeight {
+            return _statusBarHeight
+        }
         var height: CGFloat?
 
-        if #available(iOS 13.0, *) {
-            if let scene = window.windowScene {
-                height = scene.statusBarManager?.statusBarFrame.size.height
-            }
+        if #available(iOS 13.0, *), let scene = window.windowScene {
+            height = scene.statusBarManager?.statusBarFrame.size.height
         }
 
-        return height ?? UIApplication.shared.statusBarFrame.size.height
+        if height == nil || height == 0 {
+            height = UIApplication.shared.statusBarFrame.size.height
+        }
+
+        if let height, height > 0 {
+            _statusBarHeight = height
+        }
+
+        return height ?? 0
     }
 
     static var windowOrientation: UIInterfaceOrientation {
@@ -81,10 +92,20 @@ public extension ScreenUtil {
         safeAreaInsets.bottom
     }
 
+    private static var _safeAreaInsets: UIEdgeInsets?
     static var safeAreaInsets: UIEdgeInsets {
+        if let _safeAreaInsets {
+            return _safeAreaInsets
+        }
+
         var insets = window.safeAreaInsets
         if insets == .zero, let rootView = window.rootViewController?.view {
             insets = rootView.safeAreaInsets
+        }
+        if insets == .zero {
+            insets = .only(top: statusBarHeight)
+        } else {
+            _safeAreaInsets = insets
         }
         return insets
     }
