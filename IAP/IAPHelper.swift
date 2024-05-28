@@ -275,7 +275,9 @@ public extension IAPHelper {
 
         let appleValidator = AppleReceiptValidator(service: environment == .production ? .production : .sandbox,
                                                    sharedSecret: secret)
-        SwiftyStoreKit.verifyReceipt(using: appleValidator, forceRefresh: forceRefresh) { result in
+        SwiftyStoreKit.verifyReceipt(using: appleValidator,
+                                     forceRefresh: forceRefresh)
+        { result in
             switch result {
             case let .success(receipt):
                 var failed = Set<String>()

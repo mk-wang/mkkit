@@ -8,6 +8,7 @@
 import Foundation
 import MKKit
 import OpenCombine
+import StoreKit
 import SwiftyStoreKit
 
 // MARK: - MKIAPService.Config
@@ -84,9 +85,7 @@ open class MKIAPService {
     }
 
     public var productIDList: [String] { productListBuilder().map(\.id) }
-}
 
-extension MKIAPService {
     public func purchase(product: MKIAPProduct,
                          verifiyProductIds: Set<String>,
                          completion: ((Bool, PurchaseInfo?) -> Void)? = nil)
@@ -107,7 +106,7 @@ extension MKIAPService {
         }
     }
 
-    public func checkAtAppStart(completion: (([Purchase], [Purchase], IAPHelper.PurchaseResult) -> Void)? = nil) {
+    open func checkAtAppStart(completion: (([Purchase], [Purchase], IAPHelper.PurchaseResult) -> Void)? = nil) {
         isPremium = purchased.isNotEmpty
 
         Logger.shared.iap("checkAtAppStart purchased \(purchased)")
@@ -164,6 +163,27 @@ extension MKIAPService {
                 self?.updateSKProduct(skProduct: result)
             }
             self?.loadingProduct = false
+        }
+    }
+
+    @available(iOS 15.0, *)
+    @discardableResult
+    public func isEligibleForIntroOffer(_ product: MKIAPProductSimple,
+                                        completion: @escaping VoidFunction1<Bool?>) -> Task<Void, Never>
+    {
+        Task {
+            if let products = try? await StoreKit.Product.products(for: [product.id]),
+               let subscription = products.first?.subscription
+            {
+                let eligible = await subscription.isEligibleForIntroOffer
+                DispatchQueue.main.async {
+                    completion(eligible)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            }
         }
     }
 
