@@ -84,6 +84,7 @@ open class MKIAPService {
         self.config = config
     }
 
+    // to load skproduct
     public var productIDList: [String] { productListBuilder().map(\.id) }
 
     public func purchase(product: MKIAPProduct,

@@ -18,7 +18,13 @@ public protocol PageView: AnyObject {
         get
     }
 
-    func toPage(index _: Int, animated _: Bool)
+    func toPage(index _: Int, duration: TimeInterval?)
+}
+
+public extension PageView {
+    func toPage(index: Int, animated: Bool) {
+        toPage(index: index, duration: animated ? 0.25 : nil)
+    }
 }
 
 // MARK: - PageViewIndexChangeEvent
@@ -225,7 +231,7 @@ extension MKListView: UIScrollViewDelegate {
 }
 
 public extension MKListView {
-    open func toPage(index: Int, animated: Bool) {
+    open func toPage(index: Int, duration: TimeInterval? = nil) {
         guard let scrollView else {
             return
         }
@@ -235,7 +241,7 @@ public extension MKListView {
         let offset: CGPoint = .init(x: postion, y: 0)
 
         weak var weakSelf = self
-        scrollView.setContentOffset(offset, duration: animated ? 0.25 : nil) { _ in
+        scrollView.setContentOffset(offset, duration: duration) { _ in
             weakSelf?.toPaging = false
         }
 
@@ -390,8 +396,8 @@ open class MKPagedListView: UIView {
         addSnpSubview(listView)
     }
 
-    open func toPage(index: Int, animated: Bool) {
-        listView.toPage(index: index, animated: animated)
+    open func toPage(index: Int, duration: TimeInterval? = nil) {
+        listView.toPage(index: index, duration: duration)
     }
 
     open func offsetChange(_ scrollView: UIScrollView) {
