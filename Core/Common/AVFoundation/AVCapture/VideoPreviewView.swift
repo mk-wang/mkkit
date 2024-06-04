@@ -19,7 +19,7 @@ open class VideoPreviewView: UIView {
 
     public var canShowRegionOfInterest: Bool = false
 
-    private let regionOfInterestSubject: CurrentValueSubject<CGRect, Never> = .init(.fullROI)
+    private(set) lazy var regionOfInterestSubject: CurrentValueSubject<CGRect, Never> = .init(self.bounds)
     public private(set) lazy var regionOfInterestPublihser = regionOfInterestSubject.removeDuplicatesDropAndDebounce(0, debounce: 0.1).eraseToAnyPublisher()
 
     public lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer = layer as! AVCaptureVideoPreviewLayer
@@ -43,7 +43,6 @@ open class VideoPreviewView: UIView {
             layer.addSublayer(drawLayer)
         }
 
-        // Disable CoreAnimation actions so that the positions of the sublayers immediately move to their new position.
         guard canShowRegionOfInterest else {
             return
         }
@@ -52,10 +51,10 @@ open class VideoPreviewView: UIView {
             addToDrawLayer(regionOfInterestOutline)
         }
 
-        // Create the path for the mask layer. We use the even odd fill rule so that the region of interest does not have a fill color.
         let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: bounds.size.width, height: bounds.size.height))
         path.append(UIBezierPath(rect: regionOfInterest))
         path.usesEvenOddFillRule = true
+
         regionOfInterestOutline.path = CGPath(rect: regionOfInterest, transform: nil)
     }
 
@@ -157,5 +156,18 @@ public extension VideoPreviewView {
      */
     @objc func setRegionOfInterestWithProposedRegion(_ rect: CGRect) {
         regionOfInterest = regionOfInterestWithProposedRegion(rect)
+    }
+}
+
+public extension VideoPreviewView {
+    func convertDevice(point: CGPoint, rect: CGRect) -> CGPoint {
+        let drowablePoint = CGPoint(x: point.x * rect.size.width + rect.origin.x,
+                                    y: point.y * rect.size.height + rect.origin.y)
+
+        return videoPreviewLayer.layerPointConverted(fromCaptureDevicePoint: drowablePoint)
+    }
+
+    func convertDevice(rect: CGRect) -> CGRect {
+        videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: rect)
     }
 }

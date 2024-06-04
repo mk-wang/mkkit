@@ -41,6 +41,19 @@ public extension UIDeviceOrientation {
             nil
         }
     }
+
+    var exifOrientation: CGImagePropertyOrientation {
+        switch self {
+        case .portraitUpsideDown:
+            return .rightMirrored
+        case .landscapeLeft:
+            return .downMirrored
+        case .landscapeRight:
+            return .upMirrored
+        default:
+            return .leftMirrored
+        }
+    }
 }
 
 public extension CGRect {
@@ -75,11 +88,11 @@ public extension AVCaptureDevice {
 }
 
 public extension AVCaptureDevice {
-    var highestResolution420Format: AVCaptureDevice.Format? {
+    var highestResolution420Format: (AVCaptureDevice.Format, CGSize)? {
         highestResolutionFormat(for: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
     }
 
-    func highestResolutionFormat(for type: OSType) -> AVCaptureDevice.Format? {
+    func highestResolutionFormat(for type: OSType) -> (AVCaptureDevice.Format, CGSize)? {
         var highestResolutionFormat: AVCaptureDevice.Format?
         var highestResolutionDimensions = CMVideoDimensions(width: 0, height: 0)
 
@@ -96,7 +109,14 @@ public extension AVCaptureDevice {
                 }
             }
         }
-        return highestResolutionFormat
+        guard let highestResolutionFormat else {
+            return nil
+        }
+
+        let resolution = CGSize(width: CGFloat(highestResolutionDimensions.width),
+                                height: CGFloat(highestResolutionDimensions.height))
+
+        return (highestResolutionFormat, resolution)
     }
 
     func setRecommendedZoomFactor(minimumSize: CGFloat, rectOfInterestWidth: CGFloat) {
@@ -141,16 +161,22 @@ public extension AVCaptureDevice {
 
 public extension AVCaptureOutput {
     @discardableResult
-    func setupVideoConnection(front: Bool, videoOrientation: AVCaptureVideoOrientation) -> AVCaptureConnection? {
+    func setupVideoConnection(isVideoMirrored: Bool? = nil,
+                              videoOrientation: AVCaptureVideoOrientation? = nil) -> AVCaptureConnection?
+    {
         guard let connection = connection(with: .video) else {
             return nil
         }
 
-        if front {
-            connection.isVideoMirrored = true
+        connection.isEnabled = true
+        
+        if let isVideoMirrored {
+            connection.isVideoMirrored = isVideoMirrored
         }
 
-        connection.videoOrientation = videoOrientation
+        if let videoOrientation {
+            connection.videoOrientation = videoOrientation
+        }
         return connection
     }
 }
