@@ -21,3 +21,9 @@ public extension NSObject {
 private enum AssociatedKeys {
     static var kCombineInfo = 0
 }
+
+public extension AnyCancellable {
+    func store(in object: NSObject) {
+        store(in: &object.combineInfo.cancellableSet)
+    }
+}

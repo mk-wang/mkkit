@@ -69,7 +69,7 @@ open class GCCalendarDayView: UIView {
 
         envService?.timeService.dayPublisher.dropFirst().sink { [weak self] _ in
             self?.updateDateType()
-        }.store(in: &combineInfo.cancellableSet)
+        }.store(in: self)
     }
 }
 
