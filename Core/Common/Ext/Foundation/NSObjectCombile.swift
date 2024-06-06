@@ -4,15 +4,19 @@ import OpenCombine
 
 // MARK: - CombineInfo
 
-public final class CombineInfo {
-    public var cancellableSet = Set<AnyCancellable>()
+final class CombineInfo {
+    fileprivate var cancellableSet = Set<AnyCancellable>()
 }
 
-public extension NSObject {
-    var combineInfo: CombineInfo {
+extension NSObject {
+    fileprivate var combineInfo: CombineInfo {
         getOrMakeAssociatedObject(&AssociatedKeys.kCombineInfo,
                                   type: CombineInfo.self,
                                   builder: { .init() })
+    }
+
+    public func clearCancellableSet() {
+        combineInfo.cancellableSet.removeAll()
     }
 }
 
