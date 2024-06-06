@@ -50,6 +50,8 @@ public extension UIImage {
 
 public extension UIImage {
     func cropped(to rect: CGRect) -> UIImage {
+        let rect = rect.intersection(.init(origin: .zero, size: size))
+
         guard rect.size.width <= size.width, rect.size.height <= size.height else {
             return self
         }

@@ -61,8 +61,8 @@ public extension CGPoint {
 
 public extension CGPoint {
     func distance(to other: CGPoint) -> CGFloat {
-        let d1 = self.x - other.x
-        let d2 = self.y - other.y
+        let d1 = x - other.x
+        let d2 = y - other.y
         return sqrt(d1 * d1 + d2 * d2)
     }
 }

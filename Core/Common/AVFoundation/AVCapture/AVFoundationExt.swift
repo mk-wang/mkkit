@@ -45,13 +45,13 @@ public extension UIDeviceOrientation {
     var exifOrientation: CGImagePropertyOrientation {
         switch self {
         case .portraitUpsideDown:
-            return .rightMirrored
+            .rightMirrored
         case .landscapeLeft:
-            return .downMirrored
+            .downMirrored
         case .landscapeRight:
-            return .upMirrored
+            .upMirrored
         default:
-            return .leftMirrored
+            .leftMirrored
         }
     }
 }
@@ -169,7 +169,7 @@ public extension AVCaptureOutput {
         }
 
         connection.isEnabled = true
-        
+
         if let isVideoMirrored {
             connection.isVideoMirrored = isVideoMirrored
         }

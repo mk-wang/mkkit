@@ -66,7 +66,7 @@ private enum AssociatedKeys {
 
 extension UIImageView: AsyncContentObject {
     public typealias T = UIImage
-    public func assignContent(_ value: UIImage?) {
+    public func assignContent(_ value: T?) {
         image = value
     }
 }
@@ -75,7 +75,7 @@ extension UIImageView: AsyncContentObject {
 
 extension UILabel: AsyncContentObject {
     public typealias T = String
-    public func assignContent(_ value: String?) {
+    public func assignContent(_ value: T?) {
         text = value
     }
 }
@@ -84,7 +84,16 @@ extension UILabel: AsyncContentObject {
 
 extension UITextView: AsyncContentObject {
     public typealias T = String
-    public func assignContent(_ value: String?) {
+    public func assignContent(_ value: T?) {
         text = value
+    }
+}
+
+// MARK: - UIProgressView + AsyncContentObject
+
+extension UIProgressView: AsyncContentObject {
+    public typealias T = Float
+    public func assignContent(_ value: T?) {
+        progress = value ?? 0
     }
 }
