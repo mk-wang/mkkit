@@ -1,6 +1,5 @@
 //
 //  GCCalendarDateView.swift
-//  FaceYoga
 //
 //  Created by MK on 2023/11/13.
 //

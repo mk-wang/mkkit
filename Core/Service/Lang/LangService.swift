@@ -20,6 +20,7 @@ open class LangService {
 
     private let langSubject: CurrentValueSubject<Lang?, Never>
     public lazy var publisher = langSubject.eraseToAnyPublisher()
+    public lazy var rltPublisher = langSubject.map({$0?.isRTL ?? false}).removeDuplicates().eraseToAnyPublisher()
 
     public let langList: [Lang]
     public let `default`: Lang

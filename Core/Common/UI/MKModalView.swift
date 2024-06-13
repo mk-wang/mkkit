@@ -253,4 +253,51 @@ public extension MKModalView {
             configure?(modalView, contentView)
         }
     }
+
+    @discardableResult
+    static func showTop<T: UIView>(_ contentView: T,
+                                   touchToDismiss: Bool = true,
+                                   in container: UIView?,
+                                   configure: ((MKModalView, T) -> Void)? = nil) -> MKModalView?
+    {
+        guard let superView = container ?? ScreenUtil.window else {
+            return nil
+        }
+
+        let box = TouchPassthroughView(frame: superView.bounds)
+        box.addSnpSubview(contentView)
+
+        return MKModalView.show(box, style: .top, in: container) { modalView, _ in
+            if !touchToDismiss {
+                modalView.dismissOnBackgroundTap = false
+            }
+            configure?(modalView, contentView)
+        }
+    }
+
+    @discardableResult
+    static func showCenter<T: UIView>(_ contentView: T,
+                                      touchToDismiss: Bool = true,
+                                      in container: UIView?,
+                                      configure: (MKModalView, T) -> Void) -> MKModalView?
+    {
+        guard let superView = container ?? ScreenUtil.window else {
+            return nil
+        }
+
+        let box = TouchPassthroughView(frame: superView.bounds)
+
+        contentView.addSnpConfig { _, make in
+            make.center.equalToSuperview()
+        }
+        box.addSnpSubview(contentView)
+
+        return MKModalView.show(box, style: .center) { modalView, _ in
+            if !touchToDismiss {
+                modalView.dismissOnBackgroundTap = false
+            }
+
+            configure(modalView, contentView)
+        }
+    }
 }

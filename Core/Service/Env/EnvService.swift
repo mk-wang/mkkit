@@ -15,11 +15,18 @@ import UIKit
 public class EnvService {
     private var cancellableSet = Set<AnyCancellable>()
 
-    private let is12HourTZSubject = CurrentValueSubject<Bool, Never>(Locale.current.is12Hour)
+    private let is12HourTZSubject: CurrentValueSubject<Bool, Never>
     public lazy var is12HourTZPubliser = is12HourTZSubject.removeDuplicates().eraseToAnyPublisher()
 
+    public private(set) var amPmString: String? // am / pm
+
     public lazy var timeService = TimeService()
-    public init() {}
+    public init() {
+        let locale = Locale.current
+        let is12Hour = locale.is12Hour
+        is12HourTZSubject = .init(is12Hour)
+        self.amPmString = is12Hour ? locale.amPmString : nil
+    }
 
     public var is12HourTimeZone: Bool {
         is12HourTZSubject.value
@@ -28,7 +35,10 @@ public class EnvService {
 
 private extension EnvService {
     func onLocalChange() {
-        is12HourTZSubject.value = Locale.current.is12Hour
+        let locale = Locale.current
+        let is12Hour = locale.is12Hour
+        self.amPmString = is12Hour ? locale.amPmString : nil
+        is12HourTZSubject.value = is12Hour
     }
 }
 

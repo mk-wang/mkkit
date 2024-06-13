@@ -1,6 +1,5 @@
 //
 //  CodeTextField.swift
-//  FaceYoga
 //
 //  Created by MK on 2024/5/14.
 //  https://kemchenj.github.io/2019-04-07/

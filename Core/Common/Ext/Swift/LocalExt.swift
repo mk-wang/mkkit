@@ -13,4 +13,11 @@ extension Locale {
         let rt = fmt?.contains("a") ?? false
         return rt
     }
+
+    // am / pm
+    var amPmString: String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "a"
+        return fmt.string(from: .init())
+    }
 }
