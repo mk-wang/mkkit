@@ -12,7 +12,7 @@ import Foundation
 open class IDGeneration<T> {
     private let lock: NSLocking?
 
-    private var current: T
+    public private(set) var current: T
     private let valueBuilder: ValueBuilder1<T, T>
 
     public init(defaultIdBuilder: ValueBuilder<T>,
