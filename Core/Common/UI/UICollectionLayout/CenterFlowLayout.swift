@@ -1,5 +1,5 @@
 //
-//  PagingCollectionViewLayout.swift
+//  CenterFlowLayout.swift
 //  MKKit
 //
 //  Created by MK on 2023/10/10
@@ -21,7 +21,7 @@ open class CenterFlowLayout: UICollectionViewFlowLayout {
         guard let collectionView else {
             return nil
         }
-        
+
         let proposedOffset = pointValue(proposedOffsetPoint)
         let contentOffset = pointValue(collectionView.contentOffset)
         let velocity = pointValue(velocityPoint)
