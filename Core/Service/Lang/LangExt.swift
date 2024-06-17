@@ -29,7 +29,7 @@ public extension Lang {
     static var rltPublisher: AnyPublisher<Bool, Never> {
         service.rltPublisher
     }
-    
+
     static var publisher: AnyPublisher<Lang?, Never> {
         service.publisher
     }

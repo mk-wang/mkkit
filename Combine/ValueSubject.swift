@@ -8,13 +8,15 @@
 import Foundation
 import OpenCombine
 
-open class ValueSubject<T: Any> {
+// MARK: - ValuePublisher
+
+open class ValuePublisher<T: Any> {
     let retainOld: Bool
     // old , new
     private let subject: CurrentValueSubject<(T?, T), Never>
     open lazy var valuePublisher = subject.map(\.1).eraseToAnyPublisher()
 
-    open var value: T {
+    public fileprivate(set) var value: T {
         get {
             subject.value.1
         }
@@ -24,13 +26,26 @@ open class ValueSubject<T: Any> {
         }
     }
 
-    open lazy var valuesPublisher = subject.eraseToAnyPublisher()
-    open var values: (T?, T) {
+    public lazy var valuesPublisher = subject.eraseToAnyPublisher()
+    public var values: (T?, T) {
         subject.value
     }
 
     public init(_ value: T, retainOld: Bool = false) {
         self.retainOld = retainOld
         subject = CurrentValueSubject((nil, value))
+    }
+}
+
+// MARK: - ValueSubject
+
+open class ValueSubject<T: Any>: ValuePublisher<T> {
+    override public var value: T {
+        get {
+            super.value
+        }
+        set {
+            super.value = newValue
+        }
     }
 }

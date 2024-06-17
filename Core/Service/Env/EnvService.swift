@@ -25,7 +25,7 @@ public class EnvService {
         let locale = Locale.current
         let is12Hour = locale.is12Hour
         is12HourTZSubject = .init(is12Hour)
-        self.amPmString = is12Hour ? locale.amPmString : nil
+        amPmString = is12Hour ? locale.amPmString : nil
     }
 
     public var is12HourTimeZone: Bool {
@@ -37,7 +37,7 @@ private extension EnvService {
     func onLocalChange() {
         let locale = Locale.current
         let is12Hour = locale.is12Hour
-        self.amPmString = is12Hour ? locale.amPmString : nil
+        amPmString = is12Hour ? locale.amPmString : nil
         is12HourTZSubject.value = is12Hour
     }
 }
