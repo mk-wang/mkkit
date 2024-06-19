@@ -192,18 +192,14 @@ extension MKListView: UIScrollViewDelegate {
     }
 
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let scrollToScrollStop = !scrollView.isTracking && !scrollView.isDragging && !scrollView.isDecelerating
-        if scrollToScrollStop {
+        if scrollView.isStopped {
             scrollDidEnd(scrollView)
         }
     }
 
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            let dragToDragStop = scrollView.isTracking && !scrollView.isDragging && !scrollView.isDecelerating
-            if dragToDragStop {
-                scrollDidEnd(scrollView)
-            }
+        if !decelerate, scrollView.isStopped {
+            scrollDidEnd(scrollView)
         }
     }
 
