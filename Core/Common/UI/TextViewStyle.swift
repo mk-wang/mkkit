@@ -70,10 +70,15 @@ public extension TextViewStyle {
 }
 
 public extension UILabel {
-    convenience init(text: String?, style: TextViewStyle, numberOfLines: Int = 0) {
+    convenience init(text: String?,
+                     style: TextViewStyle,
+                     numberOfLines: Int = 0,
+                     adjustsFontSizeToFitWidth: Bool = false)
+    {
         self.init()
         self.text = text
         self.numberOfLines = numberOfLines
+        self.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
         applyTextStyle(style: style)
     }
 

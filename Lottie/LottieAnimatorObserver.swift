@@ -26,7 +26,7 @@ public class LottieAnimatorObserver {
         invalidate()
     }
 
-    public func prepear() {
+    public func prepare() {
         guard onProgressChanged != nil else {
             displayLink?.invalidate()
             displayLink = nil

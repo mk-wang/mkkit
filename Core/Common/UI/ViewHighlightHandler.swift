@@ -79,7 +79,7 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
     public let highlightDuration: TimeInterval
     public let unHighlightDuration: TimeInterval
 
-    private var overlay: UIView?
+    private weak var overlay: UIView?
 
     public init(_ overlayColor: UIColor? = .black.withAlphaComponent(0.08),
                 highlightDuration: TimeInterval = 0.1,
@@ -88,6 +88,10 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
         self.overlayColor = overlayColor
         self.highlightDuration = highlightDuration
         self.unHighlightDuration = unHighlightDuration
+    }
+
+    deinit {
+        overlay?.removeFromSuperview()
     }
 
     public func updateHighlightState(_ view: UIView, highLighted: Bool) {
