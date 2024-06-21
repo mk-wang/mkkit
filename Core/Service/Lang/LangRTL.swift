@@ -75,6 +75,16 @@ public extension UIImage {
     }
 }
 
+public extension UIControl.ContentHorizontalAlignment {
+    static var start: UIControl.ContentHorizontalAlignment {
+        Lang.current.isRTL ? .right : .left
+    }
+
+    static var end: UIControl.ContentHorizontalAlignment {
+        Lang.current.isRTL ? .left : .right
+    }
+}
+
 public extension UIEdgeInsets {
     var langFlip: Self {
         guard Lang.current.isRTL else {
