@@ -14,7 +14,7 @@ open class MKBaseViewController: UIViewController {
     public let titleSubject = CurrentValueSubject<String?, Never>("")
 
     #if DEBUG_BUILD
-        public var debug: Bool = false
+        open var debug: Bool = false
     #endif
 
     private let willAppearCountSubject: CurrentValueSubject<Int, Never> = .init(0)
