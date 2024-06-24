@@ -72,11 +72,14 @@ public extension SnpLayoutObject {
 }
 
 public extension UIImageView {
-    func snpFitAspectRatio() {
+    @discardableResult
+    func snpFitAspectRatio() -> CGFloat? {
         guard let size = image?.size else {
-            return
+            return nil
         }
-        addSnpAspectRatio(size.width / size.height)
+        let ratio = size.width / size.height
+        addSnpAspectRatio(ratio)
+        return ratio
     }
 
     func snpFitRWSize() {
