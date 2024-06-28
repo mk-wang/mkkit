@@ -39,7 +39,7 @@ public extension Lang {
     }
 
     static func reset() {
-        current = .default
+        current = service.system ?? service.default
     }
 }
 

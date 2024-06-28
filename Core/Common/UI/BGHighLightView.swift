@@ -60,11 +60,11 @@ open class BaseHighLightView: MKBaseView {
 
     fileprivate var keepHighLight = false
 
-    open func highLight(for duartion: Double = 0.3) {
+    open func highLight(for duration: Double = 0.3) {
         isHighLighted = true
         keepHighLight = true
 
-        DispatchQueue.mainAsync(after: duartion) {
+        DispatchQueue.mainAsync(after: duration) {
             [weak self] in
             self?.keepHighLight = false
             self?.isHighLighted = false

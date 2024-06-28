@@ -497,6 +497,8 @@ private extension GCCalendarView {
         let nextWeekDates = nextWeekDates(currentWeekDates: currentWeekDates)
 
         let weekHeight = configuration.weekConfig.height
+        let enablePanGesture = configuration.enablePanGesture
+
         for dates in [previousWeekDates, currentWeekDates, nextWeekDates] {
             let weekView = configuration.weekConfig.viewBuilder?(configuration) ?? GCCalendarWeekView(frame: .zero, configuration: configuration)
 
@@ -504,8 +506,10 @@ private extension GCCalendarView {
 
             weekView.translatesAutoresizingMaskIntoConstraints = false
 
-            let gesture = weekView.addPanGestureRecognizer(target: self, action: #selector(toggleCurrentView(_:)))
-            gesture.delegate = self
+            if enablePanGesture {
+                let gesture = weekView.addPanGestureRecognizer(target: self, action: #selector(toggleCurrentView(_:)))
+                gesture.delegate = self
+            }
 
             addSubview(weekView)
             weekViews.append(weekView)
@@ -618,14 +622,18 @@ private extension GCCalendarView {
         let previousMonthStartDate = previousMonthStartDate(currentMonthStartDate: currentMonthStartDate)
         let nextMonthStartDate = nextMonthStartDate(currentMonthStartDate: currentMonthStartDate)
 
+        let enablePanGesture = configuration.enablePanGesture
+
         for startDate in [previousMonthStartDate, currentMonthStartDate, nextMonthStartDate] {
             let monthView = GCCalendarMonthView(frame: .zero, configuration: configuration)
 
             monthView.startDate = startDate
             monthView.translatesAutoresizingMaskIntoConstraints = false
 
-            let gesture = monthView.addPanGestureRecognizer(target: self, action: #selector(toggleCurrentView(_:)))
-            gesture.delegate = self
+            if enablePanGesture {
+                let gesture = monthView.addPanGestureRecognizer(target: self, action: #selector(toggleCurrentView(_:)))
+                gesture.delegate = self
+            }
 
             addSubview(monthView)
             monthViews.append(monthView)

@@ -91,6 +91,8 @@ public class GCCalendarConfiguration {
         lable.text = text
     }
 
+    public var enablePanGesture: Bool = true
+
     public var weekConfig: WeekConfig = .init(height: 45,
                                               selectByWeek: false,
                                               viewBuilder: nil)
