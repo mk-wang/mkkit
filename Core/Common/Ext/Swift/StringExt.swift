@@ -372,6 +372,19 @@ public extension String {
     }
 }
 
+public extension String {
+    var isAlphanumeric: Bool {
+        // 使用 CharacterSet.alphanumerics 包含的所有字母和数字字符集
+        let allowedCharacters = CharacterSet.alphanumerics
+        return unicodeScalars.allSatisfy { allowedCharacters.contains($0) }
+    }
+
+    func filtered(charSet: CharacterSet) -> String {
+        let filteredScalars = unicodeScalars.filter { charSet.contains($0) }
+        return .init(String.UnicodeScalarView(filteredScalars))
+    }
+}
+
 // from https://raw.githubusercontent.com/tbaranes/FittableFontLabel/master/Source/UILabelExtension.swift
 extension String {
     public static func fontSizeThatFits(

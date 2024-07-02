@@ -28,6 +28,8 @@ open class MKBaseView: UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
 
+        if tag == 999 {}
+
         if isReadyToConfig {
             isReady = true
             readyToLayout()

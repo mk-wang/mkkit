@@ -351,7 +351,7 @@ public extension MKAVSpeech {
             utterance.stateSubject = .init(.none)
             return utterance
         } catch {
-            Logger.shared.error("MKAVSpeech speedh \(text), error \(error)")
+            Logger.shared.error("MKAVSpeech speech \(text), error \(error)")
             return nil
         }
     }

@@ -28,7 +28,7 @@ public class BoolMerge: Publisher {
 
     public var onValuesUpdate: VoidFunction1<[Bool]>?
 
-    var value: Bool {
+    public private(set) var value: Bool {
         get {
             subjuct.value
         }

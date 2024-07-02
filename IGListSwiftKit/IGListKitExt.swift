@@ -5,8 +5,8 @@
 //  Created by MK on 2024/2/19.
 //
 
-import Foundation
 import IGListKit
+import UIKit
 
 public extension ListSectionController {
     func batchUpdate(animated: Bool = true, updates: @escaping VoidFunction2<ListSectionController, ListBatchContext>) {

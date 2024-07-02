@@ -8,6 +8,11 @@ import Lottie
 import MKKit
 import UIKit
 
+#if Lottie_3
+public typealias LottieAnimationView = Lottie.AnimationView
+public typealias LottieAnimation = Lottie.Animation
+#endif
+
 public class LottieAnimatorObserver {
     public typealias ProgressChangeBlock = (_ progress: CGFloat) -> Void
 

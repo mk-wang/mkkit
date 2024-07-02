@@ -18,14 +18,14 @@ public class EnvService {
     private let is12HourTZSubject: CurrentValueSubject<Bool, Never>
     public lazy var is12HourTZPubliser = is12HourTZSubject.removeDuplicates().eraseToAnyPublisher()
 
-    public private(set) var amPmString: String? // am / pm
+    public private(set) var amPmStrings: [String]? // am / pm
 
     public lazy var timeService = TimeService()
     public init() {
         let locale = Locale.current
         let is12Hour = locale.is12Hour
         is12HourTZSubject = .init(is12Hour)
-        amPmString = is12Hour ? locale.amPmString : nil
+        amPmStrings = is12Hour ? locale.amPmStrings : nil
     }
 
     public var is12HourTimeZone: Bool {
@@ -37,7 +37,7 @@ private extension EnvService {
     func onLocalChange() {
         let locale = Locale.current
         let is12Hour = locale.is12Hour
-        amPmString = is12Hour ? locale.amPmString : nil
+        amPmStrings = is12Hour ? locale.amPmStrings : nil
         is12HourTZSubject.value = is12Hour
     }
 }

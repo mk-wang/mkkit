@@ -15,9 +15,12 @@ extension Locale {
     }
 
     // am / pm
-    var amPmString: String {
+    var amPmStrings: [String] {
         let fmt = DateFormatter()
         fmt.dateFormat = "a"
-        return fmt.string(from: .init())
+        let date: Date = .init()
+        let next = date.addingTimeInterval(Date.oneHourInterval * 12)
+        var list = [fmt.string(from: date), fmt.string(from: next)]
+        return list
     }
 }

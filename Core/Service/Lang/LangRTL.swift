@@ -10,7 +10,7 @@ import UIKit
 
 public extension Lang {
     var isRTL: Bool {
-        self == .ar
+        self == .ar || self == .fa
     }
 
     func configDirection() {
