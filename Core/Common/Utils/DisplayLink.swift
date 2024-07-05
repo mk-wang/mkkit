@@ -6,17 +6,18 @@
 //
 
 import Foundation
+import QuartzCore
 
 open class DisplayLink {
-    public let callback: VoidFunction3<DisplayLink, TimeInterval, TimeInterval>
+    public let callback: (DisplayLink, TimeInterval, TimeInterval) -> Void
     public let fps: Int
 
     private var displayLink: CADisplayLink?
     private var nextFireTime: TimeInterval?
-    private var previousTime: TimeInterval?
+    private var previousTime: TimeInterval = 0
 
     public init(fps: Int = 60,
-                callback: @escaping VoidFunction3<DisplayLink, TimeInterval, TimeInterval>)
+                callback: @escaping (DisplayLink, TimeInterval, TimeInterval) -> Void)
     {
         self.fps = fps
         self.callback = callback
@@ -41,7 +42,7 @@ open class DisplayLink {
     open var duration: TimeInterval {
         var value: TimeInterval = 0
         if let nextFireTime {
-            value = nextFireTime - CACurrentMediaTime()
+            value = nextFireTime - getCurrentTime()
             if value < 0 {
                 value = displayLink?.duration ?? 0
             }
@@ -54,6 +55,7 @@ open class DisplayLink {
     }
 
     open func resume() {
+        previousTime = getCurrentTime()
         displayLink?.isPaused = false
     }
 
@@ -71,6 +73,7 @@ open class DisplayLink {
         displayLink.add(to: RunLoop.main, forMode: .common)
 
         self.displayLink = displayLink
+        previousTime = getCurrentTime()
     }
 
     open func stop() {
@@ -79,17 +82,20 @@ open class DisplayLink {
     }
 
     @objc private func displayLinkTick(_ displayLink: CADisplayLink) {
+        let now = getCurrentTime()
+
+        let passed = now - previousTime
+        previousTime = now
+
         let target = displayLink.targetTimestamp
         nextFireTime = target
 
-        let timestamp = displayLink.timestamp
-        
-        let passed = previousTime == nil ? 0 : timestamp - previousTime!
-        previousTime = timestamp
-        
         // 理论上经过的时间
-        let interval = target - timestamp
-
+        let interval = target - displayLink.timestamp
         callback(self, passed, interval)
+    }
+
+    func getCurrentTime() -> TimeInterval {
+        CACurrentMediaTime()
     }
 }

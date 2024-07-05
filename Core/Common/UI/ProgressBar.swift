@@ -61,7 +61,7 @@ open class ProgressBar: MKBaseView {
         if rtl, Lang.current.isRTL {
             point.x = selfSize.width - size.width
         }
-        
+
         progressLayer.removeAllAnimations()
         progressLayer.frame = .init(origin: point, size: size)
     }
