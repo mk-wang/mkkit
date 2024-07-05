@@ -221,7 +221,7 @@ class OSPrinterNew {
 extension OSPrinterNew: Printer {
     private static let dateFmt: DateFormatter = {
         let fmt = DateFormatter()
-        fmt.dateFormat = "HH:mm:SSS"
+        fmt.dateFormat = "HH:mm:ss.SSS"
         return fmt
     }()
 

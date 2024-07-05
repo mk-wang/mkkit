@@ -8,14 +8,15 @@
 import Foundation
 
 open class DisplayLink {
-    public let callback: VoidFunction2<DisplayLink, TimeInterval>
+    public let callback: VoidFunction3<DisplayLink, TimeInterval, TimeInterval>
     public let fps: Int
 
     private var displayLink: CADisplayLink?
     private var nextFireTime: TimeInterval?
+    private var previousTime: TimeInterval?
 
     public init(fps: Int = 60,
-                callback: @escaping VoidFunction2<DisplayLink, TimeInterval>)
+                callback: @escaping VoidFunction3<DisplayLink, TimeInterval, TimeInterval>)
     {
         self.fps = fps
         self.callback = callback
@@ -80,8 +81,15 @@ open class DisplayLink {
     @objc private func displayLinkTick(_ displayLink: CADisplayLink) {
         let target = displayLink.targetTimestamp
         nextFireTime = target
+
+        let timestamp = displayLink.timestamp
+        
+        let passed = previousTime == nil ? 0 : timestamp - previousTime!
+        previousTime = timestamp
+        
         // 理论上经过的时间
-        let interval = target - displayLink.timestamp
-        callback(self, interval)
+        let interval = target - timestamp
+
+        callback(self, passed, interval)
     }
 }
