@@ -9,7 +9,7 @@ import Foundation
 import QuartzCore
 
 open class DisplayLink {
-    public let callback: (DisplayLink, TimeInterval, TimeInterval) -> Void
+    public let callback: VoidFunction3<DisplayLink, TimeInterval, TimeInterval>
     public let fps: Int
 
     private var displayLink: CADisplayLink?
@@ -17,7 +17,7 @@ open class DisplayLink {
     private var previousTime: TimeInterval = 0
 
     public init(fps: Int = 60,
-                callback: @escaping (DisplayLink, TimeInterval, TimeInterval) -> Void)
+                callback: @escaping VoidFunction3<DisplayLink, TimeInterval, TimeInterval>)
     {
         self.fps = fps
         self.callback = callback

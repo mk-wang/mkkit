@@ -13,7 +13,7 @@ import Foundation
 public class SwiftTimer {
     private let internalTimer: DispatchSourceTimer
 
-    private var isRunning = false
+    public private(set) var isRunning = false
 
     public let repeats: Bool
 
