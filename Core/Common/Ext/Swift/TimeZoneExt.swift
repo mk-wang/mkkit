@@ -8,7 +8,7 @@
 import Foundation
 
 public extension TimeZone {
-    var isUserTimeZoneInUSA: Bool {
+    var inUSA: Bool {
         identifier.starts(with: "US/") || Self.usTimeZones.contains(identifier)
     }
 

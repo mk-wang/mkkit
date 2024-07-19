@@ -35,10 +35,9 @@ final class GCCalendarMonthView: UIView {
             }
 
             startMonth = configuration.calendar.component(.month, from: startDate)
-
+            let viewCount = stackView.arrangedSubviews.count
             let allDates = makeAllDates()
             let datesCount = allDates.count
-            let viewCount = stackView.arrangedSubviews.count
             let max = max(datesCount, viewCount)
 
             for index in 0 ..< max {
@@ -116,6 +115,35 @@ private extension GCCalendarMonthView {
 
         for _ in 0 ..< configuration.maxWeekOfMonth - list.count {
             list.append(emptyDates)
+        }
+
+        return list
+    }
+
+    func makeAllDates(fillCount: Int = 0) -> [[Date?]] {
+        guard fillCount > 0 else {
+            return makeAllDates()
+        }
+
+        guard let startDate else {
+            return []
+        }
+
+        var list: [[Date?]] = []
+
+        let calendar = configuration.calendar
+
+        let weekday = calendar.ordinality(of: .weekday, in: .weekOfMonth, for: startDate)! - 1
+        var date = weekday == 0 ? startDate : calendar.date(byAdding: .day, value: -weekday, to: startDate)!
+
+        for index in 0 ..< fillCount {
+            var dates: [Date?] = []
+            for _ in 0 ..< configuration.numberOfWeekdays {
+                dates.append(date)
+
+                date = calendar.date(byAdding: .day, value: 1, to: date)!
+            }
+            list.append(dates)
         }
 
         return list

@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, '11.0'
 
-  s.default_subspecs = 'Core', 'SVG', 'Theme', 'KVStroage', 'InjectionIII'
+  s.default_subspecs = 'Core', 'SVG', 'Theme', 'KVStroage'
 
   s.subspec 'Core' do |ss|
     ss.source_files = 'Core/**/*.{h,m,c,swift,hpp}'
@@ -51,13 +51,10 @@ Pod::Spec.new do |s|
     ss.dependency 'MKKit/KVStroage'
   end
 
-  s.subspec 'InjectionIII' do |ss|
-    ss.source_files = 'InjectionIII/**/*.{h,m,c,swift,hpp}'
-  end  
-
   s.subspec 'SnapKit' do |ss|
     ss.source_files = 'SnapKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'SnapKit'
+    ss.dependency 'MKKit/Core'
   end
 
   s.subspec 'IGListSwiftKit' do |ss|
@@ -91,6 +88,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'Logger/Logger/**/*.{h,m,c,swift,hpp}'
     ss.resources = 'Logger/**/*.bundle'
     ss.dependency 'MKKit/Core'
+    ss.dependency 'MKKit/KVStroage'
   end
   
   s.subspec 'Logger+DDPrinter' do |ss|

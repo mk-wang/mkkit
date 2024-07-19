@@ -121,8 +121,10 @@ public func formatMessage(level: Logger.Level,
     if let tag, tag.isNotEmpty {
         tagInfo = ": \(tag)"
     }
+
+    let langText = MKAppDelegate.shared?.findService(LangService.self)?.lang.rawValue ?? AppInfo.preferredLanguage!
 //    return "[\(level)\(tagInfo)] \(function) \(message)"
-    return "[\(Lang.current.rawValue) \(AppInfo.systemVersion) \(AppInfo.shortVersion)] [\(level)\(tagInfo)] \(file)#\(line) \(message)"
+    return "[\(langText) \(AppInfo.systemVersion) \(AppInfo.shortVersion)] [\(level)\(tagInfo)] \(file)#\(line) \(message)"
 }
 
 // MARK: - Printer

@@ -162,3 +162,23 @@ public extension MKButton {
         return btn
     }
 }
+
+public extension UIButton {
+    convenience init(type: UIButton.ButtonType, style: ButtonViewStyle) {
+        self.init(type: type)
+
+        titleLabel?.font = style.font
+        setTitleColor(style.color, for: .normal)
+
+        titleLabel?.textAlignment = style.textAlignment
+        backgroundColor = style.backgroundColor
+
+        if let color = style.highlightedTextColor {
+            setTitleColor(color, for: .highlighted)
+        }
+        if let btn = self as? MKButton {
+            btn.setBackgroundColor(style.highlightedBackgroundColor, for: .highlighted)
+            btn.setBackgroundColor(style.backgroundColor, for: .normal)
+        }
+    }
+}

@@ -15,14 +15,6 @@ public protocol ThemeChangeListener {
     func onThemeChange(isDark: Bool)
 }
 
-public extension ThemeChangeListener where Self: AnyObject {
-    func subjectThemeChange() -> AnyCancellable {
-        AppTheme.darkPublisher.sink { [weak self] isDark in
-            self?.onThemeChange(isDark: isDark ?? false)
-        }
-    }
-}
-
 // MARK: - KeyboardChangeListener
 
 public protocol KeyboardChangeListener {
