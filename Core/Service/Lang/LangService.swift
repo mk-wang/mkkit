@@ -25,6 +25,10 @@ open class LangService {
     public let langList: [Lang]
     public let `default`: Lang
     public let system: Lang?
+
+    convenience init(lang: Lang) {
+        self.init(subject: .init(lang), list: [lang], default: lang)
+    }
 }
 
 public extension LangService {
@@ -33,7 +37,9 @@ public extension LangService {
             langSubject.value ?? (system ?? self.default)
         } set {
             if langSubject.value != newValue {
-                newValue.configDirection()
+                if langSubject.value?.isRTL != newValue.isRTL {
+                    newValue.configDirection()
+                }
                 langSubject.value = newValue
             }
         }
