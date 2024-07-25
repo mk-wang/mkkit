@@ -17,9 +17,10 @@ open class CaptureSession {
 
     private let sessionQueue = DispatchQueue(label: "mkkit.capture.session.queue") // Communicate with the session and other session objects on this queue.
 
-    private lazy var videoDiscovery = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
-                                                                       mediaType: .video,
-                                                                       position: .unspecified)
+    private lazy var videoDiscovery: AVCaptureDevice.DiscoverySession = discoveryBuilder()
+    let discoveryBuilder: ValueBuilder<AVCaptureDevice.DiscoverySession>
+
+    let preset: AVCaptureSession.Preset
 
     public private(set) var videoInput: AVCaptureDeviceInput?
 
@@ -55,11 +56,17 @@ open class CaptureSession {
         }
     }
 
-    let preset: AVCaptureSession.Preset
-
-    public init(useFrontCamera: Bool, preset: AVCaptureSession.Preset = .high) {
+    public init(useFrontCamera: Bool,
+                preset: AVCaptureSession.Preset = .high,
+                discoveryBuilder: ValueBuilder<AVCaptureDevice.DiscoverySession>? = nil)
+    {
         self.useFrontCamera = useFrontCamera
         self.preset = preset
+        self.discoveryBuilder = discoveryBuilder ?? {
+            .init(deviceTypes: [.builtInWideAngleCamera],
+                  mediaType: .video,
+                  position: .unspecified)
+        }
     }
 
     public func setupSession(configuration: @escaping VoidFunction1<CaptureSession>, callback: VoidFunction? = nil) {
@@ -289,30 +296,31 @@ public extension CaptureSession {
 // MARK: CaptureSession.Interrupt
 
 public extension CaptureSession {
-    enum Interrupt {
+    enum Interrupt: Equatable {
         case none
         case reason(AVCaptureSession.InterruptionReason)
         case end
 
         var isInterrupted: Bool {
-            self == .none || self == .end
+            switch self {
+            case .none:
+                false
+            case let .reason(interruptionReason):
+                true
+            case .end:
+                false
+            }
         }
-    }
-}
 
-// MARK: - CaptureSession.Interrupt + Comparable
-
-extension CaptureSession.Interrupt: Comparable {
-    public static func < (lhs: CaptureSession.Interrupt, rhs: CaptureSession.Interrupt) -> Bool {
-        switch (lhs, rhs) {
-        case (.none, .none):
-            true
-        case let (.reason(l), .reason(r)):
-            l == r
-        case (.end, .end):
-            true
-        default:
-            false
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.none, .none):
+                true
+            case (.end, .end):
+                true
+            default:
+                false
+            }
         }
     }
 }
