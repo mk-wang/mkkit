@@ -22,9 +22,9 @@ public extension Lang {
                     UINavigationBar.appearance(),
                     UIView.appearance()]
         let direction: UISemanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
-        list.forEach {
-            if $0.semanticContentAttribute != direction {
-                $0.semanticContentAttribute = direction
+        for item in list {
+            if item.semanticContentAttribute != direction {
+                item.semanticContentAttribute = direction
             }
         }
     }
@@ -33,7 +33,9 @@ public extension Lang {
 public extension UIView {
     func force(rtl: Bool, withSubview: Bool) {
         let direction: UISemanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
-        semanticContentAttribute = direction
+        if semanticContentAttribute != direction {
+            semanticContentAttribute = direction
+        }
         if withSubview {
             subviews.forEach { $0.force(rtl: rtl, withSubview: true) }
         }
