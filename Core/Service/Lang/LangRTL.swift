@@ -22,7 +22,11 @@ public extension Lang {
                     UINavigationBar.appearance(),
                     UIView.appearance()]
         let direction: UISemanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
-        list.forEach { $0.semanticContentAttribute = direction }
+        list.forEach {
+            if $0.semanticContentAttribute != direction {
+                $0.semanticContentAttribute = direction
+            }
+        }
     }
 }
 
