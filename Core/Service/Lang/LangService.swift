@@ -20,7 +20,9 @@ open class LangService {
 
     private let langSubject: CurrentValueSubject<Lang?, Never>
     public lazy var publisher = langSubject.eraseToAnyPublisher()
-    public lazy var rltPublisher = langSubject.map { $0?.isRTL ?? false }.removeDuplicates().eraseToAnyPublisher()
+    public lazy var rltPublisher = langSubject.map { [weak self] in
+        self?.getLang($0).isRTL ?? false
+    }.removeDuplicates().eraseToAnyPublisher()
 
     public let langList: [Lang]
     public let `default`: Lang
@@ -34,7 +36,7 @@ open class LangService {
 public extension LangService {
     var lang: Lang {
         get {
-            langSubject.value ?? (system ?? self.default)
+            getLang(langSubject.value)
         } set {
             if langSubject.value != newValue {
                 if langSubject.value?.isRTL != newValue.isRTL {
@@ -43,5 +45,9 @@ public extension LangService {
                 langSubject.value = newValue
             }
         }
+    }
+
+    private func getLang(_ lang: Lang?) -> Lang {
+        lang ?? (system ?? .default)
     }
 }

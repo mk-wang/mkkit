@@ -174,8 +174,9 @@ public extension UITextField {
 }
 
 public extension UINavigationController {
-    func applayLangConfig() {
-        let direction: UISemanticContentAttribute = Lang.current.isRTL ? .forceRightToLeft : .forceLeftToRight
+    func applayLangConfig(rtl: Bool? = nil) {
+        let rtl = rtl ?? Lang.current.isRTL
+        let direction: UISemanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
         view.semanticContentAttribute = direction
         navigationBar.semanticContentAttribute = direction
     }
