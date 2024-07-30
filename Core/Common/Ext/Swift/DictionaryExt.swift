@@ -20,14 +20,6 @@ public extension Dictionary {
         }
     }
 
-    func has(key: Key) -> Bool {
-        index(forKey: key) != nil
-    }
-
-    func get(_ key: Key, default: Value) -> Value {
-        self[key] ?? `default`
-    }
-
     mutating func get(_ key: Key, putIfAbsent: Bool, builder: () -> Value) -> Value {
         var value = self[key]
 
@@ -39,5 +31,22 @@ public extension Dictionary {
         }
 
         return value!
+    }
+
+    @inlinable func map<K: Hashable, V>(_ transform: (Key, Value) throws -> (K, V)) rethrows -> [K: V] {
+        var dict: [K: V] = [:]
+        for (k, v) in self {
+            let rt = try transform(k, v)
+            dict[rt.0] = rt.1
+        }
+        return dict
+    }
+
+    @inlinable func has(key: Key) -> Bool {
+        index(forKey: key) != nil
+    }
+
+    @inlinable func get(_ key: Key, default: Value) -> Value {
+        self[key] ?? `default`
     }
 }

@@ -31,7 +31,7 @@ public class PurchaseInfo {
 
     public func receiptItem(transactionId: String? = nil) -> ReceiptItem? {
         var item: ReceiptItem?
-        if let result = self.subscriptionResult,
+        if let result = subscriptionResult,
            case let .purchased(_, items: items) = result
         {
             for item in items {
@@ -40,7 +40,7 @@ public class PurchaseInfo {
                     break
                 }
             }
-        } else if let result = self.purchaseResult,
+        } else if let result = purchaseResult,
                   case let .purchased(item) = result
         {
             return item

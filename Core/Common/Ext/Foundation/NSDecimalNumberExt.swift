@@ -10,6 +10,10 @@ import Foundation
 // MARK: - MKDecimalNumber
 
 public protocol MKDecimalNumber {
+    var number: NSNumber {
+        get
+    }
+
     var decimalNumber: NSDecimalNumber {
         get
     }
@@ -18,112 +22,168 @@ public protocol MKDecimalNumber {
 // MARK: - NSNumber + MKDecimalNumber
 
 extension NSNumber: MKDecimalNumber {
+    public var number: NSNumber {
+        self
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(decimal: decimalValue)
+        .init(decimal: decimalValue)
     }
 }
 
 // MARK: - String + MKDecimalNumber
 
 extension String: MKDecimalNumber {
+    public var number: NSNumber {
+        decimalNumber
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(string: self)
+        .init(string: self)
     }
 }
 
 // MARK: - Double + MKDecimalNumber
 
 extension Double: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - Bool + MKDecimalNumber
 
 extension Bool: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - Int + MKDecimalNumber
 
 extension Int: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - Int8 + MKDecimalNumber
 
 extension Int8: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - Int16 + MKDecimalNumber
 
 extension Int16: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - Int32 + MKDecimalNumber
 
 extension Int32: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - Int64 + MKDecimalNumber
 
 extension Int64: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - UInt + MKDecimalNumber
 
 extension UInt: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - UInt8 + MKDecimalNumber
 
 extension UInt8: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - UInt16 + MKDecimalNumber
 
 extension UInt16: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - UInt32 + MKDecimalNumber
 
 extension UInt32: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
 // MARK: - UInt64 + MKDecimalNumber
 
 extension UInt64: MKDecimalNumber {
+    public var number: NSNumber {
+        .init(value: self)
+    }
+
     public var decimalNumber: NSDecimalNumber {
-        NSDecimalNumber(value: self)
+        .init(value: self)
     }
 }
 
