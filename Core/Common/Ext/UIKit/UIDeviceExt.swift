@@ -15,11 +15,11 @@ public extension UIDevice {
 }
 
 public extension UIDevice {
-    func isIPhone() -> Bool {
+    var isIPhone: Bool {
         userInterfaceIdiom == .phone
     }
 
-    func isIPad() -> Bool {
+    var isIPad: Bool {
         userInterfaceIdiom == .pad
     }
 }

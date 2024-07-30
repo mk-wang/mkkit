@@ -46,3 +46,13 @@ public extension NSObject {
         NSStringFromClass(type(of: self))
     }
 }
+
+public extension NSObject {
+    var jsonData: Data? {
+        try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted])
+    }
+
+    var jsonString: String? {
+        jsonData?.utf8Str
+    }
+}
