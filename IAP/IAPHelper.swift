@@ -28,6 +28,25 @@ public class PurchaseInfo {
     public fileprivate(set) var receipt: ReceiptInfo?
     public fileprivate(set) var purchaseResult: VerifyPurchaseResult?
     public fileprivate(set) var subscriptionResult: VerifySubscriptionResult?
+
+    public func receiptItem(transactionId: String? = nil) -> ReceiptItem? {
+        var item: ReceiptItem?
+        if let result = self.subscriptionResult,
+           case let .purchased(_, items: items) = result
+        {
+            for item in items {
+                if item.transactionId == transactionId {
+                    return item
+                    break
+                }
+            }
+        } else if let result = self.purchaseResult,
+                  case let .purchased(item) = result
+        {
+            return item
+        }
+        return nil
+    }
 }
 
 // MARK: - RestoreInfo
