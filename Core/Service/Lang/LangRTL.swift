@@ -41,7 +41,9 @@ public extension UIView {
 
     func applayLangConfig() {
         let direction: UISemanticContentAttribute = Lang.current.isRTL ? .forceRightToLeft : .forceLeftToRight
-        semanticContentAttribute = direction
+        if semanticContentAttribute != direction {
+            semanticContentAttribute = direction
+        }
     }
 
     func corner(start radius: CGFloat) {
@@ -177,7 +179,13 @@ public extension UINavigationController {
     func applayLangConfig(rtl: Bool? = nil) {
         let rtl = rtl ?? Lang.current.isRTL
         let direction: UISemanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
-        view.semanticContentAttribute = direction
-        navigationBar.semanticContentAttribute = direction
+
+        if view.semanticContentAttribute != direction {
+            view.semanticContentAttribute = direction
+        }
+
+        if navigationBar.semanticContentAttribute != direction {
+            navigationBar.semanticContentAttribute = direction
+        }
     }
 }
