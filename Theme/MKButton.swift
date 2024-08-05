@@ -12,9 +12,12 @@ import UIKit
 
 open class MKButton: UIButton {
     open var tapExt: CGSize? = nil
-    open var onLayout: VoidFunction?
+
     open var themeTintColor: UIColor?
     open var themeCancellable: AnyCancellable?
+
+    open var onLayout: VoidFunction?
+    open var onCheckBackgroundColor: VoidFunction2<Bool, Bool>?
 
     public enum ButtonState {
         case normal
@@ -43,7 +46,7 @@ open class MKButton: UIButton {
         }
     }
 
-    func checkBackgroundColor() {
+    public func checkBackgroundColor() {
         if isEnabled {
             if isHighlighted, let highlightedBackgroundColor {
                 backgroundColor = highlightedBackgroundColor
@@ -55,6 +58,8 @@ open class MKButton: UIButton {
                 backgroundColor = disabledBackgroundColor
             }
         }
+
+        onCheckBackgroundColor?(isEnabled, isHighlighted)
     }
 
     public func setBackgroundColor(_ color: UIColor?, for state: ButtonState) {
