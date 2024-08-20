@@ -41,13 +41,19 @@ public extension Array {
         return target
     }
 
-    func expand(by sepBuilder: () -> Element) -> [Element] {
+    func expand(header: Bool = false,
+                tail: Bool = false,
+                by sepBuilder: () -> Element) -> [Element]
+    {
         var list = [Element]()
         for (index, element) in enumerated() {
-            if index != 0 {
+            if header || index != 0 {
                 list.append(sepBuilder())
             }
             list.append(element)
+        }
+        if tail {
+            list.append(sepBuilder())
         }
         return list
     }
