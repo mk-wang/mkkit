@@ -190,9 +190,12 @@ open class MKIAPService {
 
     func updateSKProduct(skProduct: SKProduct) {
         let productList = productListBuilder()
-        productList.first {
-            $0.id == skProduct.productIdentifier
-        }?.update(skProduct: skProduct)
+        let productId = skProduct.productIdentifier
+        for product in productList {
+            if product.id == productId {
+                product.update(skProduct: skProduct)
+            }
+        }
     }
 
     func validatePurchase(forceRefresh: Bool,
