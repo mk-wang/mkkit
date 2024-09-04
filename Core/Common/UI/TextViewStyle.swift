@@ -32,10 +32,13 @@ public extension TextViewStyle {
         makeTextAttributes()
     }
 
-    func makeTextAttributes(paragraphConfigure: ((NSMutableParagraphStyle) -> Void)? = nil) -> [NSAttributedString.Key: Any] {
+    func makeTextAttributes(paragraphConfigure: VoidFunction1<NSMutableParagraphStyle>? = nil)
+        -> [NSAttributedString.Key: Any]
+    {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = textAlignment
         paragraphConfigure?(paragraph)
+
         return [.font: font,
                 .foregroundColor: color,
                 .backgroundColor: backgroundColor,
@@ -73,10 +76,20 @@ public extension UILabel {
     convenience init(text: String?,
                      style: TextViewStyle,
                      numberOfLines: Int = 0,
-                     adjustsFontSizeToFitWidth: Bool = false)
+                     adjustsFontSizeToFitWidth: Bool = false,
+                     asAttributedText: Bool = false,
+                     paragraphConfigure: VoidFunction1<NSMutableParagraphStyle>? = nil)
     {
         self.init()
-        self.text = text
+
+        if asAttributedText {
+            attributedText = text?.attributedString(attrs:
+                style.makeTextAttributes(paragraphConfigure: paragraphConfigure)
+            )
+        } else {
+            self.text = text
+        }
+
         self.numberOfLines = numberOfLines
         self.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
         applyTextStyle(style: style)
@@ -109,7 +122,10 @@ public extension UITextView {
 }
 
 public extension NSAttributedString {
-    convenience init(text: String, style: TextViewStyle, paragraphConfigure: ((NSMutableParagraphStyle) -> Void)? = nil) {
+    convenience init(text: String,
+                     style: TextViewStyle,
+                     paragraphConfigure: VoidFunction1<NSMutableParagraphStyle>? = nil)
+    {
         self.init(string: text,
                   attributes: style.makeTextAttributes(paragraphConfigure: paragraphConfigure))
     }
