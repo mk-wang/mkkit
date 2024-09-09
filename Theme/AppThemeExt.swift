@@ -41,7 +41,7 @@ public extension AppTheme {
     }
 }
 
-extension AppTheme {
+public extension AppTheme {
     static let darkStatusBarStyle: UIStatusBarStyle = {
         var style: UIStatusBarStyle! = if #available(iOS 13.0, *) {
             .darkContent
