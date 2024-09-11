@@ -33,6 +33,20 @@ public extension String {
 }
 
 public extension String {
+    func format1(_ p1: any CVarArg) -> String {
+        .init(format: self, p1)
+    }
+
+    func format2(_ p1: any CVarArg, _ p2: any CVarArg) -> String {
+        .init(format: self, p1, p2)
+    }
+
+    func format3(_ p1: any CVarArg, _ p2: any CVarArg, _ p3: any CVarArg) -> String {
+        .init(format: self, p1, p2, p3)
+    }
+}
+
+public extension String {
     func rot(n: UInt8) -> String {
         String(unicodeScalars.map {
             let value = rotNumber(UInt32($0.value), n: n)
