@@ -78,16 +78,20 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
     public let overlayColor: UIColor?
     public let highlightDuration: TimeInterval
     public let unHighlightDuration: TimeInterval
+    public let overlayViewBuilder: ValueBuilder1<UIView?, UIView>?
+    public var insertAtTop = true
 
     private weak var overlay: UIView?
 
     public init(_ overlayColor: UIColor? = .black.withAlphaComponent(0.08),
                 highlightDuration: TimeInterval = 0.1,
-                unHighlightDuration: TimeInterval = 0.1)
+                unHighlightDuration: TimeInterval = 0.1,
+                overlayViewBuilder: ValueBuilder1<UIView?, UIView>? = nil)
     {
         self.overlayColor = overlayColor
         self.highlightDuration = highlightDuration
         self.unHighlightDuration = unHighlightDuration
+        self.overlayViewBuilder = overlayViewBuilder
     }
 
     deinit {
@@ -99,14 +103,25 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
             overlay?.removeFromSuperview()
             overlay = nil
 
-            let overlay = UIView(frame: view.bounds)
-            overlay.backgroundColor = .clear
-            view.addSubview(overlay)
+            var overlay: UIView!
+            if let aView = overlayViewBuilder?(view) {
+                overlay = aView
+            } else {
+                overlay = UIView(frame: view.bounds)
+                overlay.backgroundColor = .clear
+            }
+
+            if insertAtTop {
+                view.addSubview(overlay)
+            } else {
+                view.insertSnpSubview(overlay, at: 0)
+            }
+
             self.overlay = overlay
         }
 
         weak var weakSelf = self
-        let target = highLighted ? overlayColor : .clear
+        let target : UIColor? = highLighted && overlayViewBuilder == nil ? overlayColor : nil
         UIView.animate(
             withDuration: highLighted ? highlightDuration : unHighlightDuration,
             delay: 0,

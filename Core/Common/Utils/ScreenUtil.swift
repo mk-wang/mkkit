@@ -47,6 +47,16 @@ public extension ScreenUtil {
 }
 
 public extension ScreenUtil {
+    static func float(_ normal: CGFloat, flat: CGFloat) -> CGFloat {
+        isFlat ? flat : normal
+    }
+    
+    static func float(_ normal: CGFloat, small: CGFloat) -> CGFloat {
+        isSmall ? small : normal
+    }
+}
+
+public extension ScreenUtil {
     static let navBarHeight: CGFloat = UINavigationBar().intrinsicContentSize.height
 
     private static var _statusBarHeight: CGFloat?

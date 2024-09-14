@@ -54,7 +54,6 @@ open class SelectedItems<T> {
     public init(list: [T], removeDuplicates: Bool = true, selected: Int? = nil) {
         self.removeDuplicates = removeDuplicates
         self.list = list
-
         subject = CurrentValueSubject<Int?, Never>(selected)
     }
 
