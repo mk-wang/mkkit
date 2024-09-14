@@ -50,7 +50,7 @@ public extension ScreenUtil {
     static func float(_ normal: CGFloat, flat: CGFloat) -> CGFloat {
         isFlat ? flat : normal
     }
-    
+
     static func float(_ normal: CGFloat, small: CGFloat) -> CGFloat {
         isSmall ? small : normal
     }

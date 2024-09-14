@@ -121,7 +121,7 @@ open class OverlayViewHighlightHandler: ViewHighlightHandler {
         }
 
         weak var weakSelf = self
-        let target : UIColor? = highLighted && overlayViewBuilder == nil ? overlayColor : nil
+        let target: UIColor? = highLighted && overlayViewBuilder == nil ? overlayColor : nil
         UIView.animate(
             withDuration: highLighted ? highlightDuration : unHighlightDuration,
             delay: 0,
