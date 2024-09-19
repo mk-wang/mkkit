@@ -89,11 +89,11 @@ public enum CipherUtils {
 }
 
 public extension Data {
-    func aesEncrypt(key: String, iv: String) -> Data? {
+    func aes128Encrypt(key: String, iv: String) -> Data? {
         CipherUtils.aes128Encrypt(data: self, key: key, iv: iv)
     }
 
-    func aesDecrypt(key: String, iv: String) -> Data? {
+    func aes128Decrypt(key: String, iv: String) -> Data? {
         CipherUtils.aes128Decrypt(data: self, key: key, iv: iv)
     }
 }
