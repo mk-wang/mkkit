@@ -208,6 +208,12 @@ public extension String {
 }
 
 public extension String {
+    func nsRange(of subString: String) -> NSRange {
+        (self as NSString).range(of: subString)
+    }
+}
+
+public extension String {
     func substring(from index: Int) -> String? {
         if count > index {
             let startIndex = self.index(startIndex, offsetBy: index)
