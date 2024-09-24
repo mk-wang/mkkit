@@ -17,18 +17,26 @@ open class MKGridView: UIView {
     public var onItemClick: ((Int) -> Void)?
 
     public private(set) lazy var listView: UICollectionView = {
-        let layout: UICollectionViewLayout = layoutBuilder?() ?? (flowLayoutBuilder?() ?? UICollectionViewFlowLayout())
         let selfBounds = self.bounds
 
-        if let flow = layout as? UICollectionViewFlowLayout {
-            let itemSpacing = config.itemSpacing(for: selfBounds.size.width)
-
-            flow.scrollDirection = .vertical
-            flow.minimumInteritemSpacing = itemSpacing
-            flow.minimumLineSpacing = config.lineSpacing
-            flow.itemSize = config.itemSize
-            flow.sectionInset = config.inset
-        }
+        let layout: UICollectionViewLayout = (layoutBuilder?() ?? flowLayoutBuilder?()) ?? { [unowned(unsafe) self] in
+            let layout = UICollectionViewFlowLayout()
+            let isVertical = config.itemPerLine > 1
+            if let flow = layout as? UICollectionViewFlowLayout {
+                flow.scrollDirection = isVertical ? .vertical : .horizontal
+                if isVertical {
+                    let itemSpacing = config.itemSpacing(for: selfBounds.size.width)
+                    flow.minimumInteritemSpacing = itemSpacing
+                    flow.minimumLineSpacing = config.lineSpacing
+                } else {
+                    flow.minimumInteritemSpacing = 0
+                    flow.minimumLineSpacing = config.lineSpacing
+                }
+                flow.itemSize = config.itemSize
+                flow.sectionInset = config.inset
+            }
+            return layout
+        }()
 
         let view = UICollectionView(frame: selfBounds, collectionViewLayout: layout)
         view.backgroundColor = .clear

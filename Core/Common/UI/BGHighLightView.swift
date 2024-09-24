@@ -206,16 +206,15 @@ open class OverlayHighlightView: BaseHighLightView {
 
 // MARK: - ScaleHighlightView
 
-class ScaleHighlightView: BaseHighLightView {
-    var animateDuration: Double = 0.3
-    var target: CGFloat = 0.9
+open class ScaleHighlightView: BaseHighLightView {
+    public func config(scale: CGFloat = 0.95,
+                       highlightDuration: TimeInterval = 0.05,
+                       unHighlightDuration: TimeInterval = 0.1)
+    {
+        addHighlightHandler(ScaleViewHighlightHandler(scale: scale, highlightDuration: highlightDuration, unHighlightDuration: unHighlightDuration))
+    }
 
     override open func updateHighlightStateUI(highLighted: Bool) {
-        let from = highLighted ? 1.0 : target
-        let to = highLighted ? target : 1.0
-        transform = CGAffineTransform(scaleX: from, y: from)
-        UIView.animate(withDuration: animateDuration, delay: 0.0, options: .curveLinear, animations: {
-            self.transform = CGAffineTransform(scaleX: to, y: to)
-        }, completion: nil)
+        handleHighlightState(highLighted: highLighted)
     }
 }
