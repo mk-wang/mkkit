@@ -17,24 +17,36 @@ import UIKit
 
 public class LottieAnimatorObserver {
     public typealias ProgressChangeBlock = (_ progress: CGFloat) -> Void
+    public typealias FrameTimeChangeBlock = (_ frame: CGFloat) -> Void
 
     private var displayLink: CADisplayLink?
 
     private weak var animationView: LottieAnimationView?
     public var onProgressChanged: ProgressChangeBlock?
-    private var lastProgress: CGFloat = -1
+    public var onFrameChanged: FrameTimeChangeBlock?
 
-    public init(animationView: LottieAnimationView, onProgressChanged: ProgressChangeBlock?) {
+    private var lastProgress: CGFloat = -1
+    private var lastFrame: CGFloat = -1
+
+    public init(animationView: LottieAnimationView,
+                onProgressChanged: ProgressChangeBlock? = nil,
+                onFrameChanged: FrameTimeChangeBlock? = nil)
+    {
         self.animationView = animationView
+        self.onFrameChanged = onFrameChanged
         self.onProgressChanged = onProgressChanged
     }
 
     deinit {
-        invalidate()
+        stop()
     }
 
-    public func prepare() {
-        guard onProgressChanged != nil else {
+    private var needObserve: Bool {
+        onProgressChanged != nil || onFrameChanged != nil
+    }
+
+    public func start() {
+        guard needObserve else {
             displayLink?.invalidate()
             displayLink = nil
             return
@@ -45,21 +57,30 @@ public class LottieAnimatorObserver {
         displayLink?.add(to: RunLoop.current, forMode: .common)
     }
 
-    public func invalidate() {
+    public func stop() {
         displayLink?.invalidate()
         displayLink = nil
     }
 
     @objc private func displayLinkTick() {
-        guard let animation = animationView, let onChange = onProgressChanged else {
+        guard let animation = animationView, needObserve else {
             return
         }
 
         if animation.isAnimationPlaying {
-            let progress = animation.realtimeAnimationProgress
-            if progress != lastProgress {
-                onChange(progress)
-                lastProgress = progress
+            if let onProgressChanged {
+                let progress = animation.realtimeAnimationProgress
+                if progress != lastProgress {
+                    onProgressChanged(progress)
+                    lastProgress = progress
+                }
+            }
+            if let onFrameChanged {
+                let frame = animation.realtimeAnimationFrame
+                if frame != lastFrame {
+                    onFrameChanged(frame)
+                    lastFrame = frame
+                }
             }
         }
     }
