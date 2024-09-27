@@ -30,6 +30,10 @@ public extension String {
     func convert(predicate: ValueBuilder1<Bool, String>, builder: ValueBuilder1<String, String>) -> String {
         predicate(self) ? builder(self) : self
     }
+
+    var capitalizedInEnglish: String {
+        Lang.current == .en ? self.capitalized : self
+    }
 }
 
 public extension String {
