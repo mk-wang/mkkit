@@ -177,9 +177,8 @@ public extension UIView {
                           scrollBuilder: (() -> UIScrollView)? = nil) -> UIScrollView
     {
         let scrollView = scrollBuilder?() ?? UIScrollView()
-        scrollView.addSnpConfig { _, make in
-            make.edges.equalToSuperview()
-        }
+        scrollView.addSnpEdgesToSuper()
+        scrollView.contentInsetAdjustmentBehavior = .never
         addSnpSubview(scrollView)
 
         let contentView = UIView()

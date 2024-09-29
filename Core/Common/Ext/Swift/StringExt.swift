@@ -32,7 +32,7 @@ public extension String {
     }
 
     var capitalizedInEnglish: String {
-        Lang.current == .en ? self.capitalized : self
+        Lang.current == .en ? capitalized : self
     }
 }
 
