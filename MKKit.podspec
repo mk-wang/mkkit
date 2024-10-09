@@ -38,17 +38,20 @@ Pod::Spec.new do |s|
     ss.source_files = 'SVG/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'SwiftDraw'
     ss.dependency 'MKKit/Core'
+    ss.dependency 'MKKit/Theme'
   end
 
   s.subspec 'KVStroage' do |ss|
     ss.source_files = 'KVStroage/Core/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'OpenCombine'
+    ss.dependency 'MKKit/Core'
   end
 
   s.subspec 'KVStroageMMKV' do |ss|
     ss.source_files = 'KVStroage/MMKV/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'MMKV'
     ss.dependency 'MKKit/KVStroage'
+    ss.dependency 'MKKit/Core'
   end
 
   s.subspec 'SnapKit' do |ss|
@@ -60,22 +63,26 @@ Pod::Spec.new do |s|
   s.subspec 'IGListSwiftKit' do |ss|
     ss.source_files = 'IGListSwiftKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'IGListKit'
+    ss.dependency 'MKKit/Core'
   end
   
   s.subspec 'IAP' do |ss|
     ss.source_files = 'IAP/**/*.{h,m,c,swift,hpp}'
     ss.frameworks = "StoreKit"
     ss.dependency 'SwiftyStoreKit'
+    ss.dependency 'MKKit/Core'
   end
 
   s.subspec 'Lottie' do |ss|
     ss.source_files = 'Lottie/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'lottie-ios'
+    ss.dependency 'MKKit/Core'
   end
   
   s.subspec 'YogaKit' do |ss|
     ss.source_files = 'YogaKit/**/*.{h,m,c,swift,hpp}'
     ss.dependency 'YogaKit'
+    ss.dependency 'MKKit/Core'
   end
 
   s.subspec 'RSwift' do |ss|
