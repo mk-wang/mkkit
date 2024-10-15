@@ -247,6 +247,12 @@ open class Sound {
         return players[nextIndex].prepareToPlay()
     }
 
+    public func reset() {
+        for player in players {
+            player.reset()
+        }
+    }
+
     // MARK: - Convenience static methods
 
     /// Play sound from a sound file.
@@ -370,6 +376,9 @@ public protocol Player: AnyObject {
     /// Resume playing.
     func resume()
 
+    /// Reset to begin
+    func reset()
+
     /// Prepare the sound.
     func prepareToPlay() -> Bool
 
@@ -395,19 +404,31 @@ public protocol Player: AnyObject {
     var isPlaying: Bool { get }
 }
 
-private var associatedCallbackKey = "com.moonlightapps.SwiftySound.associatedCallbackKey"
-
 public typealias PlayerCompletion = (Bool) -> Void
 
 // MARK: - AVAudioPlayer + Player, AVAudioPlayerDelegate
 
+private var associatedCallbackKey = "com.moonlightapps.SwiftySound.associatedCallbackKey"
+
+extension AVAudioPlayer {
+    var playerCompletion: PlayerCompletion? {
+        get {
+            objc_getAssociatedObject(self, &associatedCallbackKey) as? PlayerCompletion
+        }
+        set {
+            objc_setAssociatedObject(self, &associatedCallbackKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+}
+
 extension AVAudioPlayer: Player, AVAudioPlayerDelegate {
     public func play(numberOfLoops: Int, completion: PlayerCompletion?) -> Bool {
         if let cmpl = completion {
-            objc_setAssociatedObject(self, &associatedCallbackKey, cmpl, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+            self.playerCompletion = cmpl
             delegate = self
         }
         self.numberOfLoops = numberOfLoops
+        prepareToPlay()
         return play()
     }
 
@@ -415,9 +436,15 @@ extension AVAudioPlayer: Player, AVAudioPlayerDelegate {
         play()
     }
 
+    public func reset() {
+        pause()
+        playerCompletion = nil
+        currentTime = 0
+        prepareToPlay()
+    }
+
     public func audioPlayerDidFinishPlaying(_: AVAudioPlayer, successfully flag: Bool) {
-        let cmpl = objc_getAssociatedObject(self, &associatedCallbackKey) as? PlayerCompletion
-        cmpl?(flag)
+        playerCompletion?(flag)
         objc_removeAssociatedObjects(self)
         delegate = nil
     }
