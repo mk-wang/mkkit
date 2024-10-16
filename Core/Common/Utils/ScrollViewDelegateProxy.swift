@@ -7,6 +7,7 @@
 
 // MARK: - ScrollViewDelegateProxyProtocol
 
+import OpenCombine
 import UIKit
 
 // MARK: - ScrollViewDelegateProxyProtocol
@@ -19,6 +20,9 @@ import UIKit
 
 open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
     weak var target: ScrollViewDelegateProxyProtocol?
+
+    private let offsetSubject: PassthroughSubject<CGPoint, Never> = .init()
+    public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
     public init(target: ScrollViewDelegateProxyProtocol?) {
         self.target = target
@@ -59,6 +63,11 @@ open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
         }
 
         target?.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
+    }
+
+    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        offsetSubject.send(scrollView.contentOffset)
+        target?.scrollViewDidZoom?(scrollView)
     }
 
     open func scrollViewOnScrollEnd(_ scrollView: UIScrollView) {
