@@ -75,11 +75,11 @@ public protocol KVStorage {
     func dumpAll() -> [String: Any]
 
     // delete
-    func remove(for key: String) -> Void
+    func remove(for key: String)
 
-    func removeAll() -> Void
+    func removeAll()
 
-    func close() -> Void
+    func close()
 }
 
 // MARK: - StorageMMKV

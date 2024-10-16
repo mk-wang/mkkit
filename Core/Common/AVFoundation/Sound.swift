@@ -421,10 +421,12 @@ extension AVAudioPlayer {
     }
 }
 
+// MARK: - AVAudioPlayer + Player, AVAudioPlayerDelegate
+
 extension AVAudioPlayer: Player, AVAudioPlayerDelegate {
     public func play(numberOfLoops: Int, completion: PlayerCompletion?) -> Bool {
         if let cmpl = completion {
-            self.playerCompletion = cmpl
+            playerCompletion = cmpl
             delegate = self
         }
         self.numberOfLoops = numberOfLoops

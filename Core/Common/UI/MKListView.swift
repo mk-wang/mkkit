@@ -98,6 +98,8 @@ open class MKListView: UIView {
 
     private var viewList = [UIView]()
 
+    private lazy var scrollDelegate: ScrollViewDelegateProxy = .init(target: self)
+
     public var isScrollEnabled: Bool {
         get {
             scrollView?.isScrollEnabled ?? false
@@ -148,7 +150,7 @@ extension MKListView {
     open func setupBox(scroll: UIScrollView, box: UIView) {
         scrollView = scroll
 
-        scroll.delegate = self
+        scroll.delegate = scrollDelegate
         scroll.showsHorizontalScrollIndicator = false
 
         scrollConfigure?(scroll)
@@ -181,9 +183,9 @@ extension MKListView {
 
 extension MKListView: PageView {}
 
-// MARK: UIScrollViewDelegate
+// MARK: ScrollViewDelegateProxyProtocol
 
-extension MKListView: UIScrollViewDelegate {
+extension MKListView: ScrollViewDelegateProxyProtocol {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         onOffsetChange?(scrollView)
         if !toPaging, indexChangeBehavior == .scrolling {
@@ -191,23 +193,7 @@ extension MKListView: UIScrollViewDelegate {
         }
     }
 
-    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if scrollView.isStopped {
-            scrollDidEnd(scrollView)
-        }
-    }
-
-    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate, scrollView.isStopped {
-            scrollDidEnd(scrollView)
-        }
-    }
-
-    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        scrollDidEnd(scrollView)
-    }
-
-    @objc func scrollDidEnd(_ scrollView: UIScrollView) {
+    public func scrollViewOnScrollEnd(_ scrollView: UIScrollView) {
         onScrollEnd?(scrollView)
 
         if indexChangeBehavior == .end {

@@ -182,12 +182,3 @@ public extension UIScrollView {
         !isDragging && !isDecelerating
     }
 }
-
-// MARK: - ScrollEndDelegate
-
-@objc
-public protocol ScrollEndDelegate {
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
-    func scrollViewDidEndScrollingAnimation(_: UIScrollView)
-}

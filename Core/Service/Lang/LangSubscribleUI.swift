@@ -11,7 +11,7 @@ import OpenCombine
 // MARK: - LangSubscribleUI
 
 public protocol LangSubscribleUI: NSObject {
-    func langKeyChanged(key: String, text: String?) -> Void
+    func langKeyChanged(key: String, text: String?)
 }
 
 public extension LangSubscribleUI {
