@@ -34,6 +34,10 @@ open class LangService {
 }
 
 public extension LangService {
+    var fallback: Lang {
+        system ?? .default
+    }
+
     var lang: Lang {
         get {
             getLang(langSubject.value)
@@ -48,6 +52,6 @@ public extension LangService {
     }
 
     private func getLang(_ lang: Lang?) -> Lang {
-        lang ?? (system ?? .default)
+        lang ?? fallback
     }
 }

@@ -48,6 +48,47 @@ public extension String {
     func format3(_ p1: any CVarArg, _ p2: any CVarArg, _ p3: any CVarArg) -> String {
         .init(format: self, p1, p2, p3)
     }
+
+    func format4(_ p1: any CVarArg, _ p2: any CVarArg, _ p3: any CVarArg, _ p4: any CVarArg) -> String {
+        .init(format: self, p1, p2, p3, p4)
+    }
+
+    func format5(_ p1: any CVarArg, _ p2: any CVarArg, _ p3: any CVarArg, _ p4: any CVarArg, _ p5: any CVarArg) -> String {
+        .init(format: self, p1, p2, p3, p4, p5)
+    }
+
+    func format6(_ p1: any CVarArg, _ p2: any CVarArg, _ p3: any CVarArg, _ p4: any CVarArg, _ p5: any CVarArg, _ p6: any CVarArg) -> String {
+        .init(format: self, p1, p2, p3, p4, p5, p6)
+    }
+
+    func format7(_ p1: any CVarArg, _ p2: any CVarArg, _ p3: any CVarArg, _ p4: any CVarArg, _ p5: any CVarArg, _ p6: any CVarArg, _ p7: any CVarArg) -> String {
+        .init(format: self, p1, p2, p3, p4, p5, p6, p7)
+    }
+
+    func format(_ params: [any CVarArg]) -> String {
+        let count = params.count
+        switch count {
+        case 0:
+            return self
+        case 1:
+            return format1(params[0])
+        case 2:
+            return format2(params[0], params[1])
+        case 3:
+            return format3(params[0], params[1], params[2])
+        case 4:
+            return format4(params[0], params[1], params[2], params[3])
+        case 5:
+            return format5(params[0], params[1], params[2], params[3], params[4])
+        case 6:
+            return format6(params[0], params[1], params[2], params[3], params[4], params[5])
+        case 7:
+            return format7(params[0], params[1], params[2], params[3], params[4], params[5], params[6])
+        default:
+            assertionFailure("params count must <= 7")
+            return self
+        }
+    }
 }
 
 public extension String {
@@ -58,12 +99,20 @@ public extension String {
         })
     }
 
+    var rot: String {
+        rot(n: 13)
+    }
+
     var utf8Data: Data? {
         data(using: .utf8, allowLossyConversion: true)
     }
 
     var utf8Base64Str: String? {
         utf8Data?.base64EncodedString()
+    }
+
+    var base64Str: String? {
+        Data(base64Encoded: self)?.utf8Str
     }
 
     var jsonObject: Any? {
