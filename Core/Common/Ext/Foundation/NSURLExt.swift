@@ -12,6 +12,10 @@ public extension URL {
         (try? resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
     }
 
+    var fileSize: Int? {
+        (try? resourceValues(forKeys: [.fileSizeKey]))?.fileSize
+    }
+
     var fileName: String {
         deletingPathExtension().lastPathComponent
     }
