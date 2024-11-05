@@ -17,7 +17,7 @@ public extension Data {
 
 public extension Data {
     var md5Buffer: [UInt8] {
-        withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> [UInt8] in
+        accessBytes { bytes in
             var hash = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
             CC_MD5(bytes.baseAddress, CC_LONG(count), &hash)
             return hash
@@ -69,5 +69,25 @@ public extension Data {
     var jsonObject: Any? {
         try? JSONSerialization.jsonObject(with: self,
                                           options: .allowFragments)
+    }
+}
+
+public extension Data {
+    @inlinable
+    mutating func accessBytes<T>(_ body: (UnsafeMutableBufferPointer<UInt8>) throws -> T) rethrows -> T {
+        try withContiguousMutableStorageIfAvailable { bytes in
+            try body(bytes)
+        } ?? withUnsafeMutableBytes { pointer in
+            try body(pointer.bindMemory(to: UInt8.self))
+        }
+    }
+
+    @inlinable
+    func accessBytes<T>(_ body: (UnsafeBufferPointer<UInt8>) throws -> T) rethrows -> T {
+        try withContiguousStorageIfAvailable { bytes in
+            try body(UnsafeBufferPointer(start: bytes.baseAddress, count: bytes.count))
+        } ?? withUnsafeBytes { pointer in
+            try body(pointer.bindMemory(to: UInt8.self))
+        }
     }
 }

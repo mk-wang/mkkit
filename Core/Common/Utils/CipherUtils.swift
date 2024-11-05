@@ -51,14 +51,17 @@ public enum CipherUtils {
         let status = data.withUnsafeBytes { dataPtr in
             iv.withUnsafeBytes { ivPtr in
                 key.withUnsafeBytes { keyPtr in
-                    buffer.withUnsafeMutableBytes { bufferPtr in
+                    buffer.accessBytes { bufferPtr in
                         CCCrypt(optration.ccOpt,
                                 CCAlgorithm(kCCAlgorithmAES),
                                 CCOptions(kCCOptionPKCS7Padding),
-                                keyPtr.baseAddress, keySize.rawValue,
+                                keyPtr.baseAddress,
+                                keySize.rawValue,
                                 ivPtr.baseAddress,
-                                dataPtr.baseAddress, count,
-                                bufferPtr.baseAddress, bufferSize,
+                                dataPtr.baseAddress,
+                                count,
+                                bufferPtr.baseAddress,
+                                bufferSize,
                                 &encryptedSize)
                     }
                 }
