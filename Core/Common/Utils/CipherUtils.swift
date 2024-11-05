@@ -48,9 +48,9 @@ public enum CipherUtils {
 
         var encryptedSize = 0
 
-        let status = data.withUnsafeBytes { dataPtr in
-            iv.withUnsafeBytes { ivPtr in
-                key.withUnsafeBytes { keyPtr in
+        let status = data.accessBytes { dataPtr in
+            iv.accessBytes { ivPtr in
+                key.accessBytes { keyPtr in
                     buffer.accessBytes { bufferPtr in
                         CCCrypt(optration.ccOpt,
                                 CCAlgorithm(kCCAlgorithmAES),
