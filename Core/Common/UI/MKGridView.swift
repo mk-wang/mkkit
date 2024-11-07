@@ -9,14 +9,16 @@ import UIKit
 
 // MARK: - MKGridView
 
-open class MKGridView: UIView {
+open class MKGridView: MKBaseView {
     public let config: GridConfig
 
     public var layoutBuilder: (() -> UICollectionViewLayout)?
     public var flowLayoutBuilder: (() -> UICollectionViewFlowLayout)?
     public var onItemClick: ((Int) -> Void)?
 
-    public private(set) lazy var listView: UICollectionView = {
+    public let listConfig: VoidFunction1<UICollectionView>?
+
+    private lazy var listView: UICollectionView = {
         let selfBounds = self.bounds
 
         let layout: UICollectionViewLayout = (layoutBuilder?() ?? flowLayoutBuilder?()) ?? { [unowned(unsafe) self] in
@@ -50,27 +52,19 @@ open class MKGridView: UIView {
         return view
     }()
 
-    public init(frame: CGRect, config: GridConfig) {
+    public init(frame: CGRect, config: GridConfig, listConfig: VoidFunction1<UICollectionView>? = nil) {
         self.config = config
-
+        self.listConfig = listConfig
         super.init(frame: frame)
     }
 
-    @available(*, unavailable)
-    public required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override open func layoutSubviews() {
-        super.layoutSubviews()
-
-        guard isReadyToConfig else {
-            return
-        }
+    override open func readyToLayout() {
+        super.readyToLayout()
 
         addSnpSubview(listView)
 
         listView.dataSource = self
+        listConfig?(listView)
     }
 
     public func reloadData() {
