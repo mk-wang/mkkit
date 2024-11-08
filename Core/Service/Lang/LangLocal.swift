@@ -8,7 +8,7 @@
 import OpenCombine
 
 open class LangLocal<T> {
-    private var data: [Lang: T]
+    private var data: [Lang: T] = [:]
     private var langObs: AnyCancellable?
 
     let restrictToCurrentLang: Bool
@@ -23,40 +23,42 @@ open class LangLocal<T> {
         self.restrictToCurrentLang = restrictToCurrentLang
         self.lock = lock
 
-        let lang = Lang.current
-        data = [lang: builder(lang)]
-
         langObs = Lang.publisher
             .removeDuplicatesAndDrop()
+            .receiveOnMain()
             .sink { [weak self] _ in
-                self?.updateData()
+                self?.update(lang: .current)
             }
     }
 
-    public func updateData(withLock: Bool = true) {
-        if withLock {
-            lock?.lock()
-        }
-
-        if restrictToCurrentLang {
-            data.removeAll()
-        }
-        let lang = Lang.current
-        data[lang] = builder(lang)
-
-        if withLock {
-            lock?.unlock()
-        }
+    @discardableResult
+    public func update(lang: Lang, value: T? = nil) -> T {
+        update(lang: lang, newValue: value, shouldLock: true)
     }
 
     public var value: T {
         lock?.lock()
         defer { lock?.unlock() }
 
-        if data[Lang.current] == nil {
-            updateData(withLock: false)
+        let lang = Lang.current
+        return data[lang] ?? update(lang: lang, shouldLock: false)
+    }
+
+    @discardableResult
+    private func update(lang: Lang, newValue: T? = nil, shouldLock: Bool = true) -> T {
+        if shouldLock { lock?.lock() }
+        defer { if shouldLock { lock?.unlock() } }
+
+        if restrictToCurrentLang {
+            data.removeAll()
         }
 
-        return data[Lang.current]!
+        if newValue == nil, let value = data[lang] {
+            return value
+        }
+
+        let value = newValue ?? builder(lang)
+        data[lang] = value
+        return value
     }
 }

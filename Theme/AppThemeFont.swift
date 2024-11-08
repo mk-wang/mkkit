@@ -8,23 +8,22 @@
 import Foundation
 
 public extension AppTheme {
-    private static var fonts = [Lang: [String: CGFloat]]()
+    private static var fontSizeCache = LangLocal<NSMutableDictionary>(restrictToCurrentLang: false) { _ in
+        [:] // Initialize empty dictionary for each language
+    }
 
     static func fontSize(for key: String,
                          configure: ValueBuilder1<CGFloat, Lang>) -> CGFloat
     {
         let lang = Lang.current
-        var dict = fonts[lang]
-        if let value = dict?[key] {
+        var dict = fontSizeCache.value
+
+        if let value = dict[key] as? CGFloat {
             return value
         }
 
         let value = configure(lang)
-        if dict == nil {
-            fonts[lang] = [key: value]
-        } else {
-            fonts[lang]?[key] = value
-        }
+        dict[key] = value
         return value
     }
 }
