@@ -56,9 +56,10 @@ public extension UILabel {
         attributedText = attributeTxt
     }
 
-    func lineToFit(_ lines: Int = 1) {
+    func lineToFit(_ lines: Int = 1, baselineAdjustment: UIBaselineAdjustment = .alignCenters) {
         numberOfLines = lines
         adjustsFontSizeToFitWidth = true
+        self.baselineAdjustment = baselineAdjustment
     }
 
     var hasText: Bool {
