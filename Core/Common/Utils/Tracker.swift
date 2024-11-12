@@ -49,10 +49,21 @@ public enum TrackType: Int8 {
 // MARK: - TrackInfo
 
 public class TrackInfo {
-    weak var target: UIResponder?
-    var id: String?
-    var onExposure: ((TrackInfo) -> Void)?
-    var checkExposure: ((TrackInfo, UIScrollView) -> Void)?
+    public weak var target: UIResponder?
+    public let id: String?
+    public let onExposure: ((TrackInfo) -> Void)?
+    public let checkExposure: ((TrackInfo, UIScrollView) -> Void)?
+
+    public init(target: UIResponder? = nil,
+                id: String? = nil,
+                onExposure: ((TrackInfo) -> Void)? = nil,
+                checkExposure: ((TrackInfo, UIScrollView) -> Void)? = nil)
+    {
+        self.target = target
+        self.id = id
+        self.onExposure = onExposure
+        self.checkExposure = checkExposure
+    }
 }
 
 public extension UIResponder {
