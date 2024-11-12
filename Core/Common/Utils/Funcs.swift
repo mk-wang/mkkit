@@ -23,14 +23,35 @@ public typealias VoidFunction4<T1, T2, T3, T4> = ValueBuilder4<Void, T1, T2, T3,
 public typealias VoidFunction5<T1, T2, T3, T4, T5> = ValueBuilder5<Void, T1, T2, T3, T4, T5>
 public typealias VoidFunction6<T1, T2, T3, T4, T5, T6> = ValueBuilder6<Void, T1, T2, T3, T4, T5, T6>
 
+@inline(__always)
 public func isNotEmpty(_ object: (some Collection)?) -> Bool {
     !isEmpty(object)
 }
 
+@inline(__always)
 public func isEmpty(_ object: (some Collection)?) -> Bool {
     object?.isEmpty ?? true
 }
 
+@inline(__always)
 public func len(_ object: (some Collection)?) -> Int {
     object?.count ?? 0
+}
+
+@inline(__always)
+public func valueForEnvironment<T>(simulatorValue: T, deviceValue: T) -> T {
+    #if targetEnvironment(simulator)
+        return simulatorValue
+    #else
+        return deviceValue
+    #endif
+}
+
+@inline(__always)
+public func valueForBuild<T>(debugValue: T, releaseValue: T) -> T {
+    #if DEBUG_BUILD
+        return debugValue
+    #else
+        return releaseValue
+    #endif
 }
