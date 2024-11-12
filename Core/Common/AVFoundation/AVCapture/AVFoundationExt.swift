@@ -180,3 +180,19 @@ public extension AVCaptureOutput {
         return connection
     }
 }
+
+public extension AVPlayer {
+    func snapshot() throws -> UIImage? {
+        guard let asset = currentItem?.asset else {
+            return nil
+        }
+
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.requestedTimeToleranceAfter = .zero
+        imageGenerator.requestedTimeToleranceBefore = .zero
+
+        let thumb = try imageGenerator.copyCGImage(at: currentTime(), actualTime: nil)
+        let image = UIImage(cgImage: thumb)
+        return image
+    }
+}
