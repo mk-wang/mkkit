@@ -11,6 +11,16 @@ import UIKit
 public extension UIScrollView {
     var visibleRect: CGRect { CGRect(origin: contentOffset, size: bounds.size) }
 
+    func visibleRect(of view: UIView) -> CGRect {
+        guard let superview = view.superview else {
+            return .zero
+        }
+
+        let viewFrame = convert(view.frame, from: superview)
+        let intersection = viewFrame.intersection(bounds)
+        return intersection
+    }
+
     func checkVisibleWidth(view: UIView) -> CGFloat {
         let rect = view.convert(view.bounds, to: self)
         let scrollWidth = bounds.width
