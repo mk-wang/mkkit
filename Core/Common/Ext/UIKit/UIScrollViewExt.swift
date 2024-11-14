@@ -11,13 +11,17 @@ import UIKit
 public extension UIScrollView {
     var visibleRect: CGRect { CGRect(origin: contentOffset, size: bounds.size) }
 
-    func visibleRect(of view: UIView) -> CGRect {
+    func visibleRect(of view: UIView, inset: UIEdgeInsets? = nil) -> CGRect {
         guard let superview = view.superview else {
             return .zero
         }
 
         let viewFrame = convert(view.frame, from: superview)
-        let intersection = viewFrame.intersection(bounds)
+        var selfFrame = bounds
+        if let inset {
+            selfFrame = selfFrame.inset(by: inset)
+        }
+        let intersection = viewFrame.intersection(selfFrame)
         return intersection
     }
 
