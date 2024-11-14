@@ -74,34 +74,31 @@ public extension NSObject {
                                   builder: { .init() })
     }
 
-    private var trackMap: NSMutableDictionary {
-        getOrMakeAssociatedObject(&AssociatedKeys.kTrackMap,
+    private var trackReferences: NSMutableDictionary {
+        getOrMakeAssociatedObject(&AssociatedKeys.kTrackReferences,
                                   type: NSMutableDictionary.self,
                                   builder: { .init() })
     }
 }
 
 extension NSObject {
-    @objc open func cleanTrackSet() {
+    @objc open func cleanTrackedValues() {
         trackSet.removeAllObjects()
 
-        for value in trackMap.allValues {
-            (value as? WeakReference)?.reference?.cleanTrackSet()
+        for value in trackReferences.allValues {
+            (value as? WeakReference)?.reference?.cleanTrackedValues()
         }
     }
 
     @objc open func hasTracked(_ value: AnyHashable) -> Bool {
-        if trackSet.contains(value) {
-            return true
-        }
-        return trackMap.allKeys.first { ($0 as? AnyHashable) == value } != nil
+        trackSet.contains(value) || trackReferences.allKeys.contains { ($0 as? AnyHashable) == value }
     }
 
-    @objc open func addTrack(_ value: AnyHashable, object: NSObject?) {
-        if let object {
-            trackMap[value] = WeakReference(reference: object)
+    @objc open func addTrack(_ value: AnyHashable, reference: NSObject?) {
+        if let reference {
+            trackReferences[value] = WeakReference(reference: reference)
         } else {
-            trackMap[value] = Self.nullObject
+            trackReferences[value] = Self.nullObject
         }
     }
 
@@ -109,21 +106,20 @@ extension NSObject {
 }
 
 extension UIView {
-    @objc open func checkExposure(outBox: UIView,
+    @objc open func checkExposure(targetView: UIView,
                                   inset: UIEdgeInsets = .zero)
     {
-        trackInfo?.checker(outBox, inset)
+        trackInfo?.checker(targetView, inset)
     }
 
-    @objc open func checkExposure(outBox: UIView,
+    @objc open func checkExposure(targetView: UIView,
                                   inset: UIEdgeInsets = .zero,
-                                  checker: ValueBuilder1<Bool, CGSize>,
-                                  exposure: VoidFunction1<UIView>)
+                                  shouldExpose: ValueBuilder1<Bool, CGSize>,
+                                  onExposure: VoidFunction1<UIView>)
     {
-        let size = outBox.visibleRect(of: self, inset: inset).size
-        let canExposure = checker(size)
-        if canExposure {
-            exposure(self)
+        let size = targetView.visibleRect(of: self, inset: inset).size
+        if shouldExpose(size) {
+            onExposure(self)
         }
     }
 }
@@ -133,5 +129,5 @@ extension UIView {
 private enum AssociatedKeys {
     static var kTrackInfo = 0
     static var kTrackSet = 0
-    static var kTrackMap = 0
+    static var kTrackReferences = 0
 }
