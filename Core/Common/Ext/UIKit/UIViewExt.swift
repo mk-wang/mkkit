@@ -294,6 +294,20 @@ public extension UIView {
         let center = container!.convert(rect.center, to: self)
         return .init(center: center, size: rect.size)
     }
+
+    func visibleRect(of view: UIView, inset: UIEdgeInsets? = nil) -> CGRect {
+        guard let superview = view.superview else {
+            return .zero
+        }
+
+        let viewFrame = convert(view.frame, from: superview)
+        var selfFrame = bounds
+        if let inset {
+            selfFrame = selfFrame.inset(by: inset)
+        }
+        let intersection = viewFrame.intersection(selfFrame)
+        return intersection
+    }
 }
 
 public extension UIView {
