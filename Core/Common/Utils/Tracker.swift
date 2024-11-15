@@ -48,74 +48,83 @@ public enum TrackType: Int8 {
 
 // MARK: - TrackInfo
 
-public struct TrackInfo {
-    public let checker: VoidFunction2<UIView, UIEdgeInsets>
+class TrackInfo {
+    var exposure: VoidFunction2<UIView, UIEdgeInsets?>?
+    var click: VoidFunction1<NSObject?>?
+}
 
-    public init(checker: @escaping VoidFunction2<UIView, UIEdgeInsets>) {
-        self.checker = checker
-    }
+// MARK: - TrackReference
+
+class TrackReference {
+    var set: Set<AnyHashable> = []
+    var map: [AnyHashable: WeakReference] = [:]
 }
 
 // MARK: - TrackInfo
 
-public extension NSObject {
-    var trackInfo: TrackInfo? {
-        get {
-            getAssociatedObject(&AssociatedKeys.kTrackInfo) as? TrackInfo
-        }
-        set {
-            setAssociatedObject(&AssociatedKeys.kTrackInfo, newValue)
-        }
+extension NSObject {
+    var trackInfo: TrackInfo {
+        getOrMakeAssociatedObject(&AssociatedKeys.kTrackInfo,
+                                  type: TrackInfo.self,
+                                  builder: {
+                                      .init()
+                                  })
     }
 
-    var trackSet: NSMutableSet {
-        getOrMakeAssociatedObject(&AssociatedKeys.kTrackSet,
-                                  type: NSMutableSet.self,
-                                  builder: { .init() })
-    }
-
-    private var trackReferences: NSMutableDictionary {
-        getOrMakeAssociatedObject(&AssociatedKeys.kTrackReferences,
-                                  type: NSMutableDictionary.self,
-                                  builder: { .init() })
+    var trackReferences: TrackReference {
+        getOrMakeAssociatedObject(&AssociatedKeys.kTrackReference,
+                                  type: TrackReference.self,
+                                  builder: {
+                                      .init()
+                                  })
     }
 }
 
 extension NSObject {
     @objc open func cleanTrackedValues() {
-        trackSet.removeAllObjects()
-
-        for value in trackReferences.allValues {
-            (value as? WeakReference)?.reference?.cleanTrackedValues()
-        }
+        trackReferences.map.values.forEach { $0.reference?.cleanTrackedValues() }
+        trackReferences.map.removeAll()
+        trackReferences.set.removeAll()
     }
 
-    @objc open func hasTracked(_ value: AnyHashable) -> Bool {
-        trackSet.contains(value) || trackReferences.allKeys.contains { ($0 as? AnyHashable) == value }
+    @objc open func isTracked(_ value: AnyHashable) -> Bool {
+        trackReferences.set.contains(value) || trackReferences.map.keys.contains(value)
     }
 
-    @objc open func addTrack(_ value: AnyHashable, reference: NSObject?) {
+    @objc open func addTracking(_ value: AnyHashable, reference: NSObject? = nil) {
         if let reference {
-            trackReferences[value] = WeakReference(reference: reference)
+            trackReferences.map[value] = WeakReference(reference: reference)
         } else {
-            trackReferences[value] = Self.nullObject
+            trackReferences.set.insert(value)
         }
     }
-
-    private static let nullObject = NSNull()
 }
 
-extension UIView {
-    @objc open func checkExposure(targetView: UIView,
-                                  inset: UIEdgeInsets = .zero)
+public extension UIResponder {
+    func checkExposure(targetView: UIView,
+                       inset: UIEdgeInsets? = nil)
     {
-        trackInfo?.checker(targetView, inset)
+        trackInfo.exposure?(targetView, inset)
     }
 
-    @objc open func checkExposure(targetView: UIView,
-                                  inset: UIEdgeInsets = .zero,
-                                  shouldExpose: ValueBuilder1<Bool, CGSize>,
-                                  onExposure: VoidFunction1<UIView>)
+    func triggerClicK() {
+        trackInfo.click?(self)
+    }
+
+    func configureExposure(_ exposure: VoidFunction2<UIView, UIEdgeInsets?>?) {
+        trackInfo.exposure = exposure
+    }
+
+    func configureClick(_ click: VoidFunction1<NSObject?>?) {
+        trackInfo.click = click
+    }
+}
+
+public extension UIView {
+    func checkExposure(targetView: UIView,
+                       inset: UIEdgeInsets? = nil,
+                       shouldExpose: ValueBuilder1<Bool, CGSize>,
+                       onExposure: VoidFunction1<UIView>)
     {
         let size = targetView.visibleRect(of: self, inset: inset).size
         if shouldExpose(size) {
@@ -128,6 +137,5 @@ extension UIView {
 
 private enum AssociatedKeys {
     static var kTrackInfo = 0
-    static var kTrackSet = 0
-    static var kTrackReferences = 0
+    static var kTrackReference = 0
 }
