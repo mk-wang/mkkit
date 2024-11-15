@@ -81,8 +81,8 @@ extension NSObject {
 }
 
 extension NSObject {
-    @objc open func cleanTrackedValues() {
-        trackReferences.map.values.forEach { $0.reference?.cleanTrackedValues() }
+    @objc open func clearTrackedValues() {
+        trackReferences.map.values.forEach { $0.reference?.clearTrackedValues() }
         trackReferences.map.removeAll()
         trackReferences.set.removeAll()
     }
