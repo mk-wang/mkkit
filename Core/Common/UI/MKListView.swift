@@ -98,7 +98,13 @@ open class MKListView: UIView {
 
     private var viewList = [UIView]()
 
-    private lazy var scrollDelegate: ScrollViewDelegateProxy = .init(target: self)
+    lazy var scrollDelegate: ScrollViewDelegateProxy = {
+        let proxy = ScrollViewDelegateProxy(delegate: self)
+        proxy.scrollEndPublisher.sink { [weak self] _ in
+            self?.scrollViewOnScrollEnd()
+        }.store(in: self)
+        return proxy
+    }()
 
     public var isScrollEnabled: Bool {
         get {
@@ -183,9 +189,9 @@ extension MKListView {
 
 extension MKListView: PageView {}
 
-// MARK: ScrollViewDelegateProxyProtocol
+// MARK: UIScrollViewDelegate
 
-extension MKListView: ScrollViewDelegateProxyProtocol {
+extension MKListView: UIScrollViewDelegate {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         onOffsetChange?(scrollView)
         if !toPaging, indexChangeBehavior == .scrolling {
@@ -193,9 +199,11 @@ extension MKListView: ScrollViewDelegateProxyProtocol {
         }
     }
 
-    public func scrollViewOnScrollEnd(_ scrollView: UIScrollView) {
+    public func scrollViewOnScrollEnd() {
+        guard let scrollView else {
+            return
+        }
         onScrollEnd?(scrollView)
-
         if indexChangeBehavior == .end {
             updateIndexByScroller(scrollView)
         }

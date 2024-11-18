@@ -10,30 +10,20 @@
 import OpenCombine
 import UIKit
 
-// MARK: - ScrollViewDelegateProxyProtocol
-
-@objc public protocol ScrollViewDelegateProxyProtocol: UIScrollViewDelegate {
-    @objc optional func scrollViewOnScrollEnd(_: UIScrollView)
-}
-
 // MARK: - ScrollViewDelegateProxy
 
 open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
-    weak var target: ScrollViewDelegateProxyProtocol?
-
-    private let offsetSubject: PassthroughSubject<CGPoint, Never> = .init()
+    private let offsetSubject: CurrentValueSubject<CGPoint, Never> = .init(.zero)
     public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
-    private var delegates: [WeakReference]
+    private let scrollEndSubject: PassthroughSubject<Void, Never> = .init()
+    public lazy var scrollEndPublisher = scrollEndSubject.eraseToAnyPublisher()
 
-    public init(target: ScrollViewDelegateProxyProtocol?,
-                delegate: UIScrollViewDelegate? = nil)
-    {
-        self.target = target
-        self.delegates = [target, delegate].compactMap {
-            $0 == nil ? nil : .init(reference: $0!)
-        }
+    private var delegates: [WeakReference] = []
+
+    public init(delegate: UIScrollViewDelegate? = nil) {
         super.init()
+        addDelegate(delegate)
     }
 
     open func addDelegate(_ delegate: UIScrollViewDelegate?) {
@@ -66,16 +56,20 @@ open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
             scrollViewOnScrollEnd(scrollView)
         }
 
-        if let delegate = findDelegate(for: #selector(UIScrollViewDelegate.scrollViewDidEndDecelerating(_:))) {
-            delegate.scrollViewDidEndDecelerating?(scrollView)
+        forwardSelector(#selector(UIScrollViewDelegate.scrollViewDidEndDecelerating(_:)),
+                        scrollView: scrollView)
+        {
+            $0.scrollViewDidEndDecelerating?($1)
         }
     }
 
     public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         scrollViewOnScrollEnd(scrollView)
 
-        if let delegate = findDelegate(for: #selector(UIScrollViewDelegate.scrollViewDidEndScrollingAnimation(_:))) {
-            delegate.scrollViewDidEndScrollingAnimation?(scrollView)
+        forwardSelector(#selector(UIScrollViewDelegate.scrollViewDidEndScrollingAnimation(_:)),
+                        scrollView: scrollView)
+        {
+            $0.scrollViewDidEndScrollingAnimation?($1)
         }
     }
 
@@ -84,25 +78,50 @@ open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
             scrollViewOnScrollEnd(scrollView)
         }
 
-        if let delegate = findDelegate(for: #selector(UIScrollViewDelegate.scrollViewDidEndDragging(_:willDecelerate:))) {
-            delegate.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
-        }
+        findDelegate(for: #selector(UIScrollViewDelegate.scrollViewDidEndDragging(_:willDecelerate:)))?
+            .scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let delegate = findDelegate(for: #selector(UIScrollViewDelegate.scrollViewDidScroll(_:))) {
-            delegate.scrollViewDidScroll?(scrollView)
+        forwardSelector(#selector(UIScrollViewDelegate.scrollViewDidScroll(_:)),
+                        scrollView: scrollView)
+        {
+            $0.scrollViewDidScroll?($1)
         }
+
         offsetSubject.send(scrollView.contentOffset)
     }
 
-    open func scrollViewOnScrollEnd(_ scrollView: UIScrollView) {
-        target?.scrollViewOnScrollEnd?(scrollView)
+    open func scrollViewOnScrollEnd(_: UIScrollView) {
+        scrollEndSubject.send(())
     }
 
     private func findDelegate(for selector: Selector) -> UIScrollViewDelegate? {
-        delegates.compactMap { $0.reference as? UIScrollViewDelegate }
+        cleanUpDelegates()
+        return delegates.compactMap { $0.reference as? UIScrollViewDelegate }
             .first { $0.responds(to: selector) }
+    }
+
+    func forwardSelector(_ selector: Selector,
+                         scrollView: UIScrollView,
+                         fallback: ((UIScrollViewDelegate, UIScrollView) -> Void)? = nil)
+    {
+        guard let delegate = findDelegate(for: selector) else {
+            return
+        }
+
+        guard let method = (delegate as? NSObject)?.method(for: selector) else {
+            fallback?(delegate, scrollView)
+            return
+        }
+
+        typealias FunctionType = @convention(c) (Any, Selector, UIScrollView) -> Void
+        let implementation = unsafeBitCast(method, to: FunctionType.self)
+        implementation(delegate, selector, scrollView)
+    }
+
+    private func cleanUpDelegates() {
+        delegates.removeAll { $0.reference == nil }
     }
 }
 
