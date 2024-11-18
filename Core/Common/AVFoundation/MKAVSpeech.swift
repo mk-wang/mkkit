@@ -359,6 +359,18 @@ public extension MKAVSpeech {
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
     }
+
+    func pause() {
+        synthesizer.pauseSpeaking(at: .immediate)
+    }
+
+    var isPaused: Bool {
+        synthesizer.isPaused
+    }
+
+    func resume() {
+        synthesizer.continueSpeaking()
+    }
 }
 
 // MARK: AVSpeechSynthesizerDelegate
