@@ -56,7 +56,7 @@ open class HighlightCollectionViewCell: MKBaseCellView {
 // MARK: - OverlayCollectionViewCell
 
 open class OverlayCollectionViewCell: HighlightCollectionViewCell {
-    var overlayColor: UIColor = .black.withAlphaComponent(0.08) {
+    public var overlayColor: UIColor = .black.withAlphaComponent(0.08) {
         didSet {
             cleanHighlightHandler()
             addHighlightHandler(OverlayViewHighlightHandler(overlayColor))
