@@ -62,9 +62,9 @@ typedef void (^readTextBlock)(void);
 @property (nonatomic, strong) void (^minimizeActionBlock)(void);
 @property (nonatomic, copy) NSArray<NSString *> *dataSource;
 
-@property (nonatomic) UISearchBar * searchBar;
+@property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NSArray<NSString *> *filteredDataSource;
-@property (nonatomic) NSString * filterText;
+@property (nonatomic) NSString *filterText;
 
 @end
 
@@ -209,23 +209,26 @@ typedef void (^readTextBlock)(void);
     [self.view addSubview:_imgV];
 }
 
-- (void)configSearchBar {
+- (void)configSearchBar
+{
     [_btnLine addArrangedSubview:self.searchBar];
 }
 
-- (UISearchBar*)searchBar {
+- (UISearchBar *)searchBar
+{
     if (_searchBar != nil) {
         return _searchBar;
     }
     _searchBar = [UISearchBar new];
-//    [_searchBar setShowsCancelButton:YES];
     [_searchBar setDelegate:self];
-    
+    _searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    _searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    _searchBar.placeholder = @"filter";
+    _searchBar.showsCancelButton = NO;
     _searchBar.translatesAutoresizingMaskIntoConstraints = NO;
     [_searchBar.heightAnchor constraintEqualToConstant:BTN_HEIGHT].active = YES;
     return _searchBar;
 }
-
 
 - (void)minimizeAction:(UIButton *)sender
 {
@@ -304,47 +307,60 @@ typedef void (^readTextBlock)(void);
 {
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText  {
-    
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    self.filterText = searchBar.text;
 }
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
     self.filterText = searchBar.text;
     [searchBar endEditing:YES];
-    [self updateFilter];
 }
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
     [searchBar setShowsCancelButton:NO];
     self.filterText = nil;
-    [self updateFilter];
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    NSLog(@"XXXXXXXX searchBarTextDidEndEditing");
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    self.filterText = searchBar.text;
     [searchBar setShowsCancelButton:NO];
     [searchBar endEditing:YES];
-    [self updateFilter];
 }
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
     [searchBar setShowsCancelButton:YES];
     [self updateFilter];
 }
 
-- (void)updateFilter {
+- (void)updateFilter
+{
     if ([self.filterText length] == 0) {
         self.filteredDataSource = self.dataSource;
     } else {
-        NSPredicate* pred = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@", self.filterText];
-        NSArray<NSString *> * filtered = [self.dataSource filteredArrayUsingPredicate: pred];
+        NSMutableArray<NSString *> *filtered = [NSMutableArray new];
+        for (NSString *text in _dataSource) {
+            if ([text rangeOfString:_filterText
+                            options:NSCaseInsensitiveSearch]
+                    .location != NSNotFound) {
+                [filtered addObject:text];
+            }
+        }
         self.filteredDataSource = filtered;
     }
     [_tableView reloadData];
 }
 
-- (void)setFilterText:(NSString *)filterText {
-    _filterText = filterText;
+- (void)setFilterText:(NSString *)filterText
+{
+    if (![_filterText isEqualToString:filterText]) {
+        _filterText = filterText;
+        [self updateFilter];
+    }
 }
 
 @end
@@ -425,6 +441,7 @@ typedef void (^readTextBlock)(void);
     [super layoutSubviews];
     self.rootViewController.view.frame = self.bounds;
 }
+
 @end
 
 #pragma mark - GHConsole
