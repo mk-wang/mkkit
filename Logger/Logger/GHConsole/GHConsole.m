@@ -51,6 +51,7 @@ typedef void (^readTextBlock)(void);
 @public
     UIStackView *_btnLine;
     UITableView *_tableView;
+    UISearchBar *_searchBar;
     UIButton *_clearBtn;
     UIButton *_minimize;
     UIImageView *_imgV;
@@ -62,9 +63,8 @@ typedef void (^readTextBlock)(void);
 @property (nonatomic, strong) void (^minimizeActionBlock)(void);
 @property (nonatomic, copy) NSArray<NSString *> *dataSource;
 
-@property (nonatomic) UISearchBar *searchBar;
-@property (nonatomic) NSArray<NSString *> *filteredDataSource;
-@property (nonatomic) NSString *filterText;
+@property (nonatomic, strong) NSArray<NSString *> *filteredDataSource;
+@property (nonatomic, copy) NSString *filterText;
 
 @end
 
@@ -320,26 +320,23 @@ typedef void (^readTextBlock)(void);
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-    [searchBar setShowsCancelButton:NO];
     self.filterText = nil;
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
     self.filterText = searchBar.text;
-    [searchBar setShowsCancelButton:NO];
     [searchBar endEditing:YES];
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
 {
-    [searchBar setShowsCancelButton:YES];
     [self updateFilter];
 }
 
 - (void)updateFilter
 {
-    if ([self.filterText length] == 0) {
+    if ([_filterText length] == 0) {
         self.filteredDataSource = self.dataSource;
     } else {
         NSMutableArray<NSString *> *filtered = [NSMutableArray new];
@@ -352,13 +349,16 @@ typedef void (^readTextBlock)(void);
         }
         self.filteredDataSource = filtered;
     }
-    [_tableView reloadData];
+
+    if (_tableView.superview != nil) {
+        [_tableView reloadData];
+    }
 }
 
 - (void)setFilterText:(NSString *)filterText
 {
     if (![_filterText isEqualToString:filterText]) {
-        _filterText = filterText;
+        _filterText = [filterText copy];
         [self updateFilter];
     }
 }
