@@ -14,9 +14,9 @@
 
 #define k_WIDTH [UIScreen mainScreen].bounds.size.width
 
-#define BTN_WIDTH 70.f
+#define BTN_WIDTH 44.f
 #define BTN_HEIGHT 44.0f
-#define BTN_X_PAD 20.0f
+#define BTN_X_PAD 10.0f
 #define MIN_SIZE 54.f
 
 NS_INLINE CGRect _fixRect(CGRect origin)
@@ -47,7 +47,7 @@ NS_INLINE CGRect _fixRect(CGRect origin)
 typedef void (^clearTextBlock)(void);
 typedef void (^readTextBlock)(void);
 
-@interface GHConsoleRootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface GHConsoleRootViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate> {
 @public
     UIStackView *_btnLine;
     UITableView *_tableView;
@@ -60,7 +60,11 @@ typedef void (^readTextBlock)(void);
 @property (nonatomic, copy) clearTextBlock clearLogText;
 @property (nonatomic, copy) readTextBlock readLog;
 @property (nonatomic, strong) void (^minimizeActionBlock)(void);
-@property (nonatomic, copy) NSArray *dataSource;
+@property (nonatomic, copy) NSArray<NSString *> *dataSource;
+
+@property (nonatomic) UISearchBar * searchBar;
+@property (nonatomic) NSArray<NSString *> *filteredDataSource;
+@property (nonatomic) NSString * filterText;
 
 @end
 
@@ -153,8 +157,10 @@ typedef void (^readTextBlock)(void);
                                      attribute:NSLayoutAttributeNotAnAttribute
                                     multiplier:1
                                       constant:BTN_HEIGHT],
+        [_btnLine.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor]
     ]];
 
+    [self configSearchBar];
     [self configClearBtn];
     [self configMinimizeBtn];
 }
@@ -203,6 +209,24 @@ typedef void (^readTextBlock)(void);
     [self.view addSubview:_imgV];
 }
 
+- (void)configSearchBar {
+    [_btnLine addArrangedSubview:self.searchBar];
+}
+
+- (UISearchBar*)searchBar {
+    if (_searchBar != nil) {
+        return _searchBar;
+    }
+    _searchBar = [UISearchBar new];
+//    [_searchBar setShowsCancelButton:YES];
+    [_searchBar setDelegate:self];
+    
+    _searchBar.translatesAutoresizingMaskIntoConstraints = NO;
+    [_searchBar.heightAnchor constraintEqualToConstant:BTN_HEIGHT].active = YES;
+    return _searchBar;
+}
+
+
 - (void)minimizeAction:(UIButton *)sender
 {
     if (_minimizeActionBlock) {
@@ -213,7 +237,7 @@ typedef void (^readTextBlock)(void);
 - (void)setDataSource:(NSArray *)dataSource
 {
     _dataSource = dataSource;
-    [_tableView reloadData];
+    [self updateFilter];
 }
 
 - (void)clearText
@@ -235,7 +259,7 @@ typedef void (^readTextBlock)(void);
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.dataSource.count;
+    return self.filteredDataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -263,7 +287,7 @@ typedef void (^readTextBlock)(void);
         [NSLayoutConstraint activateConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[textView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(textView)]];
         [NSLayoutConstraint activateConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[textView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(textView)]];
     }
-    NSString *str = self.dataSource[indexPath.row];
+    NSString *str = self.filteredDataSource[indexPath.row];
     UITextView *textView = [cell.contentView viewWithTag:100];
     textView.text = str;
     return cell;
@@ -271,13 +295,56 @@ typedef void (^readTextBlock)(void);
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *str = self.dataSource[indexPath.row];
+    NSString *str = self.filteredDataSource[indexPath.row];
     CGRect rect = [str boundingRectWithSize:CGSizeMake([UIScreen mainScreen].bounds.size.width - 10, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13]} context:nil];
     return ceil(rect.size.height);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText  {
+    
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    self.filterText = searchBar.text;
+    [searchBar endEditing:YES];
+    [self updateFilter];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [searchBar setShowsCancelButton:NO];
+    self.filterText = nil;
+    [self updateFilter];
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    NSLog(@"XXXXXXXX searchBarTextDidEndEditing");
+    [searchBar setShowsCancelButton:NO];
+    [searchBar endEditing:YES];
+    [self updateFilter];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    [searchBar setShowsCancelButton:YES];
+    [self updateFilter];
+}
+
+- (void)updateFilter {
+    if ([self.filterText length] == 0) {
+        self.filteredDataSource = self.dataSource;
+    } else {
+        NSPredicate* pred = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@", self.filterText];
+        NSArray<NSString *> * filtered = [self.dataSource filteredArrayUsingPredicate: pred];
+        self.filteredDataSource = filtered;
+    }
+    [_tableView reloadData];
+}
+
+- (void)setFilterText:(NSString *)filterText {
+    _filterText = filterText;
 }
 
 @end
@@ -368,7 +435,7 @@ typedef void (^readTextBlock)(void);
 
 @property (nonatomic, strong) NSString *string;
 @property (nonatomic, assign) BOOL isShowConsole;
-@property (nonatomic, strong) NSMutableArray *logStingArray;
+@property (nonatomic, strong) NSMutableArray<NSString *> *logStingArray;
 @property (nonatomic, copy) NSString *funcString;
 
 @property (nonatomic, assign) NSInteger currentLogCount;
@@ -543,7 +610,7 @@ typedef void (^readTextBlock)(void);
     self.consoleWindow.consoleRootViewController.dataSource = self.logStingArray;
 }
 
-- (NSMutableArray *)logStingArray
+- (NSMutableArray<NSString *> *)logStingArray
 {
     if (!_logStingArray) {
         _logStingArray = [NSMutableArray arrayWithCapacity:0];
