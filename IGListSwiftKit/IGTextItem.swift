@@ -37,7 +37,7 @@ public extension IGTextItem {
         cell: Cell.Type = IGTextItemCell.self,
         minHeight: CGFloat? = nil,
         configureBlock: ((Item, Cell) -> Void)? = nil,
-        clickBlock: VoidFunction? = nil
+        clickBlock: VoidFunction1<Int>? = nil
     ) -> IGSectionItemController<Item, Cell> {
         let ctr = IGSectionItemController<Item, Cell>()
         ctr.heightBlock = { _, item, width in

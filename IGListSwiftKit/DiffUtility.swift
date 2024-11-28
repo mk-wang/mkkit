@@ -68,14 +68,22 @@ public enum DiffUtility {
 // MARK: - DiffableBox
 
 public final class DiffableBox<T: Diffable>: ListDiffable {
-    let value: T
+    public let value: T
     let identifier: NSObjectProtocol
     let equal: (T, T) -> Bool
 
-    init(value: T, identifier: NSObjectProtocol, equal: @escaping (T, T) -> Bool) {
+    public init(value: T, identifier: NSObjectProtocol, equal: @escaping (T, T) -> Bool) {
         self.value = value
         self.identifier = identifier
         self.equal = equal
+    }
+
+    public convenience init(value: T) {
+        self.init(value: value,
+                  identifier: value.diffIdentifier as NSString,
+                  equal: {
+                      $0.diffIdentifier == $1.diffIdentifier
+                  })
     }
 
     // IGListDiffable
