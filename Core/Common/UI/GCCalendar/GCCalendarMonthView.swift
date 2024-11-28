@@ -169,13 +169,18 @@ extension GCCalendarMonthView {
 
 extension GCCalendarMonthView {
     func select(date: Date? = nil) {
-        let newDate: Date = date ?? startDate
-        var weekOfMonth = configuration.calendar.ordinality(of: .weekOfMonth, in: .month, for: newDate)!
+        let calendar = configuration.calendar
 
-        if configuration.calendar.ordinality(of: .weekOfMonth, in: .month, for: startDate)! != 0 {
+        guard let date = date ?? startDate,
+              var weekOfMonth = calendar.ordinality(of: .weekOfMonth, in: .month, for: date)
+        else {
+            return
+        }
+
+        if weekOfMonth > 0, startDate == date || calendar.ordinality(of: .weekOfMonth, in: .month, for: startDate) != 0 {
             weekOfMonth -= 1
         }
 
-        weekViews[weekOfMonth].select(date: newDate)
+        weekViews.at(weekOfMonth)?.select(date: date)
     }
 }
