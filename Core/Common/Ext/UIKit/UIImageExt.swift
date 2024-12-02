@@ -299,29 +299,36 @@ public extension UIImage {
     }
 
     func flipped(options: FlipOptions) -> UIImage {
-        guard !options.isEmpty, let cgImage else {
+        guard !options.isEmpty else {
             return self
         }
+        let size = size
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let rendererFormat = UIGraphicsImageRendererFormat()
+        rendererFormat.scale = scale
+        return UIGraphicsImageRenderer(size: size,
+                                       format: rendererFormat)
+            .image(actions: { context in
+                let cgContext = context.cgContext
 
-        let rect = CGRect(origin: .zero, size: size)
-        return UIGraphicsImageRenderer(size: rect.size).image(actions: { ctx in
-            // Reset transformation matrix to default
-            ctx.cgContext.concatenate(ctx.cgContext.ctm.inverted())
+                // Move the origin to the middle of the image so we can apply transformations
+                cgContext.translateBy(x: size.width / 2, y: size.height / 2)
 
-            // Set original scale
-            ctx.cgContext.scaleBy(x: scale, y: scale)
+                // Apply the transformations based on the options
+                if options.contains(.horizontal) {
+                    cgContext.scaleBy(x: -1, y: 1)
+                }
 
-            if options.contains(.vertical) {
-                ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
-                ctx.cgContext.translateBy(x: 0.0, y: -size.height)
-            }
-            if options.contains(.horizontal) {
-                ctx.cgContext.scaleBy(x: -1.0, y: 1.0)
-                ctx.cgContext.translateBy(x: -size.width, y: 0.0)
-            }
+                if options.contains(.vertical) {
+                    cgContext.scaleBy(x: 1, y: -1)
+                }
 
-            ctx.cgContext.draw(cgImage, in: rect)
-        })
+                // Move the origin back to the top-left corner
+                cgContext.translateBy(x: -size.width / 2, y: -size.height / 2)
+
+                // Draw the original image in the transformed context
+                self.draw(at: .zero)
+            })
     }
 }
 
