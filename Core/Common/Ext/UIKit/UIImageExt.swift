@@ -303,7 +303,6 @@ public extension UIImage {
             return self
         }
         let size = size
-        let renderer = UIGraphicsImageRenderer(size: size)
         let rendererFormat = UIGraphicsImageRendererFormat()
         rendererFormat.scale = scale
         return UIGraphicsImageRenderer(size: size,
