@@ -26,3 +26,18 @@ open class OCWeakReference<T: AnyObject>: NSObject {
         self.reference = reference
     }
 }
+
+// MARK: - OCValue
+
+open class OCValue: NSObject {
+    private let value: Any
+
+    public init(value: Any) {
+        self.value = value
+        super.init()
+    }
+
+    open func get<T>() -> T? {
+        value as? T
+    }
+}
