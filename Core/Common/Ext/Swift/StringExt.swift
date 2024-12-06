@@ -119,6 +119,24 @@ public extension String {
         utf8Data?.jsonObject
     }
 
+    var prettyJsonText: String? {
+        guard let data = data(using: .utf8) else {
+            return nil
+        }
+
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) else {
+            return nil
+        }
+
+        guard let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject,
+                                                           options: [.prettyPrinted, .sortedKeys])
+        else {
+            return nil
+        }
+
+        return String(data: prettyData, encoding: .utf8)
+    }
+
     var isNotEmpty: Bool {
         !isEmpty
     }

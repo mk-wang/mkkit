@@ -49,10 +49,19 @@ public extension NSObject {
 
 public extension NSObject {
     var jsonData: Data? {
-        try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted])
+        try? JSONSerialization.data(withJSONObject: self, options: [])
+    }
+
+    var prettyPrintedData: Data? {
+        try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted,
+                                                                    .sortedKeys])
     }
 
     var jsonString: String? {
         jsonData?.utf8Str
+    }
+
+    var prettyPrintedString: String? {
+        prettyPrintedData?.utf8Str
     }
 }
