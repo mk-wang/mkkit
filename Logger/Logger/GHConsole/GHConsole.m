@@ -452,7 +452,7 @@ typedef void (^readTextBlock)(void);
 
 @property (nonatomic, strong) NSString *string;
 @property (nonatomic, assign) BOOL isShowConsole;
-@property (nonatomic, strong) NSMutableArray<NSString *> *logStingArray;
+@property (nonatomic, strong) NSMutableArray<NSString *> *logStringArray;
 @property (nonatomic, copy) NSString *funcString;
 
 @property (nonatomic, assign) NSInteger currentLogCount;
@@ -497,7 +497,6 @@ typedef void (^readTextBlock)(void);
 - (GHConsoleWindow *)consoleWindow
 {
     if (!_consoleWindow) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReceiveMemoryWarningNotification) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         _consoleWindow = [GHConsoleWindow consoleWindow];
         _consoleWindow.rootViewController = [GHConsoleRootViewController new];
         _consoleWindow.rootViewController.view.backgroundColor = [UIColor clearColor];
@@ -594,14 +593,14 @@ typedef void (^readTextBlock)(void);
     //    }
 
     if (msg.length > 0 && [msg stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0) {
-        [self.logStingArray addObject:msg];
+        [self.logStringArray addObject:msg];
     }
 
     __weak __typeof(self) weakSelf = self;
     if (_isShowConsole && _isFullScreen) {
         // 如果显示的话手机上的控制台开始显示。
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.consoleWindow.consoleRootViewController.dataSource = weakSelf.logStingArray;
+            weakSelf.consoleWindow.consoleRootViewController.dataSource = weakSelf.logStringArray;
 
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (uint64_t)(100 * NSEC_PER_MSEC)),
                            dispatch_get_main_queue(),
@@ -614,32 +613,25 @@ typedef void (^readTextBlock)(void);
 
 - (void)clearAllText
 {
-    [self.logStingArray removeAllObjects];
-    self.consoleWindow.consoleRootViewController.dataSource = self.logStingArray;
+    [self.logStringArray removeAllObjects];
+    self.consoleWindow.consoleRootViewController.dataSource = self.logStringArray;
 }
 
 - (void)readSavedText
 {
     NSData *savedString = [[NSUserDefaults standardUserDefaults] objectForKey:@"textSaveKey"];
     NSArray *array = [NSJSONSerialization JSONObjectWithData:savedString options:NSJSONReadingAllowFragments error:nil];
-    self.logStingArray = [NSMutableArray arrayWithArray:array];
-    [self.logStingArray addObject:@"\n-----------------RECORD-----------------\n\n"];
-    self.consoleWindow.consoleRootViewController.dataSource = self.logStingArray;
+    self.logStringArray = [NSMutableArray arrayWithArray:array];
+    [self.logStringArray addObject:@"\n-----------------RECORD-----------------\n\n"];
+    self.consoleWindow.consoleRootViewController.dataSource = self.logStringArray;
 }
 
-- (NSMutableArray<NSString *> *)logStingArray
+- (NSMutableArray<NSString *> *)logStringArray
 {
-    if (!_logStingArray) {
-        _logStingArray = [NSMutableArray arrayWithCapacity:0];
+    if (!_logStringArray) {
+        _logStringArray = [NSMutableArray arrayWithCapacity:0];
     }
-    return _logStingArray;
-}
-
-- (void)handleReceiveMemoryWarningNotification
-{
-    [self.logStingArray removeAllObjects];
-    [self.logStingArray addObject:@"收到了系统内存警告!所有日志被清空!"];
-    self.consoleWindow.consoleRootViewController.dataSource = self.logStingArray;
+    return _logStringArray;
 }
 
 #pragma mark - gesture function
@@ -665,7 +657,7 @@ tap
 {
     if (!_isFullScreen) {
         // becoma full screen
-        self.consoleWindow.consoleRootViewController.dataSource = self.logStingArray;
+        self.consoleWindow.consoleRootViewController.dataSource = self.logStringArray;
         [UIView animateWithDuration:0.25
             animations:^{
                 [self.consoleWindow maxmize];
@@ -697,7 +689,7 @@ tap
 
 - (void)scrollToBottom
 {
-    if (self.logStingArray.count == 0) {
+    if (self.logStringArray.count == 0) {
         return;
     }
 
