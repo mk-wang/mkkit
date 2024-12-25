@@ -114,10 +114,10 @@ public extension NSAttributedString {
     ///   - options: The regular expression options that are applied to the expression during matching. See NSRegularExpression.Options for possible values.
     /// - Returns: An NSAttributedString with attributes applied to substrings matching the pattern.
     func applying(attributes: [Key: Any],
-                  toRangesMatching pattern: String,
+                  toRangesMatching matchText: String,
                   options: NSRegularExpression.Options = []) -> NSAttributedString
     {
-        guard let pattern = try? NSRegularExpression(pattern: pattern, options: options) else { return self }
+        guard let pattern = try? NSRegularExpression(pattern: matchText, options: options) else { return self }
 
         let matches = pattern.matches(in: string, options: [], range: NSRange(0 ..< length))
         let result = NSMutableAttributedString(attributedString: self)

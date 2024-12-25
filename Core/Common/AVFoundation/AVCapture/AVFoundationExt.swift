@@ -182,7 +182,7 @@ public extension AVCaptureOutput {
 }
 
 public extension AVPlayer {
-    func snapshot() throws -> UIImage? {
+    func cgSnapshot() throws -> CGImage? {
         guard let asset = currentItem?.asset else {
             return nil
         }
@@ -191,8 +191,16 @@ public extension AVPlayer {
         imageGenerator.requestedTimeToleranceAfter = .zero
         imageGenerator.requestedTimeToleranceBefore = .zero
 
-        let thumb = try imageGenerator.copyCGImage(at: currentTime(), actualTime: nil)
-        let image = UIImage(cgImage: thumb)
-        return image
+        return try imageGenerator.copyCGImage(at: currentTime(), actualTime: nil)
+    }
+
+    func snapshot(spaceBuilder: ValueBuilder<CGColorSpace>? = nil) throws -> UIImage? {
+        guard var image = try? cgSnapshot() else {
+            return nil
+        }
+        if let space = spaceBuilder?() {
+            image = image.copy(colorSpace: space) ?? image
+        }
+        return .init(cgImage: image)
     }
 }
