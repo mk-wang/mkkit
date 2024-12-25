@@ -182,7 +182,7 @@ public extension AVCaptureOutput {
 }
 
 public extension AVPlayer {
-    func cgSnapshot() throws -> CGImage? {
+    func genSnapshot() throws -> CGImage? {
         guard let asset = currentItem?.asset else {
             return nil
         }
@@ -195,12 +195,37 @@ public extension AVPlayer {
     }
 
     func snapshot(spaceBuilder: ValueBuilder<CGColorSpace>? = nil) throws -> UIImage? {
-        guard var image = try? cgSnapshot() else {
+        guard var image = try? genSnapshot() else {
             return nil
         }
         if let space = spaceBuilder?() {
             image = image.copy(colorSpace: space) ?? image
         }
         return .init(cgImage: image)
+    }
+}
+
+public extension AVAssetImageGenerator {
+    static func snapshot(asset: AVAsset,
+                         time: CMTime,
+                         completion: @escaping VoidFunction2<CGImage?, Error?>)
+    {
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.requestedTimeToleranceAfter = .zero
+        imageGenerator.requestedTimeToleranceBefore = .zero
+        if #available(iOS 16.0, *) {
+            imageGenerator.generateCGImageAsynchronously(for: time) { image, _, error in
+                completion(image, error)
+            }
+        } else {
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    let image = try imageGenerator.copyCGImage(at: time, actualTime: nil)
+                    completion(image, nil)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+        }
     }
 }
