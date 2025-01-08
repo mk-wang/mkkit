@@ -160,18 +160,15 @@ extension InfiniteCollectionView: UICollectionViewDataSource {
     }
 
     fileprivate func getCorrectedIndex(_ indexToCorrect: Int) -> Int {
-        if let numberOfCells = infiniteDataSource?.numberOfItems(self) {
-            if indexToCorrect < numberOfCells, indexToCorrect >= 0 {
-                return indexToCorrect
-            } else {
-                let countInIndex = Float(indexToCorrect) / Float(numberOfCells)
-                let flooredValue = Int(floor(countInIndex))
-                let offset = numberOfCells * flooredValue
-                return indexToCorrect - offset
-            }
-        } else {
+        guard let numberOfCells = infiniteDataSource?.numberOfItems(self), numberOfCells > 0 else {
             return 0
         }
+
+        guard indexToCorrect < 0 || indexToCorrect >= numberOfCells else {
+            return indexToCorrect
+        }
+
+        return (indexToCorrect % numberOfCells + numberOfCells) % numberOfCells
     }
 }
 
@@ -190,18 +187,18 @@ extension InfiniteCollectionView: UICollectionViewDelegate {
 public extension InfiniteCollectionView {
     override var dataSource: UICollectionViewDataSource? {
         didSet {
-            if !dataSource!.isEqual(self) {
+            if let dataSource, !dataSource.isEqual(self) {
                 Logger.shared.error("WARNING: UICollectionView DataSource must not be modified.  Set infiniteDataSource instead.")
-                dataSource = self
+                self.dataSource = self
             }
         }
     }
 
     override var delegate: UICollectionViewDelegate? {
         didSet {
-            if !delegate!.isEqual(self) {
+            if let delegate, !delegate.isEqual(self) {
                 Logger.shared.error("WARNING: UICollectionView delegate must not be modified.  Set infiniteDelegate instead.")
-                delegate = self
+                self.delegate = self
             }
         }
     }
