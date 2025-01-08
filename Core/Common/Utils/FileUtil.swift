@@ -18,6 +18,8 @@ public enum FileUtil {
 }
 
 public extension FileUtil {
+    static let homeDirectory: URL = resolvedFileURL(NSHomeDirectory().fileURL)
+
     static var documentDirectory: URL {
         #if targetEnvironment(simulator)
             if let homeDir, fileManager.fileExists(atPath: homeDir.path) {
@@ -108,8 +110,13 @@ public extension FileUtil {
 
     static func move(source: URL, dest: URL) throws {
         let dirUrl = dest.deletingLastPathComponent()
-        try createDir(url: dirUrl, deleteIfNotDir: true)
-        try fileManager.moveItem(at: source, to: dest)
+        do {
+            try createDir(url: dirUrl, deleteIfNotDir: true)
+            try fileManager.moveItem(at: source, to: dest)
+        } catch {
+            Logger.shared.error("Failed to move file from \(source) to \(dest): \(error)")
+            throw error
+        }
     }
 
     static func remove(url: URL) throws {
@@ -126,6 +133,22 @@ public extension FileUtil {
             file += ".\(ext)"
         }
         return temporaryDirectory.appendingPathComponent(file)
+    }
+
+    static func resolvedFilePath(_ fileURL: URL) -> String {
+        let resolvedPath = fileURL.resolvingSymlinksInPath().path
+        if resolvedPath == fileURL.path {
+            do {
+                return try fileManager.destinationOfSymbolicLink(atPath: resolvedPath)
+            } catch {
+                Logger.shared.error("Failed to resolve symbolic link for \(fileURL.path): \(error)")
+            }
+        }
+        return fileURL.standardizingFilePath
+    }
+
+    static func resolvedFileURL(_ fileURL: URL) -> URL {
+        resolvedFilePath(fileURL).fileURL
     }
 }
 
@@ -152,47 +175,65 @@ public extension FileUtil {
     }
 
     static func containsFileFast(dir: URL, file: URL) -> Bool {
-        let p1 = dir.path.privatePrefixRemovedStr
-        let p2 = file.path.privatePrefixRemovedStr
+        let p1 = dir.standardizingFilePath
+        let p2 = file.standardizingFilePath
         return p2.starts(with: p1)
     }
 
-    // 标准化，试着移除 /private（有时候不起作用）
-    static func standardizedURL(url: URL) -> URL {
-        if url.isFileURL {
-            (url as NSURL).standardizingPath!
-        } else {
-            url.standardized
-        }
-    }
-
     static func isEqualURL(_ u1: URL, _ u2: URL) -> Bool {
-        guard let p1 = (u1 as NSURL).standardizingPath?.path,
-              let p2 = (u2 as NSURL).standardizingPath?.path
-        else {
-            return false
-        }
-        return isEqualPath(p1, p2)
-    }
-
-    static func isEqualPath(_ p1: String, _ p2: String) -> Bool {
-        if p1 == p2 {
-            return true
-        }
-
-        let x1 = removePrivatePrefix(p1)
-        let x2 = removePrivatePrefix(p2)
-
-        return x1 == x2
+        u1.standardizingFilePath == u2.standardizingFilePath
     }
 
     static func removePrivatePrefix(_ str: String) -> String {
-        guard str.hasPrefix("/private") else {
-            return str
+        for prefixText in ["/private", "file:///private/"] {
+            if str.hasPrefix(prefixText) {
+                let startIndex = str.index(str.startIndex, offsetBy: prefixText.count)
+                let subString = str[startIndex ..< str.endIndex]
+                return .init(subString)
+            }
         }
-        let startIndex = str.index(str.startIndex, offsetBy: 8)
-        let subString = str[startIndex ..< str.endIndex]
-        return String(subString)
+        return str
+    }
+}
+
+public extension FileUtil {
+    static func isFileInAppSandbox(fileURL: URL) -> Bool {
+        containsFile(dir: homeDirectory, file: fileURL)
+    }
+
+    static func isFileInAppSandboxFast(fileURL: URL) -> Bool {
+        containsFileFast(dir: homeDirectory, file: fileURL)
+    }
+}
+
+public extension FileUtil {
+    static func fileAttributes(at url: URL) -> [FileAttributeKey: Any]? {
+        try? fileManager.attributesOfItem(atPath: url.path)
+    }
+
+    static func folderSize(at url: URL) -> UInt64 {
+        let files = (try? fileManager.subpathsOfDirectory(atPath: url.path)) ?? []
+        return files.reduce(0) { size, file in
+            let filePath = url.appendingPathComponent(file).path
+            let attributes = try? fileManager.attributesOfItem(atPath: filePath)
+            return size + (attributes?[.size] as? UInt64 ?? 0)
+        }
+    }
+}
+
+public extension URL {
+    var standardizingFilePath: String {
+        guard isFileURL,
+              let url = (self as? NSURL)?.standardizingPath
+        else {
+            return standardized.path
+        }
+
+        return FileUtil.removePrivatePrefix(url.path)
+    }
+
+    var resolvedFileURL: URL {
+        FileUtil.resolvedFileURL(self)
     }
 }
 
