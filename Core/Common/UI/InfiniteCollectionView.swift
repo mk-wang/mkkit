@@ -11,14 +11,14 @@ import UIKit
 
 // MARK: - InfiniteCollectionViewDataSource
 
-public protocol InfiniteCollectionViewDataSource {
+public protocol InfiniteCollectionViewDataSource: AnyObject {
     func cellForItemAtIndexPath(_ collectionView: UICollectionView, dequeueIndexPath: IndexPath, usableIndexPath: IndexPath) -> UICollectionViewCell
     func numberOfItems(_ collectionView: UICollectionView) -> Int
 }
 
 // MARK: - InfiniteCollectionViewDelegate
 
-public protocol InfiniteCollectionViewDelegate {
+public protocol InfiniteCollectionViewDelegate: AnyObject {
     func didSelectCellAtIndexPath(_ collectionView: UICollectionView, usableIndexPath: IndexPath)
     func willBeginDragging(_ scrollView: UIScrollView)
 }
@@ -26,8 +26,8 @@ public protocol InfiniteCollectionViewDelegate {
 // MARK: - InfiniteCollectionView
 
 open class InfiniteCollectionView: UICollectionView {
-    public var infiniteDataSource: InfiniteCollectionViewDataSource?
-    public var infiniteDelegate: InfiniteCollectionViewDelegate?
+    public weak var infiniteDataSource: InfiniteCollectionViewDataSource?
+    public weak var infiniteDelegate: InfiniteCollectionViewDelegate?
 
     @IBInspectable var isHorizontalScroll: Bool = true
 
