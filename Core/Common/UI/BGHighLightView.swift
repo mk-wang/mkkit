@@ -122,13 +122,6 @@ open class BaseHighLightView: MKBaseView {
             isHighLighted = false
         }
     }
-
-    override open func didMoveToWindow() {
-        super.didMoveToWindow()
-        if window == nil {
-            touchesCancelled([], with: nil)
-        }
-    }
 }
 
 extension BaseHighLightView {

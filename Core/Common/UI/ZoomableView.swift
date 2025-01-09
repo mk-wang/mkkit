@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - ZoomableView
 
-open class ZoomableView: UIView {
+open class ZoomableView: MKBaseView {
     public struct Config {
         public let zoomScale: CGFloat
         public let zoomInDuratin: CGFloat
@@ -35,11 +35,6 @@ open class ZoomableView: UIView {
     public init(frame: CGRect, config: Config? = nil) {
         self.config = config ?? Self.defalutConfig
         super.init(frame: frame)
-    }
-
-    public required init?(coder: NSCoder) {
-        config = Self.defalutConfig
-        super.init(coder: coder)
     }
 
     open func startAnimation(zoomIn: Bool) {
@@ -74,13 +69,6 @@ open class ZoomableView: UIView {
            bounds.contains(touch.location(in: self))
         {
             onTouchUp()
-        }
-    }
-
-    override open func didMoveToWindow() {
-        super.didMoveToWindow()
-        if window == nil {
-            touchesCancelled([], with: nil)
         }
     }
 

@@ -13,6 +13,8 @@ open class MKBaseView: UIView {
     open var readyToLayoutBlock: VoidFunction?
     open var isReady: Bool = false
 
+    open private(set) var isTouching: Bool = false
+
     open var extendHitInset: UIEdgeInsets?
 
     override public init(frame: CGRect) {
@@ -44,6 +46,28 @@ open class MKBaseView: UIView {
         inside = rect.contains(point)
 
         return inside
+    }
+
+    override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isTouching = true
+        super.touchesBegan(touches, with: event)
+    }
+
+    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        isTouching = false
+    }
+
+    override open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        isTouching = false
+    }
+
+    override open func didMoveToWindow() {
+        super.didMoveToWindow()
+        if isTouching, window == nil {
+            touchesCancelled([], with: nil)
+        }
     }
 }
 
