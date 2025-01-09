@@ -77,6 +77,13 @@ open class ZoomableView: UIView {
         }
     }
 
+    override open func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil {
+            touchesCancelled([], with: nil)
+        }
+    }
+
     override open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         pendZoomOut()
