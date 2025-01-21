@@ -6,11 +6,6 @@
 
 import AVFoundation
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 
 public extension MKAVSpeech {
     struct VoiceSetting {
@@ -414,16 +409,16 @@ public extension AVSpeechUtterance {
         }
     }
 
-    fileprivate var stateSubject: CurrentValueSubject<State, Never>? {
+    fileprivate var stateSubject: CurrentValueSubjectType<State, Never>? {
         get {
-            getAssociatedObject(&AssociatedKeys.kSubject) as? CurrentValueSubject<State, Never>
+            getAssociatedObject(&AssociatedKeys.kSubject) as? CurrentValueSubjectType<State, Never>
         }
         set {
             setAssociatedObject(&AssociatedKeys.kSubject, newValue)
         }
     }
 
-    var statePublisher: AnyPublisher<State, Never>? {
+    var statePublisher: AnyPublisherType<State, Never>? {
         stateSubject?.eraseToAnyPublisher()
     }
 

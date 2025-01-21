@@ -5,17 +5,12 @@
 //  Created by MK on 2023/5/24.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 // MARK: - MKDragView
 
 open class MKDragView: UIView {
-    fileprivate let offsetSubject: CurrentValueSubject<CGFloat, Never> = .init(0)
+    fileprivate let offsetSubject: CurrentValueSubjectType<CGFloat, Never> = .init(0)
     public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
     var heightOffset: CGFloat {

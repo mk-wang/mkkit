@@ -1,15 +1,10 @@
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 
 // MARK: - CombineInfo
 
 final class CombineInfo {
-    fileprivate var cancellableSet = Set<AnyCancellable>()
+    fileprivate var cancellableSet = Set<AnyCancellableType>()
 }
 
 extension NSObject {
@@ -30,7 +25,7 @@ private enum AssociatedKeys {
     static var kCombineInfo = 0
 }
 
-public extension AnyCancellable {
+public extension AnyCancellableType {
     func store(in object: NSObject) {
         store(in: &object.combineInfo.cancellableSet)
     }

@@ -5,17 +5,12 @@
 //  Created by MK on 2023/4/10.
 //
 
-import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
+import UIKit
 
 // MARK: - SizedView
 
 open class SizedView: UIView {
-    private let sizeSubject = CurrentValueSubject<CGSize, Never>(.zero)
+    private let sizeSubject = CurrentValueSubjectType<CGSize, Never>(.zero)
     open lazy var sizePublisher = sizeSubject.removeDuplicates().eraseToAnyPublisher()
 
     override open func layoutSubviews() {

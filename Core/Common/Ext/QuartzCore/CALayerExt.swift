@@ -5,11 +5,6 @@
 //  Created by MK on 2022/6/28.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 // MARK: - CALayer.ShadowConfig

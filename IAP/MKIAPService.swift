@@ -6,11 +6,6 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import StoreKit
 import SwiftyStoreKit
 
@@ -41,7 +36,7 @@ public extension MKIAPService {
 
 open class MKIAPService {
     public let sharedSecret: String
-    public var purchasedSubject: CurrentValueSubject<Set<String>, Never>
+    public var purchasedSubject: CurrentValueSubjectType<Set<String>, Never>
 
     open var purchased: Set<String> {
         get {
@@ -61,7 +56,7 @@ open class MKIAPService {
 
     private var loadingProduct: Bool = false
 
-    private let premiumSubject = CurrentValueSubject<Bool, Never>(false)
+    private let premiumSubject = CurrentValueSubjectType<Bool, Never>(false)
     public lazy var premiumPublisher = premiumSubject.eraseToAnyPublisher()
 
     open var isPremium: Bool {
@@ -75,7 +70,7 @@ open class MKIAPService {
     }
 
     public init(sharedSecret: String,
-                purchasedSubject: CurrentValueSubject<Set<String>, Never>,
+                purchasedSubject: CurrentValueSubjectType<Set<String>, Never>,
                 productListBuilder: @escaping ValueBuilder<[MKIAPProduct]>,
                 allProductListBuiler: @escaping ValueBuilder<[MKIAPProductSimple]>,
                 config: Config)

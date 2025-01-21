@@ -5,11 +5,6 @@
 //  Created by MK on 2023/7/17.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 // MARK: - FloatValue

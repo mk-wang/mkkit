@@ -6,11 +6,6 @@
 
 import Foundation
 import Network
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 
 // MARK: - LocalNetworkManager
 
@@ -26,7 +21,7 @@ open class LocalNetworkManager: NSObject {
         }
     }
 
-    private let stateSubject: CurrentValueSubject<AuthState, Never> = .init(LocalNetworkManager.needAuth ? .unkown : .authed)
+    private let stateSubject: CurrentValueSubjectType<AuthState, Never> = .init(LocalNetworkManager.needAuth ? .unkown : .authed)
     public lazy var statePublisher = stateSubject.eraseToAnyPublisher()
 
     public private(set) var state: AuthState {

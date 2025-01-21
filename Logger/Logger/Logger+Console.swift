@@ -6,11 +6,6 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 
 public extension Logger {
     #if DEBUG_BUILD
@@ -34,7 +29,7 @@ public extension Logger {
         @KVStorageProperty(key: "debug.logs.iap", storage: UserDefaultsStorage())
         private(set) static var iapConsole: Bool = true
 
-        private static var consoleObs: AnyCancellable?
+        private static var consoleObs: AnyCancellableType?
 
         static func setupConsole() {
             consoleObs = $showConsole.sink { show in

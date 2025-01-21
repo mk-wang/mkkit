@@ -5,17 +5,13 @@
 //  Created by MK on 2024/11/8.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
+import Foundation
 
 // MARK: - LangLocal
 
 open class LangLocal<T> {
     private var data: [Lang: T] = [:]
-    private var langObs: AnyCancellable?
+    private var langObs: AnyCancellableType?
 
     let restrictToCurrentLang: Bool
     let builder: ValueBuilder1<T, Lang>

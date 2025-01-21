@@ -6,11 +6,6 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 
 public extension Lang {
     private static var service: LangService {
@@ -30,11 +25,11 @@ public extension Lang {
         service.default
     }
 
-    static var rltPublisher: AnyPublisher<Bool, Never> {
+    static var rltPublisher: AnyPublisherType<Bool, Never> {
         service.rltPublisher
     }
 
-    static var publisher: AnyPublisher<Lang?, Never> {
+    static var publisher: AnyPublisherType<Lang?, Never> {
         service.publisher
     }
 

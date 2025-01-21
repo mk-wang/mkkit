@@ -5,11 +5,6 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 // MARK: - Day
@@ -107,7 +102,7 @@ public extension Hour {
 // MARK: - TimeService
 
 public class TimeService {
-    private let hourSubject: CurrentValueSubject<Hour, Never>
+    private let hourSubject: CurrentValueSubjectType<Hour, Never>
 
     public lazy var hourPublisher = hourSubject.eraseToAnyPublisher()
     public lazy var dayPublisher = hourSubject.map(\.day).receiveOnMain().eraseToAnyPublisher()
@@ -117,8 +112,8 @@ public class TimeService {
     private var lastMinute: Int64 = 0
 
     private var timer: SwiftTimer?
-    private var dayChangeObs: AnyCancellable?
-    private var appStateObs: AnyCancellable?
+    private var dayChangeObs: AnyCancellableType?
+    private var appStateObs: AnyCancellableType?
 
     public init() {
         let now = Date()

@@ -5,12 +5,7 @@
 //  Created by MK on 2022/3/31.
 //
 
-import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
+import UIKit
 
 // MARK: - LangSubscribleUI
 
@@ -24,9 +19,9 @@ public extension LangSubscribleUI {
         langKey = key
     }
 
-    private var langCancellable: AnyCancellable? {
+    private var langCancellable: AnyCancellableType? {
         get {
-            getAssociatedObject(&AssociatedKeys.kLangCancellable) as? AnyCancellable
+            getAssociatedObject(&AssociatedKeys.kLangCancellable) as? AnyCancellableType
         }
         set {
             setAssociatedObject(&AssociatedKeys.kLangCancellable, newValue)

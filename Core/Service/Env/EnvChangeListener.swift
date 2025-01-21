@@ -5,12 +5,6 @@
 //  Created by MK on 2021/7/28.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
-
 import UIKit
 
 // MARK: - ThemeChangeListener
@@ -49,10 +43,10 @@ extension KeyboardChangeListener where Self: AnyObject {
     }
 
     // OpenCombine 还不支持 Publishers Merge
-    public func subjectKeyboardChange() -> (Set<AnyCancellable>, AnyPublisher<Notification, Never>) {
-        var cancellableSet = Set<AnyCancellable>()
+    public func subjectKeyboardChange() -> (Set<AnyCancellableType>, AnyPublisherType<Notification, Never>) {
+        var cancellableSet = Set<AnyCancellableType>()
 
-        let noteSubject = PassthroughSubject<Notification, Never>()
+        let noteSubject = PassthroughSubjectType<Notification, Never>()
 
         do {
             let publisher = notificationCenter

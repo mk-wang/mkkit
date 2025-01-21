@@ -6,12 +6,6 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
-
 import UIKit
 
 private var bundleLoaded = false
@@ -81,9 +75,9 @@ private extension NSObject {
         }
     }
 
-    var injectionNoteCancellable: AnyCancellable? {
+    var injectionNoteCancellable: AnyCancellableType? {
         get {
-            getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellable
+            getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellableType
         }
         set {
             setAssociatedObject(&AssociatedKeys.kCancellable, newValue)

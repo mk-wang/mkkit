@@ -4,11 +4,6 @@
 //  Created by MK on 2021/5/31.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 // MARK: - PageView

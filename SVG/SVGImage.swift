@@ -5,11 +5,6 @@
 //  Created by MK on 2022/3/26.
 //
 
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import SwiftDraw
 import UIKit
 
@@ -19,7 +14,7 @@ public class SVGImageView: UIImageView {
     let imageSize: CGSize
     let tintColorBuilder: ((Bool) -> UIColor?)?
 
-    private var cancellbale: AnyCancellable?
+    private var cancellbale: AnyCancellableType?
 
     public init(url: URL,
                 imageSize: CGSize,

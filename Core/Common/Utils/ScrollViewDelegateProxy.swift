@@ -5,22 +5,15 @@
 //  Created by MK on 2024/10/16.
 //
 
-// MARK: - ScrollViewDelegateProxyProtocol
-
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 // MARK: - ScrollViewDelegateProxy
 
 open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
-    private let offsetSubject: CurrentValueSubject<CGPoint, Never> = .init(.zero)
+    private let offsetSubject: CurrentValueSubjectType<CGPoint, Never> = .init(.zero)
     public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
-    private let scrollEndSubject: PassthroughSubject<Void, Never> = .init()
+    private let scrollEndSubject: PassthroughSubjectType<Void, Never> = .init()
     public lazy var scrollEndPublisher = scrollEndSubject.eraseToAnyPublisher()
 
     private var delegates: [WeakReference] = []

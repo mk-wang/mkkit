@@ -3,19 +3,14 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 
 // MARK: - KVStorageProperty
 
 @propertyWrapper
 public struct KVStorageProperty<T: KVStorageSerializable & Equatable> {
     private let storage: KVStorage
-    private let subject: CurrentValueSubject<T, Never>
-    var cancellable: AnyCancellable?
+    private let subject: CurrentValueSubjectType<T, Never>
+    var cancellable: AnyCancellableType?
 
     /// The key for the value in `KVStorage`.
     public let key: String
@@ -42,7 +37,7 @@ public struct KVStorageProperty<T: KVStorageSerializable & Equatable> {
     }
 
     /// A publisher that delivers updates to subscribers.
-    public var projectedValue: CurrentValueSubject<T, Never> {
+    public var projectedValue: CurrentValueSubjectType<T, Never> {
         subject
     }
 
@@ -57,7 +52,7 @@ public struct KVStorageProperty<T: KVStorageSerializable & Equatable> {
 
         let value = storage.getSerializable(for: key) ?? wrappedValue
 
-        subject = CurrentValueSubject<T, Never>(value)
+        subject = CurrentValueSubjectType<T, Never>(value)
         cancellable = subject.removeDuplicatesAndDrop().sink(receiveValue: { newValue in
             storage.saveSerializable(newValue, for: key)
         })
@@ -69,8 +64,8 @@ public struct KVStorageProperty<T: KVStorageSerializable & Equatable> {
 @propertyWrapper
 public struct KVStorageOptionalProperty<T: KVStorageSerializable & Equatable> {
     private let storage: KVStorage
-    private let subject: CurrentValueSubject<T?, Never>
-    var cancellable: AnyCancellable?
+    private let subject: CurrentValueSubjectType<T?, Never>
+    var cancellable: AnyCancellableType?
 
     /// The key for the value in `KVStorage`.
     public let key: String
@@ -97,7 +92,7 @@ public struct KVStorageOptionalProperty<T: KVStorageSerializable & Equatable> {
     }
 
     /// A publisher that delivers updates to subscribers.
-    public var projectedValue: CurrentValueSubject<T?, Never> {
+    public var projectedValue: CurrentValueSubjectType<T?, Never> {
         subject
     }
 
@@ -111,7 +106,7 @@ public struct KVStorageOptionalProperty<T: KVStorageSerializable & Equatable> {
         self.storage = storage
 
         let value: T? = storage.getSerializable(for: key)
-        subject = CurrentValueSubject<T?, Never>(value)
+        subject = CurrentValueSubjectType<T?, Never>(value)
 
         cancellable = subject.removeDuplicatesAndDrop().sink(receiveValue: { newValue in
             if let newValue {

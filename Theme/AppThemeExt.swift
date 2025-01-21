@@ -6,11 +6,6 @@
 //
 
 import Foundation
-#if canImport(OpenCombine)
-    import OpenCombine
-#elseif canImport(Combine)
-    import Combine
-#endif
 import UIKit
 
 public extension AppTheme {
@@ -27,7 +22,7 @@ public extension AppTheme {
         }
     }
 
-    static var darkPublisher: AnyPublisher<Bool?, Never> {
+    static var darkPublisher: AnyPublisherType<Bool?, Never> {
         service.darkPublisher
     }
 }
@@ -77,7 +72,7 @@ extension AppThemeService: AppSerivce {
 }
 
 public extension ThemeChangeListener where Self: AnyObject {
-    func subjectThemeChange() -> AnyCancellable {
+    func subjectThemeChange() -> AnyCancellableType {
         AppTheme.darkPublisher.sink { [weak self] isDark in
             self?.onThemeChange(isDark: isDark ?? false)
         }
@@ -91,7 +86,7 @@ class AppThemeCGColor: NSObject {
     let darkColorBuiler: (() -> UIColor?)?
     let onThemeChange: (CGColor) -> Void
 
-    var cancellable: AnyCancellable?
+    var cancellable: AnyCancellableType?
 
     var cgColor: CGColor = UIColor.clear.cgColor
 

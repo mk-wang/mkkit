@@ -14,6 +14,11 @@ import Foundation
 
     public typealias PublisherType = OpenCombine.Publisher
     public typealias SubscriberType = OpenCombine.Subscriber
+    public typealias CurrentValueSubjectType = OpenCombine.CurrentValueSubject
+    public typealias PassthroughSubjectType = OpenCombine.PassthroughSubject
+
+    public typealias AnyCancellableType = OpenCombine.AnyCancellable
+    public typealias AnyPublisherType = OpenCombine.AnyPublisher
 
     public let notificationCenter = NotificationCenter.default.ocombine
     public let mainScheduler = DispatchQueue.main.ocombine
@@ -23,6 +28,11 @@ import Foundation
 
     public typealias PublisherType = Combine.Publisher
     public typealias SubscriberType = Combine.Subscriber
+    public typealias CurrentValueSubjectType = Combine.CurrentValueSubjectType
+    public typealias PassthroughSubjectType = Combine.PassthroughSubject
+
+    public typealias AnyCancellableType = Combine.AnyCancellable
+    public typealias AnyPublisherType = Combine.AnyPublisher
 
     public let notificationCenter = NotificationCenter.default
     public let mainScheduler = DispatchQueue.main
@@ -41,10 +51,10 @@ public class BoolMerge: Publisher {
         case or
     }
 
-    var cancellableSet = Set<AnyCancellable>()
+    var cancellableSet = Set<AnyCancellableType>()
     var values: [Bool]
 
-    let subjuct = CurrentValueSubject<Bool, Never>(false)
+    let subjuct = CurrentValueSubjectType<Bool, Never>(false)
     let operate: Operate
 
     public var onValuesUpdate: VoidFunction1<[Bool]>?
