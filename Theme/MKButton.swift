@@ -5,7 +5,11 @@
 //  Created by MK on 2022/5/10.
 //
 
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import UIKit
 
 // MARK: - MKButton

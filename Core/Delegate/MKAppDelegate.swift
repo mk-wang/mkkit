@@ -4,8 +4,11 @@
 //  Created by MK on 2022/3/16.
 //
 
-import MKKit
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import UIKit
 
 // MARK: - MKAppDelegate

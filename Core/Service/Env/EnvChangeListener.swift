@@ -5,8 +5,12 @@
 //  Created by MK on 2021/7/28.
 //
 
-import OpenCombine
-import OpenCombineFoundation
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
+
 import UIKit
 
 // MARK: - ThemeChangeListener
@@ -50,9 +54,9 @@ extension KeyboardChangeListener where Self: AnyObject {
 
         let noteSubject = PassthroughSubject<Notification, Never>()
 
-        let centerCombine = NotificationCenter.default.ocombine
         do {
-            let publisher = centerCombine.publisher(for: UIResponder.keyboardWillHideNotification, object: nil)
+            let publisher = notificationCenter
+                .publisher(for: UIResponder.keyboardWillHideNotification, object: nil)
             publisher.sink(receiveValue: { [weak self] note in
                 noteSubject.send(note)
                 self?.handleKeyboardChange(note)
@@ -60,7 +64,8 @@ extension KeyboardChangeListener where Self: AnyObject {
         }
 
         do {
-            let publisher = centerCombine.publisher(for: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+            let publisher = notificationCenter
+                .publisher(for: UIResponder.keyboardWillChangeFrameNotification, object: nil)
             publisher.sink(receiveValue: { [weak self] note in
                 noteSubject.send(note)
                 self?.handleKeyboardChange(note)

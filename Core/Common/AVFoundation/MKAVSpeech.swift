@@ -6,8 +6,11 @@
 
 import AVFoundation
 import Foundation
-import MKKit
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 
 public extension MKAVSpeech {
     struct VoiceSetting {

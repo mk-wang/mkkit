@@ -5,7 +5,13 @@
 //  Created by MK on 2024/11/8.
 //
 
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
+
+// MARK: - LangLocal
 
 open class LangLocal<T> {
     private var data: [Lang: T] = [:]

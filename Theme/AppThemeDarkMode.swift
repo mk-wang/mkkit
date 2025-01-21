@@ -5,7 +5,11 @@
 //
 
 import FluentDarkModeKit
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import UIKit
 
 public extension AppTheme {

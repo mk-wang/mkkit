@@ -6,8 +6,12 @@
 //
 
 import Foundation
-import OpenCombine
-import OpenCombineFoundation
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
+
 import UIKit
 
 private var bundleLoaded = false
@@ -46,8 +50,8 @@ public extension InjectionIII where Self: UIResponder {
             injections.add(injection)
 
             if injectionNoteCancellable == nil {
-                let centerCombine = NotificationCenter.default.ocombine
-                injectionNoteCancellable = centerCombine.publisher(for: Notification.Name("INJECTION_BUNDLE_NOTIFICATION"))
+                injectionNoteCancellable = notificationCenter
+                    .publisher(for: Notification.Name("INJECTION_BUNDLE_NOTIFICATION"))
                     .removeDuplicates()
                     .debounceOnMain(for: 0.3)
                     .sink(receiveValue: { [weak injections] _ in

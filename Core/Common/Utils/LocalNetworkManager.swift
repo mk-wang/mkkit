@@ -6,7 +6,11 @@
 
 import Foundation
 import Network
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 
 // MARK: - LocalNetworkManager
 

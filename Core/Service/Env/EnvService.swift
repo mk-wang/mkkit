@@ -6,8 +6,13 @@
 //
 
 import Foundation
-import OpenCombine
-import OpenCombineFoundation
+
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
+
 import UIKit
 
 // MARK: - EnvService
@@ -46,7 +51,7 @@ private extension EnvService {
 
 extension EnvService: AppSerivce {
     public func initBeforeWindow() {
-        NotificationCenter.default.ocombine
+        notificationCenter
             .publisher(for: NSLocale.currentLocaleDidChangeNotification)
             .sink { [weak self] _ in
                 self?.onLocalChange()

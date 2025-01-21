@@ -6,9 +6,13 @@
 //
 
 import Foundation
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 
-// MARK: - SizedContentView
+// MARK: - SizedView
 
 open class SizedView: UIView {
     private let sizeSubject = CurrentValueSubject<CGSize, Never>(.zero)

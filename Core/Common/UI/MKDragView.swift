@@ -5,7 +5,11 @@
 //  Created by MK on 2023/5/24.
 //
 
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import UIKit
 
 // MARK: - MKDragView

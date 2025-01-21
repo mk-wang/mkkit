@@ -7,7 +7,6 @@
 
 import Foundation
 import IGListKit
-import MKKit
 import UIKit
 
 // MARK: - IGTextItem

@@ -5,7 +5,11 @@
 //  Created by MK on 2022/3/26.
 //
 
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import SwiftDraw
 import UIKit
 

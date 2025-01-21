@@ -5,8 +5,11 @@
 //
 
 import Foundation
-import MKKit
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import UIKit
 
 // MARK: - Day
@@ -121,8 +124,8 @@ public class TimeService {
         let now = Date()
         hourSubject = .init(.init(date: now))
 
-        let centerCombine = NotificationCenter.default.ocombine
-        dayChangeObs = centerCombine.publisher(for: .NSCalendarDayChanged)
+        dayChangeObs = notificationCenter
+            .publisher(for: .NSCalendarDayChanged)
             .sink { [weak self] _ in
                 self?.checkTime()
             }

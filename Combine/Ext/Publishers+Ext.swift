@@ -3,8 +3,12 @@
 //
 
 import Foundation
-import OpenCombine
-import OpenCombineDispatch
+
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 
 // MARK: - Publishers.Single
 
@@ -47,24 +51,24 @@ public extension Publisher where Output: Equatable {
 public extension Publisher {
     func debounceOnMain(for seconds: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
         debounce(for: .seconds(seconds),
-                 scheduler: DispatchQueue.main.ocombine)
+                 scheduler: mainScheduler)
             .eraseToAnyPublisher()
     }
 
     func delayOnMain(for seconds: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
         delay(for: .seconds(seconds),
-              scheduler: DispatchQueue.main.ocombine)
+              scheduler: mainScheduler)
             .eraseToAnyPublisher()
     }
 
     func throttleOnMain(for seconds: TimeInterval, latest: Bool = true) -> AnyPublisher<Self.Output, Self.Failure> {
         throttle(for: .seconds(seconds),
-                 scheduler: DispatchQueue.main.ocombine,
+                 scheduler: mainScheduler,
                  latest: latest)
             .eraseToAnyPublisher()
     }
 
     func receiveOnMain() -> AnyPublisher<Self.Output, Self.Failure> {
-        receive(on: DispatchQueue.main.ocombine).eraseToAnyPublisher()
+        receive(on: mainScheduler).eraseToAnyPublisher()
     }
 }

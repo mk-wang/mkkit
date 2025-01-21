@@ -6,7 +6,28 @@
 //
 
 import Foundation
-import OpenCombine
+
+#if canImport(OpenCombine)
+    import OpenCombine
+    import OpenCombineDispatch
+    import OpenCombineFoundation
+
+    public typealias PublisherType = OpenCombine.Publisher
+    public typealias SubscriberType = OpenCombine.Subscriber
+
+    public let notificationCenter = NotificationCenter.default.ocombine
+    public let mainScheduler = DispatchQueue.main.ocombine
+
+#elseif canImport(Combine)
+    import Combine
+
+    public typealias PublisherType = Combine.Publisher
+    public typealias SubscriberType = Combine.Subscriber
+
+    public let notificationCenter = NotificationCenter.default
+    public let mainScheduler = DispatchQueue.main
+
+#endif
 
 // MARK: - BoolMerge
 
@@ -40,7 +61,7 @@ public class BoolMerge: Publisher {
         }
     }
 
-    public init(_ list: [some OpenCombine.Publisher<Bool, Never>], operate: Operate = .and) {
+    public init(_ list: [some PublisherType<Bool, Never>], operate: Operate = .and) {
         self.operate = operate
 
         values = Array(repeating: false, count: list.count)
@@ -52,7 +73,7 @@ public class BoolMerge: Publisher {
         }
     }
 
-    public func receive<Subscriber>(subscriber: Subscriber) where Subscriber: OpenCombine.Subscriber,
+    public func receive<Subscriber>(subscriber: Subscriber) where Subscriber: SubscriberType,
         Never == Subscriber.Failure,
         Bool == Subscriber.Input
     {
@@ -83,26 +104,3 @@ public class BoolMerge: Publisher {
         }
     }
 }
-
-//
-//// MARK: - BoolMerge
-//
-// public extension Publisher where Output == Bool, Failure == Never {
-//    func boolMerge(_ A: Self) -> AnyPublisher<Bool, Never> {
-//        BoolMerge([self, A]).eraseToAnyPublisher()
-//    }
-//
-//    func boolMerge(_ A: Self, _ B: Self) -> AnyPublisher<Bool, Never> {
-//        BoolMerge([self, A, B]).eraseToAnyPublisher()
-//    }
-//
-//    func boolMerge(_ A: Self, _ B: Self, _ C: Self) -> AnyPublisher<Bool, Never> {
-//        BoolMerge([self, A, B, C]).eraseToAnyPublisher()
-//    }
-//
-//    func boolMerge(_ list: [Self]) -> AnyPublisher<Bool, Never> {
-//        var publishers = [self]
-//        publishers.append(contentsOf: list)
-//        return BoolMerge(publishers).eraseToAnyPublisher()
-//    }
-// }

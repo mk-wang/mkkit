@@ -6,7 +6,11 @@
 //
 
 import Foundation
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 
 public extension Lang {
     private static var service: LangService {

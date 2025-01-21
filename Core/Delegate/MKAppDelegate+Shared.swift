@@ -4,8 +4,11 @@
 //  Created by MK on 2021/6/11.
 //
 
-import MKKit
-import OpenCombine
+#if canImport(OpenCombine)
+    import OpenCombine
+#elseif canImport(Combine)
+    import Combine
+#endif
 import UIKit
 
 extension MKAppDelegate {
