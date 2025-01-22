@@ -13,7 +13,7 @@ open class MKButton: UIButton {
     open var tapExt: CGSize? = nil
 
     open var themeTintColor: UIColor?
-    open var themeCancellable: AnyCancellable?
+    open var themeCancellable: AnyCancellableType?
 
     open var onLayout: VoidFunction?
     open var onCheckBackgroundColor: VoidFunction2<Bool, Bool>?

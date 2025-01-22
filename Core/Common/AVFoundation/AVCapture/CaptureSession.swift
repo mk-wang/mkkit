@@ -25,7 +25,7 @@ open class CaptureSession {
 
     private var kvObservations = [NSKeyValueObservation]()
 
-    private let interruptSubject = CurrentValueSubject<Interrupt, Never>(.none)
+    private let interruptSubject = CurrentValueSubjectType<Interrupt, Never>(.none)
     public private(set) lazy var interruptPublisher = interruptSubject.eraseToAnyPublisher()
     public private(set) var interrupt: Interrupt {
         get {
@@ -40,7 +40,7 @@ open class CaptureSession {
         }
     }
 
-    private let runningSubject = CurrentValueSubject<Bool, Never>(false)
+    private let runningSubject = CurrentValueSubjectType<Bool, Never>(false)
     public private(set) lazy var runningPublisher = runningSubject.eraseToAnyPublisher()
     public private(set) var isRuning: Bool {
         get {

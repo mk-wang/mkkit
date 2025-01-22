@@ -106,10 +106,10 @@ extension AsyncOperation {
 //// MARK: - ValueOperation
 //
 // open class ValueOperation<T>: AsycOperation {
-//    public let publisher: AnyPublisher<T, Never>
+//    public let publisher: AnyPublisherType<T, Never>
 //    open private(set) var value: T
 //    private var obs: Cancellable?
-//    init(publisher: AnyPublisher<T, Never>, value: T) {
+//    init(publisher: AnyPublisherType<T, Never>, value: T) {
 //        self.publisher = publisher
 //        self.value = value
 //

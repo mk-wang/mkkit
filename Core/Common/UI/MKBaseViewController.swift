@@ -10,13 +10,13 @@ import Foundation
 // MARK: - MKBaseViewController
 
 open class MKBaseViewController: UIViewController {
-    public let titleSubject = CurrentValueSubject<String?, Never>("")
+    public let titleSubject = CurrentValueSubjectType<String?, Never>("")
 
     #if DEBUG_BUILD
         open var debug: Bool = false
     #endif
 
-    private let willAppearCountSubject: CurrentValueSubject<Int, Never> = .init(0)
+    private let willAppearCountSubject: CurrentValueSubjectType<Int, Never> = .init(0)
     public lazy var willAppearCountPublisher = willAppearCountSubject.dropFirst().eraseToAnyPublisher()
     public private(set) var willAppearCount: Int {
         get {
@@ -27,7 +27,7 @@ open class MKBaseViewController: UIViewController {
         }
     }
 
-    private let didAppearCountSubject: CurrentValueSubject<Int, Never> = .init(0)
+    private let didAppearCountSubject: CurrentValueSubjectType<Int, Never> = .init(0)
     public lazy var didAppearCountPublisher = didAppearCountSubject.dropFirst().eraseToAnyPublisher()
     public private(set) var didAppearCount: Int {
         get {

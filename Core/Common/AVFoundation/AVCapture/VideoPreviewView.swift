@@ -18,7 +18,7 @@ open class VideoPreviewView: UIView {
 
     public var canShowRegionOfInterest: Bool = false
 
-    private(set) lazy var regionOfInterestSubject: CurrentValueSubject<CGRect, Never> = .init(self.bounds)
+    private(set) lazy var regionOfInterestSubject: CurrentValueSubjectType<CGRect, Never> = .init(self.bounds)
     public private(set) lazy var regionOfInterestPublihser = regionOfInterestSubject.removeDuplicatesDropAndDebounce(0, debounce: 0.1).eraseToAnyPublisher()
 
     public lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer = layer as! AVCaptureVideoPreviewLayer

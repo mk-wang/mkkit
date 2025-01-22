@@ -14,7 +14,7 @@ public class SVGImageView: UIImageView {
     let imageSize: CGSize
     let tintColorBuilder: ((Bool) -> UIColor?)?
 
-    private var cancellbale: AnyCancellable?
+    private var cancellbale: AnyCancellableType?
 
     public init(url: URL,
                 imageSize: CGSize,

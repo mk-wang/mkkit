@@ -10,10 +10,10 @@ import UIKit
 // MARK: - ScrollViewDelegateProxy
 
 open class ScrollViewDelegateProxy: NSObject, UIScrollViewDelegate {
-    private let offsetSubject: CurrentValueSubject<CGPoint, Never> = .init(.zero)
+    private let offsetSubject: CurrentValueSubjectType<CGPoint, Never> = .init(.zero)
     public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
-    private let scrollEndSubject: PassthroughSubject<Void, Never> = .init()
+    private let scrollEndSubject: PassthroughSubjectType<Void, Never> = .init()
     public lazy var scrollEndPublisher = scrollEndSubject.eraseToAnyPublisher()
 
     private var delegates: [WeakReference] = []

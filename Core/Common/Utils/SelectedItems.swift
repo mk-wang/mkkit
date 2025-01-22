@@ -13,9 +13,9 @@ open class SelectedItems<T> {
     public let removeDuplicates: Bool
     public let list: [T]
 
-    private let subject: CurrentValueSubject<Int?, Never>
+    private let subject: CurrentValueSubjectType<Int?, Never>
 
-    open var selectedIndexPublisher: AnyPublisher<Int?, Never> {
+    open var selectedIndexPublisher: AnyPublisherType<Int?, Never> {
         if removeDuplicates {
             subject.removeDuplicates().eraseToAnyPublisher()
         } else {
@@ -23,7 +23,7 @@ open class SelectedItems<T> {
         }
     }
 
-    open var selectedItemPublisher: AnyPublisher<T?, Never> {
+    open var selectedItemPublisher: AnyPublisherType<T?, Never> {
         selectedIndexPublisher.map { [weak self] in
             self?.itemAt(index: $0)
         }.eraseToAnyPublisher()
@@ -53,7 +53,7 @@ open class SelectedItems<T> {
     public init(list: [T], removeDuplicates: Bool = true, selected: Int? = nil) {
         self.removeDuplicates = removeDuplicates
         self.list = list
-        subject = CurrentValueSubject<Int?, Never>(selected)
+        subject = CurrentValueSubjectType<Int?, Never>(selected)
     }
 
     open func itemAt(index: Int?) -> T? {
