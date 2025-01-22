@@ -37,6 +37,8 @@ open class LocalNetworkManager: NSObject {
         }
     }
 
+    public let netServiceBuilder: ValueBuilder<NetService>
+
     private var netService: NetService?
     private var _browser: AnyObject?
 
@@ -62,6 +64,11 @@ open class LocalNetworkManager: NSObject {
         } else {
             return false
         }
+    }
+
+    public init(netServiceBuilder: @escaping ValueBuilder<NetService>) {
+        self.netServiceBuilder = netServiceBuilder
+        super.init()
     }
 }
 
@@ -110,12 +117,11 @@ private extension LocalNetworkManager {
             }
         }
 
-        let netService = NetService(domain: "local.", type: "_inston-play._tcp.", name: "LocalNetworkPrivacy", port: 1100)
+        let netService = netServiceBuilder()
         netService.delegate = self
 
         browser.start(queue: .main)
         netService.publish()
-        // netService.schedule(in: .main, forMode: .common)
 
         self.browser = browser
         self.netService = netService
