@@ -102,7 +102,7 @@ public extension Hour {
 // MARK: - TimeService
 
 public class TimeService {
-    private let hourSubject: CurrentValueSubjectType<Hour, Never>
+    private let hourSubject: CurrentValueSubject<Hour, Never>
 
     public lazy var hourPublisher = hourSubject.eraseToAnyPublisher()
     public lazy var dayPublisher = hourSubject.map(\.day).receiveOnMain().eraseToAnyPublisher()
@@ -112,8 +112,8 @@ public class TimeService {
     private var lastMinute: Int64 = 0
 
     private var timer: SwiftTimer?
-    private var dayChangeObs: AnyCancellableType?
-    private var appStateObs: AnyCancellableType?
+    private var dayChangeObs: AnyCancellable?
+    private var appStateObs: AnyCancellable?
 
     public init() {
         let now = Date()

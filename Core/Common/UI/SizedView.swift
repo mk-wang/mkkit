@@ -10,7 +10,7 @@ import UIKit
 // MARK: - SizedView
 
 open class SizedView: UIView {
-    private let sizeSubject = CurrentValueSubjectType<CGSize, Never>(.zero)
+    private let sizeSubject = CurrentValueSubject<CGSize, Never>(.zero)
     open lazy var sizePublisher = sizeSubject.removeDuplicates().eraseToAnyPublisher()
 
     override open func layoutSubviews() {

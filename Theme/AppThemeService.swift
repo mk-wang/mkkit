@@ -11,16 +11,16 @@ import Foundation
 // MARK: - AppThemeService
 
 public class AppThemeService {
-    var cancellableSet = Set<AnyCancellableType>()
+    var cancellableSet = Set<AnyCancellable>()
 
-    public init(themeSubject: CurrentValueSubjectType<AppTheme, Never>) {
+    public init(themeSubject: CurrentValueSubject<AppTheme, Never>) {
         self.themeSubject = themeSubject
     }
 
-    private let themeSubject: CurrentValueSubjectType<AppTheme, Never>
+    private let themeSubject: CurrentValueSubject<AppTheme, Never>
 
-    private let darkSubject = CurrentValueSubjectType<Bool?, Never>(nil)
-    public lazy var darkPublisher: AnyPublisherType<Bool?, Never> = darkSubject.removeDuplicates().eraseToAnyPublisher()
+    private let darkSubject = CurrentValueSubject<Bool?, Never>(nil)
+    public lazy var darkPublisher: AnyPublisher<Bool?, Never> = darkSubject.removeDuplicates().eraseToAnyPublisher()
 
     public var isDark: Bool? {
         get {

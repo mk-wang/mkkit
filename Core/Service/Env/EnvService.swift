@@ -11,9 +11,9 @@ import UIKit
 // MARK: - EnvService
 
 public class EnvService {
-    private var cancellableSet = Set<AnyCancellableType>()
+    private var cancellableSet = Set<AnyCancellable>()
 
-    private let is12HourTZSubject: CurrentValueSubjectType<Bool, Never>
+    private let is12HourTZSubject: CurrentValueSubject<Bool, Never>
     public lazy var is12HourTZPubliser = is12HourTZSubject.removeDuplicates().eraseToAnyPublisher()
 
     public private(set) var amPmStrings: [String]? // am / pm

@@ -16,9 +16,9 @@ public protocol AsyncContentObject: NSObject {
 }
 
 public extension AsyncContentObject {
-    var contentCancellable: AnyCancellableType? {
+    var contentCancellable: AnyCancellable? {
         get {
-            getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellableType
+            getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellable
         }
 
         set {
@@ -36,7 +36,7 @@ public extension AsyncContentObject {
         }
     }
 
-    func assignContentPublisher(publisher: AnyPublisherType<T?, Never>?) {
+    func assignContentPublisher(publisher: AnyPublisher<T?, Never>?) {
         guard let publisher else {
             assignContent(nil)
             return

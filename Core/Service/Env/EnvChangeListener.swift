@@ -43,10 +43,10 @@ extension KeyboardChangeListener where Self: AnyObject {
     }
 
     // OpenCombine 还不支持 Publishers Merge
-    public func subjectKeyboardChange() -> (Set<AnyCancellableType>, AnyPublisherType<Notification, Never>) {
-        var cancellableSet = Set<AnyCancellableType>()
+    public func subjectKeyboardChange() -> (Set<AnyCancellable>, AnyPublisher<Notification, Never>) {
+        var cancellableSet = Set<AnyCancellable>()
 
-        let noteSubject = PassthroughSubjectType<Notification, Never>()
+        let noteSubject = PassthroughSubject<Notification, Never>()
 
         do {
             let publisher = notificationCenter

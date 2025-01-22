@@ -12,7 +12,7 @@ import Foundation
 open class ValuePublisher<T: Any> {
     let retainOld: Bool
     // old , new
-    private let subject: CurrentValueSubjectType<(T?, T), Never>
+    private let subject: CurrentValueSubject<(T?, T), Never>
     open lazy var valuePublisher = subject.map(\.1).eraseToAnyPublisher()
 
     public fileprivate(set) var value: T {
@@ -32,7 +32,7 @@ open class ValuePublisher<T: Any> {
 
     public init(_ value: T, retainOld: Bool = false) {
         self.retainOld = retainOld
-        subject = CurrentValueSubjectType((nil, value))
+        subject = CurrentValueSubject((nil, value))
     }
 }
 

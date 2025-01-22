@@ -25,11 +25,11 @@ public extension Lang {
         service.default
     }
 
-    static var rltPublisher: AnyPublisherType<Bool, Never> {
+    static var rltPublisher: AnyPublisher<Bool, Never> {
         service.rltPublisher
     }
 
-    static var publisher: AnyPublisherType<Lang?, Never> {
+    static var publisher: AnyPublisher<Lang?, Never> {
         service.publisher
     }
 

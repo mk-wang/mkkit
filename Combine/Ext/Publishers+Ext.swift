@@ -39,36 +39,36 @@ public extension Publisher {
 }
 
 public extension Publisher where Output: Equatable {
-    func removeDuplicatesAndDrop(_ count: Int = 1) -> AnyPublisherType<Self.Output, Self.Failure> {
+    func removeDuplicatesAndDrop(_ count: Int = 1) -> AnyPublisher<Self.Output, Self.Failure> {
         removeDuplicates().dropFirst(count).eraseToAnyPublisher()
     }
 
-    func removeDuplicatesDropAndDebounce(_ count: Int = 1, debounce: TimeInterval) -> AnyPublisherType<Self.Output, Self.Failure> {
+    func removeDuplicatesDropAndDebounce(_ count: Int = 1, debounce: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
         removeDuplicates().dropFirst(count).debounceOnMain(for: debounce).eraseToAnyPublisher()
     }
 }
 
 public extension Publisher {
-    func debounceOnMain(for seconds: TimeInterval) -> AnyPublisherType<Self.Output, Self.Failure> {
+    func debounceOnMain(for seconds: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
         debounce(for: .seconds(seconds),
                  scheduler: mainScheduler)
             .eraseToAnyPublisher()
     }
 
-    func delayOnMain(for seconds: TimeInterval) -> AnyPublisherType<Self.Output, Self.Failure> {
+    func delayOnMain(for seconds: TimeInterval) -> AnyPublisher<Self.Output, Self.Failure> {
         delay(for: .seconds(seconds),
               scheduler: mainScheduler)
             .eraseToAnyPublisher()
     }
 
-    func throttleOnMain(for seconds: TimeInterval, latest: Bool = true) -> AnyPublisherType<Self.Output, Self.Failure> {
+    func throttleOnMain(for seconds: TimeInterval, latest: Bool = true) -> AnyPublisher<Self.Output, Self.Failure> {
         throttle(for: .seconds(seconds),
                  scheduler: mainScheduler,
                  latest: latest)
             .eraseToAnyPublisher()
     }
 
-    func receiveOnMain() -> AnyPublisherType<Self.Output, Self.Failure> {
+    func receiveOnMain() -> AnyPublisher<Self.Output, Self.Failure> {
         receive(on: mainScheduler).eraseToAnyPublisher()
     }
 }

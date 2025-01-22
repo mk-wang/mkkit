@@ -4,7 +4,7 @@ import Foundation
 // MARK: - CombineInfo
 
 final class CombineInfo {
-    fileprivate var cancellableSet = Set<AnyCancellableType>()
+    fileprivate var cancellableSet = Set<AnyCancellable>()
 }
 
 extension NSObject {
@@ -25,7 +25,7 @@ private enum AssociatedKeys {
     static var kCombineInfo = 0
 }
 
-public extension AnyCancellableType {
+public extension AnyCancellable {
     func store(in object: NSObject) {
         store(in: &object.combineInfo.cancellableSet)
     }

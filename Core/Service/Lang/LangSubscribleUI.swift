@@ -19,9 +19,9 @@ public extension LangSubscribleUI {
         langKey = key
     }
 
-    private var langCancellable: AnyCancellableType? {
+    private var langCancellable: AnyCancellable? {
         get {
-            getAssociatedObject(&AssociatedKeys.kLangCancellable) as? AnyCancellableType
+            getAssociatedObject(&AssociatedKeys.kLangCancellable) as? AnyCancellable
         }
         set {
             setAssociatedObject(&AssociatedKeys.kLangCancellable, newValue)

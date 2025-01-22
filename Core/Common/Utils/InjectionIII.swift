@@ -75,9 +75,9 @@ private extension NSObject {
         }
     }
 
-    var injectionNoteCancellable: AnyCancellableType? {
+    var injectionNoteCancellable: AnyCancellable? {
         get {
-            getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellableType
+            getAssociatedObject(&AssociatedKeys.kCancellable) as? AnyCancellable
         }
         set {
             setAssociatedObject(&AssociatedKeys.kCancellable, newValue)

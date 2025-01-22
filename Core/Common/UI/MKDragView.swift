@@ -10,7 +10,7 @@ import UIKit
 // MARK: - MKDragView
 
 open class MKDragView: UIView {
-    fileprivate let offsetSubject: CurrentValueSubjectType<CGFloat, Never> = .init(0)
+    fileprivate let offsetSubject: CurrentValueSubject<CGFloat, Never> = .init(0)
     public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
     var heightOffset: CGFloat {

@@ -10,14 +10,14 @@ import Foundation
 // MARK: - LangService
 
 open class LangService {
-    public init(subject: CurrentValueSubjectType<Lang?, Never>, list: [Lang], default: Lang) {
+    public init(subject: CurrentValueSubject<Lang?, Never>, list: [Lang], default: Lang) {
         langSubject = subject
         langList = list
         self.default = `default`
         system = Lang.system(list: list)
     }
 
-    private let langSubject: CurrentValueSubjectType<Lang?, Never>
+    private let langSubject: CurrentValueSubject<Lang?, Never>
     public lazy var publisher = langSubject.eraseToAnyPublisher()
     public lazy var rltPublisher = langSubject.map { [weak self] in
         self?.getLang($0).isRTL ?? false

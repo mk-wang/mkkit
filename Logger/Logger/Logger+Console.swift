@@ -29,7 +29,7 @@ public extension Logger {
         @KVStorageProperty(key: "debug.logs.iap", storage: UserDefaultsStorage())
         private(set) static var iapConsole: Bool = true
 
-        private static var consoleObs: AnyCancellableType?
+        private static var consoleObs: AnyCancellable?
 
         static func setupConsole() {
             consoleObs = $showConsole.sink { show in

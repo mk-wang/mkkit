@@ -11,7 +11,7 @@ import Foundation
 
 open class LangLocal<T> {
     private var data: [Lang: T] = [:]
-    private var langObs: AnyCancellableType?
+    private var langObs: AnyCancellable?
 
     let restrictToCurrentLang: Bool
     let builder: ValueBuilder1<T, Lang>

@@ -22,7 +22,7 @@ public extension AppTheme {
         }
     }
 
-    static var darkPublisher: AnyPublisherType<Bool?, Never> {
+    static var darkPublisher: AnyPublisher<Bool?, Never> {
         service.darkPublisher
     }
 }
@@ -72,7 +72,7 @@ extension AppThemeService: AppSerivce {
 }
 
 public extension ThemeChangeListener where Self: AnyObject {
-    func subjectThemeChange() -> AnyCancellableType {
+    func subjectThemeChange() -> AnyCancellable {
         AppTheme.darkPublisher.sink { [weak self] isDark in
             self?.onThemeChange(isDark: isDark ?? false)
         }
@@ -86,7 +86,7 @@ class AppThemeCGColor: NSObject {
     let darkColorBuiler: (() -> UIColor?)?
     let onThemeChange: (CGColor) -> Void
 
-    var cancellable: AnyCancellableType?
+    var cancellable: AnyCancellable?
 
     var cgColor: CGColor = UIColor.clear.cgColor
 

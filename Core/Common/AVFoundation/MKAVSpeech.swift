@@ -409,16 +409,16 @@ public extension AVSpeechUtterance {
         }
     }
 
-    fileprivate var stateSubject: CurrentValueSubjectType<State, Never>? {
+    fileprivate var stateSubject: CurrentValueSubject<State, Never>? {
         get {
-            getAssociatedObject(&AssociatedKeys.kSubject) as? CurrentValueSubjectType<State, Never>
+            getAssociatedObject(&AssociatedKeys.kSubject) as? CurrentValueSubject<State, Never>
         }
         set {
             setAssociatedObject(&AssociatedKeys.kSubject, newValue)
         }
     }
 
-    var statePublisher: AnyPublisherType<State, Never>? {
+    var statePublisher: AnyPublisher<State, Never>? {
         stateSubject?.eraseToAnyPublisher()
     }
 
