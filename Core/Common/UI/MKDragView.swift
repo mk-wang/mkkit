@@ -13,7 +13,7 @@ open class MKDragView: UIView {
     fileprivate let offsetSubject: CurrentValueSubjectType<CGFloat, Never> = .init(0)
     public lazy var offsetPublisher = offsetSubject.eraseToAnyPublisher()
 
-    var heightOffset: CGFloat {
+    public var heightOffset: CGFloat {
         offsetSubject.value
     }
 
@@ -36,6 +36,7 @@ open class MKDragView: UIView {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
+
         guard isReadyToConfig else {
             return
         }
