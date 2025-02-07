@@ -32,11 +32,13 @@ public extension MKIAPService {
     }
 }
 
-extension MKIAPService {
-    public enum RestoreError: Error {
+// MARK: - MKIAPService.RestoreError
+
+public extension MKIAPService {
+    enum RestoreError: Error {
         case purchaseNotFound
         case verifyReceipt(Error)
-        case networkError(Int) // NSURLErrorNetworkUnavailableReasonKey; -1: unreachable; 
+        case networkError(Int) // NSURLErrorNetworkUnavailableReasonKey; -1: unreachable;
         case unknown
     }
 }
@@ -153,7 +155,8 @@ open class MKIAPService {
                 // Received From `RestorePurchasesController.restoreCompletedTransactionsFailed(withError:)`
                 if let error = results.restoreFailedPurchases.first?.0,
                    let error = error as? NSError,
-                   error.domain == NSURLErrorDomain {
+                   error.domain == NSURLErrorDomain
+                {
                     completion?(.networkError(error.code), info)
                     Logger.shared.iap("restorePurchase error network \(error)")
                 } else {
@@ -162,8 +165,7 @@ open class MKIAPService {
             }
         }
     }
-    
-    @available(*, deprecated)
+
     public func restorePurchase(completion: ((Bool, RestoreInfo) -> Void)? = nil) {
         restorePurchase { error, info in
             completion?(error == nil, info)
@@ -216,7 +218,7 @@ open class MKIAPService {
             }
         }
     }
-    
+
     func validatePurchase(forceRefresh: Bool,
                           callback: ((RestoreError?, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)?)
     {
@@ -245,7 +247,7 @@ open class MKIAPService {
         { [weak self] receipt, result, error in
             var idSet: Set<String>?
             var restoreError: RestoreError?
-            
+
             defer {
                 if let idSet {
                     self?.didPurchase(idSet, override: true)
@@ -266,23 +268,23 @@ open class MKIAPService {
                 #endif
                 return
             }
-            
+
             if let error {
                 restoreError = .verifyReceipt(error)
                 Logger.shared.iap("validatePurchase error \(error)")
                 return
             }
-            
-            guard let result = result, result.purchased.isNotEmpty else {
+
+            guard let result, result.purchased.isNotEmpty else {
                 restoreError = .unknown
                 Logger.shared.iap("validatePurchase result \(result)")
                 return
             }
-            
+
             idSet = result.purchased
         }
     }
-    
+
     func validatePurchase(forceRefresh: Bool,
                           callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
     {
