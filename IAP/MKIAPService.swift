@@ -36,7 +36,7 @@ extension MKIAPService {
     public enum RestoreError: Error {
         case purchaseNotFound
         case verifyReceipt(Error)
-        case networkError
+        case networkError(Int) // NSURLErrorNetworkUnavailableReasonKey; -1: unreachable; 
         case unknown
     }
 }
@@ -150,10 +150,15 @@ open class MKIAPService {
                                            completion?(error, info)
                                        })
             } else {
-                if let error = results.restoreFailedPurchases.first?.0 as? NSError {
-                    Logger.shared.iap("restore fail \(error)")
+                // Received From `RestorePurchasesController.restoreCompletedTransactionsFailed(withError:)`
+                if let error = results.restoreFailedPurchases.first?.0,
+                   let error = error as? NSError,
+                   error.domain == NSURLErrorDomain {
+                    completion?(.networkError(error.code), info)
+                    Logger.shared.iap("restorePurchase error network \(error)")
+                } else {
+                    completion?(.purchaseNotFound, info)
                 }
-                completion?(.purchaseNotFound, info)
             }
         }
     }
@@ -212,7 +217,6 @@ open class MKIAPService {
         }
     }
     
-    @available(*, deprecated)
     func validatePurchase(forceRefresh: Bool,
                           callback: ((RestoreError?, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)?)
     {
@@ -279,7 +283,6 @@ open class MKIAPService {
         }
     }
     
-    @available(*, deprecated)
     func validatePurchase(forceRefresh: Bool,
                           callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
     {
