@@ -25,7 +25,7 @@ public extension UIView {
     }
 
     enum SnpStackViewBuilder {
-        case space(CGFloat? = nil, flex: CGFloat = 1, min: CGFloat? = nil)
+        case space(CGFloat? = nil, flex: CGFloat = 1, min: CGFloat? = nil, max: CGFloat? = nil)
         case view(UIView?,
                   width: CGFloat? = nil,
                   height: CGFloat? = nil,
@@ -50,7 +50,7 @@ public extension UIView {
             var snpObject: SnpLayoutObject?
 
             switch builder {
-            case let .space(size, flex, min):
+            case let .space(size, flex, min, max):
                 snpObject = UILayoutGuide()
 
                 snpObject?.addSnpConfig { [weak snpObject] _, make in
@@ -66,6 +66,10 @@ public extension UIView {
                     } else {
                         if let min {
                             mainAxis.greaterThanOrEqualTo(min)
+                        }
+
+                        if let max {
+                            mainAxis.lessThanOrEqualTo(max)
                         }
 
                         if flex > 0 {

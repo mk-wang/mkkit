@@ -92,12 +92,16 @@ public extension String {
 }
 
 public extension String {
-    var rtlText: String {
-        "\u{200F}\(self)"
-    }
+//    var rtlText: String {
+//        "\u{200F}\(self)"
+//    }
 
     var arText: String {
         "\u{061C}\(self)"
+    }
+
+    var arTextInRTLLang: String {
+        Lang.current.isRTL ? arText : self
     }
 }
 

@@ -171,6 +171,10 @@ public extension UIButton {
     convenience init(type: UIButton.ButtonType, style: ButtonViewStyle) {
         self.init(type: type)
 
+        apply(style: style)
+    }
+
+    func apply(style: ButtonViewStyle) {
         titleLabel?.font = style.font
         setTitleColor(style.color, for: .normal)
 
@@ -180,6 +184,7 @@ public extension UIButton {
         if let color = style.highlightedTextColor {
             setTitleColor(color, for: .highlighted)
         }
+
         if let btn = self as? MKButton {
             btn.setBackgroundColor(style.highlightedBackgroundColor, for: .highlighted)
             btn.setBackgroundColor(style.backgroundColor, for: .normal)
