@@ -49,6 +49,20 @@ public extension UIImage {
 // MARK: - Methods
 
 public extension UIImage {
+    func scale(predicate: ValueBuilder1<CGFloat?, UIImage>,
+               opaque: Bool = false) -> UIImage
+    {
+        let scale = predicate(self)
+        if let scale,
+           let converted = self.scaled(to: scale, opaque: opaque)
+        {
+            return converted
+        }
+        return self
+    }
+}
+
+public extension UIImage {
     func cropped(to rect: CGRect) -> UIImage {
         let rect = rect.intersection(.init(origin: .zero, size: size))
 
