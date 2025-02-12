@@ -25,6 +25,7 @@ public extension UIView {
     }
 
     enum SnpStackViewBuilder {
+        case offset(CGFloat) // 对下个 view 起作用
         case space(CGFloat? = nil, flex: CGFloat = 1, min: CGFloat? = nil, max: CGFloat? = nil)
         case view(UIView?,
                   width: CGFloat? = nil,
@@ -46,10 +47,15 @@ public extension UIView {
         var flexValue: CGFloat = 1
         weak var flexObject: SnpLayoutObject?
 
+        var lastOffset: CGFloat?
+
         for builder in builders {
             var snpObject: SnpLayoutObject?
-
+            var isOffset = false
             switch builder {
+            case let .offset(size):
+                lastOffset = size
+                isOffset = true
             case let .space(size, flex, min, max):
                 snpObject = UILayoutGuide()
 
@@ -136,29 +142,33 @@ public extension UIView {
             }
 
             if let snpObject {
+                let offset = lastOffset ?? 0
+                lastOffset = nil
                 snpObject.addSnpConfig { _, make in
                     if let snp = lastObject?.snpDSL {
                         switch direction {
                         case .vertical:
-                            make.top.equalTo(snp.bottom)
+                            make.top.equalTo(snp.bottom).offset(offset)
                         case .horizontal:
-                            make.leading.equalTo(snp.trailing)
+                            make.leading.equalTo(snp.trailing).offset(offset)
                         case .ltrHorizontal:
-                            make.left.equalTo(snp.right)
+                            make.left.equalTo(snp.right).offset(offset)
                         }
                     } else {
                         switch direction {
                         case .vertical:
-                            make.top.equalToSuperview()
+                            make.top.equalToSuperview().offset(offset)
                         case .horizontal:
-                            make.leading.equalToSuperview()
+                            make.leading.equalToSuperview().offset(offset)
                         case .ltrHorizontal:
-                            make.left.equalToSuperview()
+                            make.left.equalToSuperview().offset(offset)
                         }
                     }
                 }
                 addSnpObject(snpObject)
                 lastObject = snpObject
+            } else if !isOffset, lastOffset != nil {
+                lastOffset = nil
             }
         }
         lastObject?.makeConstraints { make in
