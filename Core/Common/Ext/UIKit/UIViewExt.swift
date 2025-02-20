@@ -225,12 +225,12 @@ public extension UIView {
 
 public extension UIView {
     // bfs
-    func findFirstSubview<T>(_: T.Type? = nil, except: Set<UIView> = []) -> T? {
+    func findFirstSubview<T>(_: T.Type? = nil, shouldSkip: ((UIView) -> Bool)? = nil) -> T? {
         var queue = subviews
 
         while !queue.isEmpty {
             let subview = queue.removeFirst()
-            guard !except.contains(subview) else {
+            guard shouldSkip?(subview) != true else {
                 continue
             }
             if let view = subview as? T {
@@ -243,12 +243,16 @@ public extension UIView {
     }
 
     // dfs
-    func findAllSubviews<T>(_: T.Type? = nil) -> [T] {
+    func findAllSubviews<T>(_: T.Type? = nil, shouldSkip: ((UIView) -> Bool)? = nil) -> [T] {
         var result = [T]()
         var stack = subviews
 
         while !stack.isEmpty {
             let subview = stack.removeLast()
+            guard shouldSkip?(subview) != true else {
+                continue
+            }
+
             if let view = subview as? T {
                 result.append(view)
             }
