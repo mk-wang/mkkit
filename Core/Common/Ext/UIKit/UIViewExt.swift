@@ -224,40 +224,46 @@ public extension UIView {
 }
 
 public extension UIView {
-    // bfs
-    func findFirstSubview<T>(_: T.Type? = nil, shouldSkip: ((UIView) -> Bool)? = nil) -> T? {
-        var queue = subviews
+    func findFirstSubview<T>(bfs: Bool = true,
+                             _: T.Type? = nil,
+                             shouldSkip: ((UIView) -> Bool)? = nil) -> T?
+    {
+        var result: T?
 
-        while !queue.isEmpty {
-            let subview = queue.removeFirst()
-            guard shouldSkip?(subview) != true else {
-                continue
+        visit(root: self, bfs: bfs) { view in
+            guard shouldSkip?(view) != true else {
+                return []
             }
-            if let view = subview as? T {
-                return view
+
+            if let view = view as? T {
+                result = view
+                return nil
             }
-            queue.append(contentsOf: subview.subviews)
+
+            return view.subviews
         }
 
-        return nil
+        return result
     }
 
-    // dfs
-    func findAllSubviews<T>(_: T.Type? = nil, shouldSkip: ((UIView) -> Bool)? = nil) -> [T] {
-        var result = [T]()
-        var stack = subviews
+    func findAllSubviews<T>(bfs: Bool = false,
+                            _: T.Type? = nil,
+                            shouldSkip: ((UIView) -> Bool)? = nil) -> [T]
+    {
+        var result: [T] = []
 
-        while !stack.isEmpty {
-            let subview = stack.removeLast()
-            guard shouldSkip?(subview) != true else {
-                continue
+        visit(root: self, bfs: bfs) { view in
+            guard shouldSkip?(view) != true else {
+                return []
             }
 
-            if let view = subview as? T {
+            if let view = view as? T {
                 result.append(view)
             }
-            stack.append(contentsOf: subview.subviews.reversed())
+
+            return view.subviews
         }
+
         return result
     }
 }

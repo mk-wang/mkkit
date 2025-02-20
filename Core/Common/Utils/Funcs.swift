@@ -55,3 +55,28 @@ public func valueForBuild<T>(debugValue: T, releaseValue: T) -> T {
         return releaseValue
     #endif
 }
+
+/// Traverses a tree or graph structure starting from the root node.
+/// - Parameters:
+///   - root: The root node to start the traversal from.
+///   - bfs: A boolean indicating whether to use breadth-first search (true) or depth-first search (false).
+///   - visitor: A closure that takes a node and returns its child nodes. return nil to end the traversal.
+public func visit<T>(root: T, bfs: Bool, visitor: (T) -> [T]?) {
+    var list: [T] = [root]
+
+    while !list.isEmpty {
+        // BFS: Remove the first element, DFS: Remove the last element
+        let current = bfs ? list.removeFirst() : list.removeLast()
+
+        guard let nextItems = visitor(current) else {
+            break
+        }
+
+        if bfs {
+            list.append(contentsOf: nextItems)
+        } else {
+            // Reverse for DFS order
+            list.append(contentsOf: nextItems.reversed())
+        }
+    }
+}
