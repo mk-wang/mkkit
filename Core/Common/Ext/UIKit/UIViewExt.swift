@@ -224,25 +224,42 @@ public extension UIView {
 }
 
 public extension UIView {
-    func findFirstSubview<T>(_ type: T.Type, except: [UIView] = []) -> T? {
-        for subview in subviews {
+    // bfs
+    func findFirstSubview<T>(_: T.Type? = nil, except: Set<UIView> = []) -> T? {
+        var queue = subviews
+
+        while !queue.isEmpty {
+            let subview = queue.removeFirst()
             guard !except.contains(subview) else {
                 continue
             }
             if let view = subview as? T {
                 return view
-            } else {
-                if let view = subview.findFirstSubview(type, except: except) {
-                    return view
-                }
             }
+            queue.append(contentsOf: subview.subviews)
         }
+
         return nil
+    }
+
+    // dfs
+    func findAllSubviews<T>(_: T.Type? = nil) -> [T] {
+        var result = [T]()
+        var stack = subviews
+
+        while !stack.isEmpty {
+            let subview = stack.removeLast()
+            if let view = subview as? T {
+                result.append(view)
+            }
+            stack.append(contentsOf: subview.subviews.reversed())
+        }
+        return result
     }
 }
 
 public extension UIView {
-    func findFirstSuperView<T: UIView>(_: T.Type) -> T? {
+    func findFirstSuperView<T>(_: T.Type? = nil) -> T? {
         var aView: UIView? = superview
 
         while aView != nil {

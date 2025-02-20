@@ -54,7 +54,7 @@ public extension UIImage {
     {
         let scale = predicate(self)
         if let scale,
-           let converted = self.scaled(to: scale, opaque: opaque)
+           let converted = scaled(to: scale, opaque: opaque)
         {
             return converted
         }
