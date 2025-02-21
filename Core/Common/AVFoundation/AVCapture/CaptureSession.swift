@@ -40,17 +40,27 @@ open class CaptureSession {
         }
     }
 
+    lazy var runningLock: NSLocking = UnFairLock()
     private let runningSubject = CurrentValueSubjectType<Bool, Never>(false)
-    public private(set) lazy var runningPublisher = runningSubject.eraseToAnyPublisher()
+    public private(set) lazy var runningPublisher = runningSubject.receiveOnMain().eraseToAnyPublisher()
+
     public private(set) var isRuning: Bool {
         get {
-            runningSubject.value
+            runningLock.lock()
+            defer {
+                runningLock.unlock()
+            }
+            return runningSubject.value
         }
+
         set {
-            DispatchQueue.main.async { [weak self] in
-                if let self, runningSubject.value != newValue {
-                    runningSubject.value = newValue
-                }
+            runningLock.lock()
+            defer {
+                runningLock.unlock()
+            }
+            if runningSubject.value != newValue {
+                Logger.shared.debug("Capture session is running: \(newValue)")
+                runningSubject.value = newValue
             }
         }
     }
