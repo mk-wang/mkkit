@@ -127,7 +127,10 @@ public extension CaptureSession {
     }
 
     @discardableResult
-    func switchCamera(front: Bool, configuration: VoidFunction1<Bool>? = nil, callback: VoidFunction? = nil) -> Bool {
+    func switchCamera(front: Bool,
+                      configuration: VoidFunction1<Bool>? = nil,
+                      callback: VoidFunction? = nil) -> Bool
+    {
         guard useFrontCamera != front else {
             callback?()
             return true

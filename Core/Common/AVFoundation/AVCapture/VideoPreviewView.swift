@@ -16,10 +16,15 @@ open class VideoPreviewView: UIView {
         AVCaptureVideoPreviewLayer.self
     }
 
+    // Used for cropping photos from AVCaptureVideoPreviewLayer
+    public private(set) var photoROIRect: CGRect = .fullROI
+
     public var canShowRegionOfInterest: Bool = false
 
     private(set) lazy var regionOfInterestSubject: CurrentValueSubjectType<CGRect, Never> = .init(self.bounds)
-    public private(set) lazy var regionOfInterestPublihser = regionOfInterestSubject.removeDuplicatesDropAndDebounce(0, debounce: 0.1).eraseToAnyPublisher()
+    public private(set) lazy var regionOfInterestPublisher = regionOfInterestSubject
+        .removeDuplicatesDropAndDebounce(0, debounce: 0.1)
+        .eraseToAnyPublisher()
 
     public lazy var videoPreviewLayer: AVCaptureVideoPreviewLayer = layer as! AVCaptureVideoPreviewLayer
 
@@ -57,8 +62,18 @@ open class VideoPreviewView: UIView {
         regionOfInterestOutline.path = CGPath(rect: regionOfInterest, transform: nil)
     }
 
-    public var previewROIRect: CGRect {
-        videoPreviewLayer.metadataOutputRectConverted(fromLayerRect: videoPreviewLayer.bounds)
+    public var metadataRectOfInterest: CGRect {
+        videoPreviewLayer.metadataOutputRectConverted(fromLayerRect: regionOfInterest)
+    }
+
+    open func configCamera() {
+        updatePhotoROIRect()
+    }
+
+    public func updatePhotoROIRect() {
+        let rect = videoPreviewLayer.metadataOutputRectConverted(fromLayerRect: bounds)
+        // Swap x and y, as the camera is in landscape mode
+        photoROIRect = .init(origin: rect.origin.swap, size: rect.size.swap)
     }
 }
 
