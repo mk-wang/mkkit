@@ -229,3 +229,62 @@ public extension AVAssetImageGenerator {
         }
     }
 }
+
+public extension AVMetadataObject.ObjectType {
+    private static let typesOfBarCode: [AVMetadataObject.ObjectType] = {
+        var list: [AVMetadataObject.ObjectType] = [
+            .code39,
+            .code39Mod43,
+            .code93,
+            .code128,
+            .ean8,
+            .ean13,
+            .interleaved2of5,
+            .itf14,
+            .upce,
+        ]
+
+        if #available(iOS 15.4, *) {
+            list.append(contentsOf: [
+                .codabar,
+                .gs1DataBar,
+                .gs1DataBarExpanded,
+                .gs1DataBarLimited,
+            ])
+        }
+        return list
+    }()
+
+    private static let typesOf2D: [AVMetadataObject.ObjectType] = {
+        var list: [AVMetadataObject.ObjectType] = [
+            .aztec,
+            .dataMatrix,
+            .pdf417,
+            .qr,
+        ]
+
+        if #available(iOS 15.4, *) {
+            list.append(contentsOf: [
+                .microPDF417,
+                .microQR,
+            ])
+        }
+        return list
+    }()
+
+    var isBarcode: Bool {
+        Self.typesOfBarCode.contains(self)
+    }
+
+    var is2D: Bool {
+        Self.typesOf2D.contains(self)
+    }
+
+    var isFace: Bool {
+        self == .face
+    }
+
+    var isBody: Bool {
+        rawValue.lowercased().contains("body")
+    }
+}
