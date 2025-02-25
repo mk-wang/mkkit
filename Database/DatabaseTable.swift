@@ -58,51 +58,69 @@ public extension DatabaseTable {
                              withoutRowid: withoutRowid,
                              block: builder))
     }
+
+    func dropTable(ifExists: Bool = true) throws {
+        try run(table.drop(ifExists: ifExists))
+    }
+
+    @discardableResult
+    func cleanTable() throws -> Bool {
+        guard let connection else {
+            return false
+        }
+        try connection.run(table.delete())
+        return true
+    }
 }
 
-// public extension DatabaseTable {
-//    public func prepare(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
-//        guard let connection else {
-//            throw TableError.noDataIntance
-//        }
-//        return try connection.prepare(statement, bindings)
-//    }
-// }
+public extension DatabaseTable {
+    func loadData<T: Decodable>(limit: Int? = nil,
+                                offset: Int? = nil,
+                                order: Expressible? = nil,
+                                orders: [Expressible]? = nil,
+                                filter: ValueBuilder1<SQLite.QueryType, SQLite.QueryType>? = nil) -> [T]
+    {
+        var list = [T]()
+        guard let connection else {
+            return list
+        }
 
-//
-//// MARK: DatabaseTable.TableError
-//
-// public extension DatabaseTable {
-//    enum PrimaryKey {
-//        case none
-//        case primary
-//        case autoincrement
-//    }
-//
-//    func newField<T: Value>(name: String, type _: T.Type) -> Expression<T> {
-//        Expression<T>(name)
-//    }
-//
-//    @discardableResult
-//    func addColumn<T: Value>(builder: TableBuilder,
-//                             name: String,
-//                             type: T.Type,
-//                             primaryKey: PrimaryKey = .none,
-//                             check: Expression<Bool>? = nil,
-//                             defaultValue: Expression<T>? = nil) -> Expression<T>
-//    {
-//        guard primaryKey != .autoincrement else {
-//            if T.self == Int64.self {
-//                let field = newField(name: name, type: Int64.self)
-//                builder.column(field, primaryKey: .autoincrement)
-//                return field as! Expression<T>
-//            } else {
-//                fatalError("only Int64 can be autoincrement")
-//            }
-//        }
-//
-//        let field = newField(name: name, type: type)
-//        builder.column(field, primaryKey: primaryKey == .primary, check: check, defaultValue: defaultValue)
-//        return field
-//    }
-// }
+        do {
+            var query: SQLite.QueryType = table
+
+            if let filter {
+                query = filter(query)
+            }
+
+            if let limit {
+                if let offset {
+                    query = query.limit(limit, offset: offset)
+                } else {
+                    query = query.limit(limit)
+                }
+            }
+
+            if let order {
+                query = query.order(order)
+            }
+
+            if let orders {
+                query = query.order(orders)
+            }
+
+            list = try connection.prepare(query).compactMap { row in
+                do {
+                    let recorder: T = try row.decode()
+                    return recorder
+                } catch {
+                    Logger.shared.error("loadData \(error)")
+                    return nil
+                }
+            }
+        } catch {
+            Logger.shared.error("loadData \(error)")
+        }
+
+        return list
+    }
+}
