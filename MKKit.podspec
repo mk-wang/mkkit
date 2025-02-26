@@ -103,6 +103,11 @@ Pod::Spec.new do |s|
     ss.dependency 'SSZipArchive'
     ss.dependency 'MKKit/Logger'
   end
+
+  s.subspec 'Logger+WSPrinter' do |ss|
+    ss.source_files = 'Logger/WSPrinter/**/*.{h,m,c,swift,hpp}'
+    ss.dependency 'MKKit/Logger'
+  end
   
   s.subspec 'Database' do |ss|
     ss.source_files = 'Database/**/*.{h,m,c,swift,hpp}'
