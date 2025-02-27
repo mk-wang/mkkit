@@ -39,7 +39,7 @@ open class CaptureController {
         self.frontCameraSubject = frontCameraSubject
     }
 
-    open func setupSession(configuration: @escaping ValueBuilder1<Bool, CaptureController>,
+    open func setupSession(configuration: @escaping ValueBuilder2<Bool, CaptureController, AVCaptureDevice>,
                            callback: VoidFunction1<Bool>? = nil)
     {
         Logger.shared.debug("setupSession0")
@@ -47,13 +47,13 @@ open class CaptureController {
         let front = frontCameraSubject.value
 
         session.setupSession { [weak self] _ in
-            guard let self, addDevice(front: front) else {
+            guard let self, let device = addDevice(front: front) else {
                 Logger.shared.error("setupSession: addDevice failed")
                 callback?(false)
                 return
             }
 
-            guard configuration(self) else {
+            guard configuration(self, device) else {
                 Logger.shared.error("setupSession: configuration failed")
                 callback?(false)
                 return
@@ -67,20 +67,20 @@ open class CaptureController {
 
 extension CaptureController {
     @objc
-    open func addDevice(front: Bool) -> Bool {
+    open func addDevice(front: Bool) -> AVCaptureDevice? {
         guard let device = session.videoDevcieFor(front: front) else {
             Logger.shared.error("cannot find videoDevcieFor for front \(front)")
-            return false
+            return nil
         }
         do {
             guard try session.addVideoDevice(device) else {
                 Logger.shared.error("cannot addVideoDevice for front \(front)")
-                return false
+                return nil
             }
-            return true
+            return device
         } catch {
             Logger.shared.error("setupSession front \(front): \(error)")
-            return false
+            return nil
         }
     }
 }

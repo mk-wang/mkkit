@@ -88,6 +88,20 @@ public extension AVCaptureDevice {
 }
 
 public extension AVCaptureDevice {
+    func withConfigurationLocked(_ block: (AVCaptureDevice) -> Void) -> Bool {
+        do {
+            try lockForConfiguration()
+            defer {
+                unlockForConfiguration()
+            }
+            block(self)
+            return true
+        } catch {
+            Logger.shared.info("Could not lock for configuration: \(error)")
+            return false
+        }
+    }
+
     var highestResolution420Format: (AVCaptureDevice.Format, CGSize)? {
         highestResolutionFormat(for: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
     }
@@ -119,33 +133,30 @@ public extension AVCaptureDevice {
         return (highestResolutionFormat, resolution)
     }
 
-    func setRecommendedZoomFactor(minimumSize: CGFloat, rectOfInterestWidth: CGFloat) {
+    @available(iOS 15.0, *)
+    @discardableResult
+    func setRecommendedQRZoomFactor(minimumSize: CGFloat, rectOfInterestWidth: CGFloat) -> Bool {
         /*
          Optimize the user experience for scanning QR codes down to sizes of 20mm x 20mm.
          When scanning a QR code of that size, the user may need to get closer than the camera's minimum focus distance to fill the rect of interest.
          To have the QR code both fill the rect and still be in focus, we may need to apply some zoom.
          */
-        if #available(iOS 15.0, *) {
-            let deviceMinimumFocusDistance = Float(self.minimumFocusDistance)
-            guard deviceMinimumFocusDistance != -1 else {
-                return
-            }
+        let deviceMinimumFocusDistance = Float(minimumFocusDistance)
+        guard deviceMinimumFocusDistance != -1 else {
+            return false
+        }
 
-            let fieldOfView = activeFormat.videoFieldOfView
-            let minimumSubjectDistanceForCode = minimumSubjectDistanceForCode(fieldOfView: fieldOfView,
-                                                                              minimumSize: Float(minimumSize),
-                                                                              previewFillPercentage: Float(rectOfInterestWidth))
-            if minimumSubjectDistanceForCode < deviceMinimumFocusDistance {
-                let zoomFactor = deviceMinimumFocusDistance / minimumSubjectDistanceForCode
-                do {
-                    try lockForConfiguration()
-                    videoZoomFactor = CGFloat(zoomFactor)
-                    unlockForConfiguration()
-                } catch {
-                    Logger.shared.info("Could not lock for configuration: \(error)")
-                }
+        let fieldOfView = activeFormat.videoFieldOfView
+        let minimumSubjectDistanceForCode = minimumSubjectDistanceForCode(fieldOfView: fieldOfView,
+                                                                          minimumSize: Float(minimumSize),
+                                                                          previewFillPercentage: Float(rectOfInterestWidth))
+        if minimumSubjectDistanceForCode < deviceMinimumFocusDistance {
+            let zoomFactor: CGFloat = .init(deviceMinimumFocusDistance / minimumSubjectDistanceForCode)
+            return withConfigurationLocked {
+                $0.videoZoomFactor = zoomFactor
             }
         }
+        return true
     }
 
     private func minimumSubjectDistanceForCode(fieldOfView: Float, minimumSize: Float, previewFillPercentage: Float) -> Float {
