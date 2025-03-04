@@ -72,10 +72,14 @@ open class Logger {
             return
         }
 
+        let printers = printers.isEmpty ? [Self.defaultLogger] : printers
+
         let value = message()
         let text = (value as? String) ?? value.description
         printers.forEach { $0.write(level: level, message: text, tag: tag, function: function, file: file, line: line) }
     }
+
+    private static let defaultLogger = OSPrinter(subsystem: AppInfo.bundleIdentifier, category: "default")
 
     public enum Level: Int8 {
         case debug

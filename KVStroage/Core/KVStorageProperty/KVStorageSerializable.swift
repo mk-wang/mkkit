@@ -22,15 +22,18 @@ public protocol KVStorageSerializable {
     /// Initializes the object using the provided value.
     ///
     /// - Parameter kvValue: The previously store value fetched from `UserDefaults`.
-    init(kvValue: KVValue)
+    init?(kvValue: KVValue)
 }
 
 ///// :nodoc:
 public extension KVStorageSerializable where Self: RawRepresentable, Self.RawValue: KVStorageSerializable {
     var kvValue: RawValue.KVValue { rawValue.kvValue }
 
-    init(kvValue: RawValue.KVValue) {
-        self = Self(rawValue: Self.RawValue(kvValue: kvValue))!
+    init?(kvValue: RawValue.KVValue) {
+        guard let value = Self.RawValue(kvValue: kvValue) else {
+            return nil
+        }
+        self.init(rawValue: value)
     }
 }
 
@@ -46,7 +49,14 @@ public extension KVStorage {
             return nil
         }
 
-        return T(kvValue: value)
+        guard let object = T(kvValue: value) else {
+            let message = "Failed to create object from \(T.self) \(value)"
+            Logger.shared.error(message)
+            assertionFailure(message)
+            return nil
+        }
+
+        return object
     }
 }
 
@@ -388,7 +398,7 @@ extension Array: KVStorageSerializable where Element: KVStorageSerializable {
     }
 
     public init(kvValue: [Element.KVValue]) {
-        self = kvValue.map { Element(kvValue: $0) }
+        self = kvValue.compactMap { Element(kvValue: $0) }
     }
 }
 
@@ -412,8 +422,8 @@ extension Set: KVStorageSerializable where Element: KVStorageSerializable {
         map(\.kvValue)
     }
 
-    public init(kvValue: [Element.KVValue]) {
-        self = Set(kvValue.map { Element(kvValue: $0) })
+    public init?(kvValue: [Element.KVValue]) {
+        self = Set(kvValue.compactMap { Element(kvValue: $0) })
     }
 }
 
@@ -437,8 +447,8 @@ extension Dictionary: KVStorageSerializable where Key == String, Value: KVStorag
         mapValues { $0.kvValue }
     }
 
-    public init(kvValue: [String: Value.KVValue]) {
-        self = kvValue.mapValues { Value(kvValue: $0) }
+    public init?(kvValue: [String: Value.KVValue]) {
+        self = kvValue.compactMapValues { Value(kvValue: $0) }
     }
 }
 
@@ -467,8 +477,11 @@ extension KVStorageSerializableWrap: KVStorageSerializable {
         inner.kvValue
     }
 
-    public init(kvValue: T.KVValue) {
-        self = .init(inner: T(kvValue: kvValue))
+    public init?(kvValue: T.KVValue) {
+        guard let value = T(kvValue: kvValue) else {
+            return nil
+        }
+        inner = value
     }
 
     public typealias KVValue = T.KVValue
