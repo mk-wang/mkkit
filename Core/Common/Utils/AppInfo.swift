@@ -70,6 +70,10 @@ public extension AppInfo {
         return text
     }
 
+    static var buildVersion: BuildVersion {
+        .init(fullVersion)
+    }
+
     static var shortVersion: String {
         bundleInfo(for: "CFBundleShortVersionString")!
     }
