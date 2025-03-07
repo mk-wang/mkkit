@@ -55,6 +55,20 @@ public struct BuildVersion<T: BuildIntValue> {
     }
 }
 
+public extension BuildVersion {
+    static func checkVersion(_ version: String) -> BuildVersion? {
+        let regex = #"^\d+(\.\d+)*$"#
+        guard version.range(of: regex, options: .regularExpression) != nil else {
+            return nil
+        }
+        let components = version.split(separator: ".").compactMap { Int($0) }
+        guard components.isNotEmpty else {
+            return nil
+        }
+        return BuildVersion(components)
+    }
+}
+
 // MARK: Comparable, Codable
 
 extension BuildVersion: Comparable, Codable {
