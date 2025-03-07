@@ -1,11 +1,36 @@
 //
-//  BuildVersion.swift
+//  Version.swift
 //  Pods
 //
 //  Created by MK on 2025/3/6.
 //
 
 import Foundation
+
+// MARK: - Version
+
+public struct Version: Codable {
+    public let current: BuildVersion
+    public let install: BuildVersion
+    public let previous: BuildVersion?
+
+    public init(current: BuildVersion,
+                install: BuildVersion,
+                previous: BuildVersion? = nil)
+    {
+        self.current = current
+        self.install = install
+        self.previous = previous
+    }
+}
+
+// MARK: Equatable
+
+extension Version: Equatable {
+    public static func == (lhs: Version, rhs: Version) -> Bool {
+        lhs.current == rhs.current && lhs.previous == rhs.previous && lhs.install == rhs.install
+    }
+}
 
 // MARK: - BuildVersion
 
