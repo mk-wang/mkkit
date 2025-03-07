@@ -7,24 +7,7 @@
 
 import Foundation
 
-// MARK: - Version
-
-public struct Version: Codable {
-    public let current: BuildVersion
-    public let install: BuildVersion
-    public let previous: BuildVersion?
-
-    public init(current: BuildVersion,
-                install: BuildVersion,
-                previous: BuildVersion? = nil)
-    {
-        self.current = current
-        self.install = install
-        self.previous = previous
-    }
-}
-
-// MARK: Equatable
+// MARK: - Version + Equatable
 
 extension Version: Equatable {
     public static func == (lhs: Version, rhs: Version) -> Bool {
@@ -32,31 +15,49 @@ extension Version: Equatable {
     }
 }
 
+// MARK: - BuildIntValue
+
+public protocol BuildIntValue {
+    static var value: Int { get }
+}
+
+// MARK: - BuildInt3
+
+public enum BuildInt3: BuildIntValue {
+    public static var value: Int { 3 }
+}
+
+// MARK: - BuildInt4
+
+public enum BuildInt4: BuildIntValue {
+    public static var value: Int { 4 }
+}
+
 // MARK: - BuildVersion
 
-public struct BuildVersion {
-    static let maxComponents = 4
-
+public struct BuildVersion<T: BuildIntValue> {
     public let components: [Int]
+    public let maxComponents = T.value
+
+    public init(_ components: [Int]) {
+        let diff = maxComponents - components.count
+        if diff < 0 {
+            self.components = Array(components.prefix(maxComponents))
+        } else if diff > 0 {
+            self.components = components + Array(repeating: 0, count: diff)
+        } else {
+            self.components = components
+        }
+    }
 
     public init(_ version: String) {
-        var parsedComponents = version.split(separator: ".").compactMap { Int($0) }
-
-        if parsedComponents.count > BuildVersion.maxComponents {
-            parsedComponents = Array(parsedComponents.prefix(BuildVersion.maxComponents))
-        } else {
-            while parsedComponents.count < BuildVersion.maxComponents {
-                parsedComponents.append(0)
-            }
-        }
-
-        components = parsedComponents
+        self.init(version.split(separator: ".").compactMap { Int($0) })
     }
 }
 
-// MARK: Comparable
+// MARK: Comparable, Codable
 
-extension BuildVersion: Comparable {
+extension BuildVersion: Comparable, Codable {
     public static func < (lhs: BuildVersion, rhs: BuildVersion) -> Bool {
         for (left, right) in zip(lhs.components, rhs.components) {
             if left < right {
@@ -81,6 +82,36 @@ extension BuildVersion: CustomStringConvertible {
     }
 }
 
-// MARK: Codable
+public typealias BuildVersion4 = BuildVersion<BuildInt4>
+public typealias BuildVersion3 = BuildVersion<BuildInt3>
 
-extension BuildVersion: Codable {}
+public extension BuildVersion4 {
+    var major: BuildVersion3 {
+        .init(components)
+    }
+
+    var minor: Int {
+        components.last ?? 0
+    }
+}
+
+// MARK: - Version
+
+public struct Version: Codable {
+    public let current: BuildVersion4
+    public let install: BuildVersion4
+    public let previous: BuildVersion4?
+
+    public init(current: BuildVersion4,
+                install: BuildVersion4,
+                previous: BuildVersion4? = nil)
+    {
+        self.current = current
+        self.install = install
+        self.previous = previous
+    }
+
+    public var isUpgrade: Bool {
+        current > (previous ?? install)
+    }
+}

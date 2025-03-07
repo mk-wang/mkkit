@@ -70,7 +70,7 @@ public extension AppInfo {
         return text
     }
 
-    static var buildVersion: BuildVersion {
+    static var buildVersion: BuildVersion4 {
         .init(fullVersion)
     }
 
