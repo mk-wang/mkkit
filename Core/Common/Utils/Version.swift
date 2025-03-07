@@ -7,30 +7,52 @@
 
 import Foundation
 
-// MARK: - Version + Equatable
-
-extension Version: Equatable {
-    public static func == (lhs: Version, rhs: Version) -> Bool {
-        lhs.current == rhs.current && lhs.previous == rhs.previous && lhs.install == rhs.install
-    }
-}
-
 // MARK: - BuildIntValue
 
 public protocol BuildIntValue {
     static var value: Int { get }
+    associatedtype Lower: BuildIntValue
+    associatedtype Higher: BuildIntValue
+}
+
+// MARK: - BuildIntNil
+
+public enum BuildIntNil: BuildIntValue {
+    public static var value: Int { 0 }
+    public typealias Lower = BuildIntNil
+    public typealias Higher = BuildIntNil
+}
+
+// MARK: - BuildInt1
+
+public enum BuildInt1: BuildIntValue {
+    public static var value: Int { 1 }
+    public typealias Lower = BuildIntNil
+    public typealias Higher = BuildInt2
+}
+
+// MARK: - BuildInt2
+
+public enum BuildInt2: BuildIntValue {
+    public static var value: Int { 2 }
+    public typealias Lower = BuildInt1
+    public typealias Higher = BuildInt3
 }
 
 // MARK: - BuildInt3
 
 public enum BuildInt3: BuildIntValue {
     public static var value: Int { 3 }
+    public typealias Lower = BuildInt2
+    public typealias Higher = BuildInt4
 }
 
 // MARK: - BuildInt4
 
 public enum BuildInt4: BuildIntValue {
     public static var value: Int { 4 }
+    public typealias Lower = BuildInt3
+    public typealias Higher = BuildIntNil
 }
 
 // MARK: - BuildVersion
@@ -96,12 +118,26 @@ extension BuildVersion: CustomStringConvertible {
     }
 }
 
+public extension BuildVersion {
+    func cast<R: BuildIntValue>() -> BuildVersion<R> {
+        .init(components)
+    }
+
+    var lower: BuildVersion<T.Lower>? {
+        T.Lower.value == 0 ? nil : cast()
+    }
+
+    var higher: BuildVersion<T.Higher>? {
+        T.Higher.value == 0 ? nil : cast()
+    }
+}
+
 public typealias BuildVersion4 = BuildVersion<BuildInt4>
 public typealias BuildVersion3 = BuildVersion<BuildInt3>
 
 public extension BuildVersion4 {
     var major: BuildVersion3 {
-        .init(components)
+        lower ?? cast()
     }
 
     var minor: Int {
@@ -127,5 +163,13 @@ public struct Version: Codable {
 
     public var isUpgrade: Bool {
         current > (previous ?? install)
+    }
+}
+
+// MARK: Equatable
+
+extension Version: Equatable {
+    public static func == (lhs: Version, rhs: Version) -> Bool {
+        lhs.current == rhs.current && lhs.previous == rhs.previous && lhs.install == rhs.install
     }
 }
