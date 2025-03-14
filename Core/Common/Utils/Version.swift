@@ -161,6 +161,14 @@ public struct Version: Codable {
         self.previous = previous
     }
 
+    public init(current: BuildVersion4,
+                previousVersion: Version? = nil)
+    {
+        self.init(current: current,
+                  install: previousVersion?.install ?? current,
+                  previous: previousVersion?.current)
+    }
+
     public var isUpgrade: Bool {
         current > (previous ?? install)
     }

@@ -158,6 +158,14 @@ public extension String {
     var utf8List: [UInt8] {
         Array(utf8)
     }
+
+    var reversed: String {
+        String(reversed())
+    }
+
+    var reversedSegments: String {
+        split(separator: ".").reversed().joined(separator: ".")
+    }
 }
 
 public extension String {

@@ -486,3 +486,31 @@ extension KVStorageSerializableWrap: KVStorageSerializable {
 
     public typealias KVValue = T.KVValue
 }
+
+// MARK: - Version + KVStorageSerializable
+
+extension Version: KVStorageSerializable {
+    public static func write(storage: KVStorage, value: KVValue, key: String) {
+        storage.set(value, for: key)
+    }
+
+    public static func read(storage: KVStorage, key: String) -> KVValue? {
+        storage.string(for: key)
+    }
+
+    public init?(kvValue: String) {
+        if let version = try? kvValue.decodeJson(Version.self) {
+            self = version
+        } else if let buildVersion = BuildVersion4.checkVersion(kvValue) {
+            self = Version(current: buildVersion, install: buildVersion, previous: nil)
+        } else {
+            return nil
+        }
+    }
+
+    public var kvValue: String {
+        jsonString ?? ""
+    }
+
+    public typealias KVValue = String
+}
