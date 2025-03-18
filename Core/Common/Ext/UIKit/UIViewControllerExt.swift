@@ -19,15 +19,11 @@ public extension UIViewController {
 
 public extension UIViewController {
     @objc open func disableSlidePan() {
-        if let reg = navigationController?.interactivePopGestureRecognizer {
-            reg.isEnabled = false
-        }
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
 
     @objc open func enableSlidePan() {
-        if let reg = navigationController?.interactivePopGestureRecognizer {
-            reg.isEnabled = true
-        }
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 }
 
