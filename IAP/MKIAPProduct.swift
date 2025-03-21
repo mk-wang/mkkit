@@ -22,6 +22,10 @@ public protocol MKIAPProductSimple {
     var isSubscription: Bool {
         get
     }
+
+    var hasFreeTrail: Bool {
+        get
+    }
 }
 
 // MARK: - MKIAPProduct

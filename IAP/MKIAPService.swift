@@ -41,6 +41,10 @@ public extension MKIAPService {
         case networkError(Int) // NSURLErrorNetworkUnavailableReasonKey; -1: unreachable;
         case unknown
     }
+
+    enum VerifyError: Error {
+        case purchaseNotFound
+    }
 }
 
 // MARK: - MKIAPService
@@ -48,6 +52,21 @@ public extension MKIAPService {
 open class MKIAPService {
     public let sharedSecret: String
     public var purchasedSubject: CurrentValueSubjectType<Set<String>, Never>
+
+    private var appStateObs: AnyCancellableType?
+    private let trialSubject: CurrentValueSubjectType<Bool, Never> = .init(true)
+    public private(set) lazy var trialPublisher = trialSubject.eraseToAnyPublisher()
+    public var hasTrial: Bool {
+        trialSubject.value
+    }
+
+    let networkPublisher: AnyPublisherType<Bool, Never>
+    private var networkObs: AnyCancellableType?
+    private(set) var hasNetwork: Bool = false {
+        didSet {
+            onNetworkChang()
+        }
+    }
 
     open var purchased: Set<String> {
         get {
@@ -84,12 +103,14 @@ open class MKIAPService {
                 purchasedSubject: CurrentValueSubjectType<Set<String>, Never>,
                 productListBuilder: @escaping ValueBuilder<[MKIAPProduct]>,
                 allProductListBuiler: @escaping ValueBuilder<[MKIAPProductSimple]>,
-                config: Config)
+                config: Config,
+                networkPublisher: AnyPublisherType<Bool, Never>)
     {
         self.sharedSecret = sharedSecret
         self.productListBuilder = productListBuilder
         self.allProductListBuiler = allProductListBuiler
         self.purchasedSubject = purchasedSubject
+        self.networkPublisher = networkPublisher
         self.config = config
     }
 
@@ -133,12 +154,36 @@ open class MKIAPService {
             }
         }
 
-        if isPremium {
-            validatePurchase(forceRefresh: true)
-        }
+        networkObs = networkPublisher
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] in
+                self?.hasNetwork = $0
+            })
+
+        appStateObs = MKAppDelegate.shared?.appForegroundPublisher
+            .sink(receiveValue: { [weak self] _ in
+                self?.loadProducts()
+            })
     }
 
-    public func restorePurchase(completion: ((RestoreError?, RestoreInfo) -> Void)? = nil) {
+    private var hasValidatePurchase: Bool = false
+    open func onNetworkChang() {
+        guard hasNetwork else {
+            return
+        }
+
+        guard !isPremium else {
+            if !hasValidatePurchase {
+                validatePurchase(forceRefresh: true)
+                hasValidatePurchase = true
+            }
+            return
+        }
+
+        loadProducts()
+    }
+
+    open func restorePurchase(completion: ((RestoreError?, RestoreInfo) -> Void)? = nil) {
         IAPHelper.restore { [weak self] info in
             let results = info.restoreResults
             let restoreSuc = results.restoredPurchases.isNotEmpty
@@ -166,14 +211,14 @@ open class MKIAPService {
         }
     }
 
-    public func restorePurchase(completion: ((Bool, RestoreInfo) -> Void)? = nil) {
+    open func restorePurchase(completion: ((Bool, RestoreInfo) -> Void)? = nil) {
         restorePurchase { error, info in
             completion?(error == nil, info)
         }
     }
 
-    public func loadProducts() {
-        guard !loadingProduct else {
+    open func loadProducts() {
+        guard hasNetwork, !loadingProduct else {
             return
         }
 
@@ -185,7 +230,23 @@ open class MKIAPService {
                 self?.updateSKProduct(skProduct: result)
             }
             self?.loadingProduct = false
+            self?.checkFreeTrail()
         }
+    }
+
+    open func checkFreeTrail() {
+        guard #available(iOS 15.0, *),
+              !isPremium,
+              let product = productListBuilder().first(where: { $0.hasFreeTrail })
+        else {
+            return
+        }
+
+        isEligibleForIntroOffer(product,
+                                completion: { [weak self] in
+                                    let value = $0 ?? true
+                                    self?.trialSubject.value = value
+                                })
     }
 
     @available(iOS 15.0, *)
@@ -220,7 +281,7 @@ open class MKIAPService {
     }
 
     func validatePurchase(forceRefresh: Bool,
-                          callback: ((RestoreError?, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)?)
+                          callback: ((RestoreError?, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
     {
         let environment = iapEnv
         var products = [String]()
@@ -254,7 +315,7 @@ open class MKIAPService {
                     callback?(nil, receipt, result)
                 } else {
                     self?.resetPurchase()
-                    callback?(restoreError, receipt, result)
+                    callback?(restoreError ?? .purchaseNotFound, receipt, result)
                 }
             }
 
@@ -285,13 +346,13 @@ open class MKIAPService {
         }
     }
 
-    func validatePurchase(forceRefresh: Bool,
-                          callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
-    {
-        validatePurchase(forceRefresh: forceRefresh) { error, info, result in
-            callback?(error == nil, info, result)
-        }
-    }
+//    func validatePurchase(forceRefresh: Bool,
+//                          callback: ((Bool, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
+//    {
+//        validatePurchase(forceRefresh: forceRefresh) { error, info, result in
+//            callback?(error == nil, info, result)
+//        }
+//    }
 
     var iapEnv: IAPEnvironment {
         guard let builder = config.envBuilder else {
