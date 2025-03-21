@@ -408,3 +408,69 @@ public extension UIView {
         CATransaction.commit()
     }
 }
+
+public extension UIView {
+    @discardableResult
+    func addVerticalGradientBorder(colors: [UIColor],
+                                   lineWidth: CGFloat,
+                                   cornerRadius: CGFloat,
+                                   locations: [CGFloat]? = nil) -> CAGradientLayer
+    {
+        addGradientBorder(colors: colors,
+                          startPoint: .init(x: 0.5, y: 0),
+                          endPoint: .init(x: 0.5, y: 1),
+                          lineWidth: lineWidth,
+                          cornerRadius: cornerRadius,
+                          locations: locations)
+    }
+
+    @discardableResult
+    func addHorizontalGradientBorder(colors: [UIColor],
+                                     lineWidth: CGFloat,
+                                     cornerRadius: CGFloat,
+                                     locations: [CGFloat]? = nil) -> CAGradientLayer
+    {
+        addGradientBorder(colors: colors,
+                          startPoint: .init(x: 0, y: 0.5),
+                          endPoint: .init(x: 1, y: 0.5),
+                          lineWidth: lineWidth,
+                          cornerRadius: cornerRadius,
+                          locations: locations)
+    }
+
+    @discardableResult
+    func addGradientBorder(colors: [UIColor],
+                           startPoint: CGPoint,
+                           endPoint: CGPoint,
+                           lineWidth: CGFloat,
+                           cornerRadius: CGFloat,
+                           locations: [CGFloat]? = nil) -> CAGradientLayer
+    {
+        layer.cornerRadius = cornerRadius
+        clipsToBounds = true
+
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = colors.map(\.cgColor)
+        gradientLayer.startPoint = startPoint
+        gradientLayer.endPoint = endPoint
+        gradientLayer.frame = bounds
+        if let locations {
+            gradientLayer.locations = locations.map {
+                .init(value: $0)
+            }
+        }
+
+        let shapeLayer = CAShapeLayer()
+        let roundedRectPath = UIBezierPath(roundedRect: bounds,
+                                           cornerRadius: cornerRadius)
+        shapeLayer.path = roundedRectPath.cgPath
+        shapeLayer.lineWidth = lineWidth
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeColor = UIColor.black.cgColor
+
+        gradientLayer.mask = shapeLayer
+
+        layer.addSublayer(gradientLayer)
+        return gradientLayer
+    }
+}
