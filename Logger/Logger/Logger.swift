@@ -253,7 +253,7 @@ extension OSPrinterNew: Printer {
 }
 
 @available(iOS 14.0, *)
-extension Logger.Level {
+private extension Logger.Level {
     var osLoggerLevel: OSLogType {
         switch self {
         case .debug:
@@ -263,6 +263,28 @@ extension Logger.Level {
         case .error:
             .error
         }
+    }
+}
+
+// MARK: - StdIOPrinter
+
+public class StdIOPrinter: Printer {
+    public let appName: String
+    public init(appName: String) {
+        self.appName = appName
+    }
+
+    public func write(level: Logger.Level, message: String, tag: String?, function: String, file: String, line: UInt) {
+        #if DEBUG_BUILD
+            let content = formatMessage(level: level,
+                                        message: message,
+                                        tag: tag,
+                                        function: function,
+                                        file: file,
+                                        line: line)
+            print("\(appName) \(content)")
+        #else
+        #endif
     }
 }
 

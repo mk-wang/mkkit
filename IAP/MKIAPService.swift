@@ -56,7 +56,8 @@ open class MKIAPService {
     private var appStateObs: AnyCancellableType?
     private let trialSubject: CurrentValueSubjectType<Bool, Never> = .init(true)
     public private(set) lazy var trialPublisher = trialSubject.eraseToAnyPublisher()
-    public var hasTrial: Bool {
+
+    open var hasTrial: Bool {
         trialSubject.value
     }
 

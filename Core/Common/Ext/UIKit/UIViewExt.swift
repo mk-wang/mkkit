@@ -29,6 +29,11 @@ public extension UIView {
 }
 
 public extension UIView {
+    func border(color: UIColor, width: CGFloat) {
+        layer.borderColor = color.cgColor
+        layer.borderWidth = width
+    }
+
     func shadow(color: UIColor, opacity: Float? = nil, offset: CGSize? = nil, radius: CGFloat? = nil) {
         layer.shadowColor = color.cgColor
         if let opacity {
