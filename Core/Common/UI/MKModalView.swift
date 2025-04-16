@@ -16,8 +16,8 @@ open class MKModalView: TouchPassthroughView {
     }
 
     private(set) var contentView: UIView?
-    lazy var duration: CFTimeInterval = style == .center ? 0.2 : 0.3
-    lazy var hideAlpha: CGFloat = 0.0
+
+    public lazy var hideAlpha: CGFloat = 0.0
 
     public let style: Style
     public var willHideCallback: ((MKModalView?, Any?) -> Void)?
@@ -80,7 +80,10 @@ public extension MKModalView {
 }
 
 public extension MKModalView {
-    func show(_ container: UIView? = nil) {
+    private var showDuration: CFTimeInterval { style == .center ? 0.2 : 0.3 }
+    private var hideDuration: CFTimeInterval { style == .center ? 0.2 : 0.3 }
+
+    func show(animated: Bool = true, _ container: UIView? = nil) {
         guard contentView != nil, let superView = container ?? ScreenUtil.window else {
             return
         }
@@ -98,25 +101,35 @@ public extension MKModalView {
 
         layoutIfNeeded()
 
-        if style == .center {
-            let duration = duration
-            DispatchQueue.mainAsync {
-                weakSelf?.beforeShow()
-
-                UIView.animate(withDuration: duration) {
-                    weakSelf?.realShow()
-                } completion: { _ in
-                    weakSelf?.afterShow()
+        let showBlock: VoidFunction = { [weak self] in
+            self?.realShow()
+        }
+        let afterShowBlock: VoidFunction = { [weak self] in
+            self?.afterShow()
+        }
+        let actionBlock: VoidFunction = { [weak self] in
+            guard let self else {
+                return
+            }
+            beforeShow()
+            if animated {
+                UIView.animate(withDuration: showDuration,
+                               animations: showBlock)
+                { _ in
+                    afterShowBlock()
                 }
+            } else {
+                showBlock()
+                afterShowBlock()
+            }
+        }
+
+        if style == .center {
+            DispatchQueue.mainAsync {
+                actionBlock()
             }
         } else {
-            beforeShow()
-
-            UIView.animate(withDuration: duration) {
-                weakSelf?.realShow()
-            } completion: { _ in
-                weakSelf?.afterShow()
-            }
+            actionBlock()
         }
     }
 
@@ -126,17 +139,27 @@ public extension MKModalView {
         }
     }
 
-    func hide(by object: AnyObject? = nil, duration: TimeInterval? = nil) {
+    func hide(animated: Bool = true, by object: AnyObject? = nil) {
         willHideCallback?(self, object)
 
-        weak var weakSelf = self
+        let hideBlock: VoidFunction = { [weak self] in
+            self?.realHide()
+        }
+        let afterHideBlock: VoidFunction = { [weak self] in
+            self?.removeFromSuperview()
+            self?.contentView?.removeFromSuperview()
+            self?.didHideCallback?(self, object)
+        }
 
-        UIView.animate(withDuration: duration ?? self.duration) {
-            weakSelf?.realHide()
-        } completion: { [weak object] _ in
-            weakSelf?.removeFromSuperview()
-            weakSelf?.contentView?.removeFromSuperview()
-            weakSelf?.didHideCallback?(weakSelf, object)
+        if animated {
+            UIView.animate(withDuration: hideDuration,
+                           animations: hideBlock)
+            { _ in
+                afterHideBlock()
+            }
+        } else {
+            hideBlock()
+            afterHideBlock()
         }
     }
 }
@@ -215,6 +238,7 @@ public extension MKModalView {
 
     @discardableResult
     static func show<T: UIView>(_ contentView: T,
+                                animated: Bool = true,
                                 style: MKModalView.Style,
                                 in container: UIView? = nil,
                                 configure: (MKModalView, T) -> Void) -> MKModalView
@@ -227,7 +251,7 @@ public extension MKModalView {
         contentView.frame = modalView.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-        modalView.show(container)
+        modalView.show(animated: animated, container)
         return modalView
     }
 }

@@ -37,7 +37,11 @@ open class TouchPassthroughView: UIView {
         case .contain:
             for subView in subviews {
                 if subView.frame.contains(point) {
-                    return true
+                    if let passView = subView as? TouchPassthroughView {
+                        return passView.point(inside: subView.convert(point, from: self), with: event)
+                    } else {
+                        return true
+                    }
                 }
             }
             return false
