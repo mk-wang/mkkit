@@ -32,32 +32,20 @@ open class CaptureSession {
             interruptSubject.value
         }
         set {
-            DispatchQueue.main.async { [weak self] in
-                if let self, interruptSubject.value != newValue {
-                    interruptSubject.value = newValue
-                }
+            if interruptSubject.value != newValue {
+                interruptSubject.value = newValue
             }
         }
     }
 
-    lazy var runningLock: NSLocking = UnFairLock()
     private let runningSubject = CurrentValueSubjectType<Bool, Never>(false)
-    public private(set) lazy var runningPublisher = runningSubject.receiveOnMain().eraseToAnyPublisher()
-
-    public private(set) var isRuning: Bool {
+    public private(set) lazy var runningPublisher = runningSubject.eraseToAnyPublisher()
+    public private(set) var isRunning: Bool {
         get {
-            runningLock.lock()
-            defer {
-                runningLock.unlock()
-            }
-            return runningSubject.value
+            runningSubject.value
         }
 
         set {
-            runningLock.lock()
-            defer {
-                runningLock.unlock()
-            }
             if runningSubject.value != newValue {
                 Logger.shared.debug("Capture session is running: \(newValue)")
                 runningSubject.value = newValue
@@ -226,8 +214,6 @@ public extension CaptureSession {
             // Only setup observers and start the session running if setup succeeded.
             addObservers()
             session.startRunning()
-            let isRunning = session.isRunning
-            isRuning = isRunning
         }
     }
 
@@ -236,54 +222,73 @@ public extension CaptureSession {
             guard let self else {
                 return
             }
-
             session.stopRunning()
-            isRuning = session.isRunning
-            removeObservers()
+            removeObservers(resetRunning: true)
         }
     }
 
     private func addObservers() {
-        weak var weakSelf = self
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                return
+            }
 
-        let observation = session.observe(\.isRunning, options: .new) { _, change in
-            guard let isSessionRunning = change.newValue else { return }
-            weakSelf?.isRuning = isSessionRunning
+            self.isRunning = session.isRunning
+
+            let observation = session.observe(\.isRunning, options: .new) { _, change in
+                guard let isSessionRunning = change.newValue else {
+                    return
+                }
+                DispatchQueue.main.async { [weak self] in
+                    self?.isRunning = isSessionRunning
+                }
+            }
+
+            kvObservations.append(observation)
+
+            let notificationCenter = NotificationCenter.default
+
+            notificationCenter.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: session)
+            notificationCenter.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: session)
+            notificationCenter.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
         }
-        kvObservations.append(observation)
-
-        let notificationCenter = NotificationCenter.default
-
-        notificationCenter.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: session)
-        notificationCenter.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: session)
-        notificationCenter.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
     }
 
-    private func removeObservers() {
-        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
-        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
-        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
+    private func removeObservers(resetRunning: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                return
+            }
 
-        for observation in kvObservations {
-            observation.invalidate()
+            NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
+            NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
+            NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
+
+            for observation in kvObservations {
+                observation.invalidate()
+            }
+
+            kvObservations.removeAll()
+            if resetRunning {
+                self.isRunning = false
+            }
         }
-
-        kvObservations.removeAll()
     }
 
     @objc
     func sessionRuntimeError(notification: NSNotification) {
-        guard let error = notification.userInfo?[AVCaptureSessionErrorKey] as? AVError else {
-            return
-        }
+        DispatchQueue.main.async { [weak self] in
+            guard let self, let error = notification.userInfo?[AVCaptureSessionErrorKey] as? AVError else {
+                return
+            }
 
-        Logger.shared.debug("Capture session runtime error: \(error)")
+            Logger.shared.debug("Capture session runtime error: \(error)")
 
-        if error.code == .mediaServicesWereReset {
-            runInSessionQueue {
-                if self.isRuning {
-                    self.session.startRunning()
-                    self.isRuning = self.session.isRunning
+            if error.code == .mediaServicesWereReset {
+                if self.isRunning {
+                    runInSessionQueue {
+                        self.session.startRunning()
+                    }
                 }
             }
         }
@@ -291,17 +296,25 @@ public extension CaptureSession {
 
     @objc
     func sessionWasInterrupted(notification: NSNotification) {
-        if let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
-           let reasonIntegerValue = userInfoValue.integerValue,
-           let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue)
-        {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
+                  let reasonIntegerValue = userInfoValue.integerValue,
+                  let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue)
+            else {
+                return
+            }
             interrupt = .reason(reason)
         }
     }
 
     @objc
     func sessionInterruptionEnded(notification _: NSNotification) {
-        interrupt = .end
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                return
+            }
+            interrupt = .end
+        }
     }
 }
 
