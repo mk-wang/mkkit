@@ -5,7 +5,6 @@
 //
 
 import AVFoundation
-import MKKit
 
 // MARK: - CaptureDataHandler
 

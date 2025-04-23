@@ -233,7 +233,7 @@ public extension CaptureSession {
                 return
             }
 
-            self.isRunning = session.isRunning
+            isRunning = session.isRunning
 
             let observation = session.observe(\.isRunning, options: .new) { _, change in
                 guard let isSessionRunning = change.newValue else {
@@ -270,7 +270,7 @@ public extension CaptureSession {
 
             kvObservations.removeAll()
             if resetRunning {
-                self.isRunning = false
+                isRunning = false
             }
         }
     }
@@ -285,7 +285,7 @@ public extension CaptureSession {
             Logger.shared.debug("Capture session runtime error: \(error)")
 
             if error.code == .mediaServicesWereReset {
-                if self.isRunning {
+                if isRunning {
                     runInSessionQueue {
                         self.session.startRunning()
                     }
