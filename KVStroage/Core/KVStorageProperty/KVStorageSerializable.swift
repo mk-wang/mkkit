@@ -487,24 +487,10 @@ extension KVStorageSerializableWrap: KVStorageSerializable {
     public typealias KVValue = T.KVValue
 }
 
-// MARK: - AppTheme + KVStorageSerializable
-
-extension AppTheme: KVStorageSerializable {
-    public static func write(storage: MKKit.KVStorage, value: KVValue, key: String) {
-        storage.set(value, for: key)
-    }
-
-    public static func read(storage: KVStorage, key: String) -> KVValue? {
-        storage.int8(for: key)
-    }
-
-    public typealias KVValue = RawValue
-}
-
 // MARK: - Lang + KVStorageSerializable
 
 extension Lang: KVStorageSerializable {
-    public static func write(storage: MKKit.KVStorage, value: KVValue, key: String) {
+    public static func write(storage: KVStorage, value: KVValue, key: String) {
         storage.set(value, for: key)
     }
 

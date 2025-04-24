@@ -28,7 +28,7 @@ import Foundation
 
     public typealias PublisherType = Combine.Publisher
     public typealias SubscriberType = Combine.Subscriber
-    public typealias CurrentValueSubjectType = Combine.CurrentValueSubjectType
+    public typealias CurrentValueSubjectType = Combine.CurrentValueSubject
     public typealias PassthroughSubjectType = Combine.PassthroughSubject
 
     public typealias AnyCancellableType = Combine.AnyCancellable

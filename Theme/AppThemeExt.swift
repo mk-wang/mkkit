@@ -40,6 +40,20 @@ public extension AppTheme {
     }
 }
 
+// MARK: - AppTheme + KVStorageSerializable
+
+extension AppTheme: KVStorageSerializable {
+    public static func write(storage: KVStorage, value: KVValue, key: String) {
+        storage.set(value, for: key)
+    }
+
+    public static func read(storage: KVStorage, key: String) -> KVValue? {
+        storage.int8(for: key)
+    }
+
+    public typealias KVValue = RawValue
+}
+
 public extension AppTheme {
     static let darkStatusBarStyle: UIStatusBarStyle = {
         var style: UIStatusBarStyle! = if #available(iOS 13.0, *) {
