@@ -15,7 +15,7 @@ public protocol MKAppURLHandler {
 }
 
 public extension MKAppDelegate {
-    func addUrlHandler(_ handler: MKAppURLHandler) {
+    func addURLHandler(_ handler: MKAppURLHandler) {
         urlHandlers.append(handler)
     }
 

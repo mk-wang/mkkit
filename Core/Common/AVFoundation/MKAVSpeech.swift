@@ -138,7 +138,8 @@ public extension MKAVSpeech.VoiceStyle {
             case .ios16:
                 identifier = "com.apple.voice.compact.pt-BR.Luciana"
             }
-        case .pt_PT:
+        case .pt,
+             .pt_PT:
             language = "pt-PT"
 
             switch style {
@@ -219,8 +220,25 @@ public extension MKAVSpeech.VoiceStyle {
             case .ios16:
                 identifier = "com.apple.voice.compact.ro-RO.Ioana"
             }
+        case .hi:
+            language = "hi-IN"
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Lekha-compact"
+            case .ios16:
+                identifier = "com.apple.voice.compact.hi-IN.Lekha"
+            }
+        case .ms_MY:
+            language = "ms-MY"
+            switch style {
+            case .old:
+                identifier = "com.apple.ttsbundle.Amira-compact"
+//                identifier = nil
+            case .ios16:
+                identifier = "com.apple.voice.compact.ms-MY.Amira"
+            }
         default:
-            break
+            assert(!lang.canSpeak, "cannot speak \(lang)")
         }
 
         guard let identifier, let language else {
@@ -233,7 +251,19 @@ public extension MKAVSpeech.VoiceStyle {
 
 public extension Lang {
     var canSpeak: Bool {
-        self != .fa
+        canSpeak(style: .current)
+    }
+
+    func canSpeak(style: MKAVSpeech.VoiceStyle) -> Bool {
+        guard self != .fa, self != .ur else {
+            return false
+        }
+
+        guard style == .old else {
+            return true
+        }
+
+        return self != .ms_MY
     }
 
     func newVoice(byIdentifier: Bool = true,
@@ -302,7 +332,6 @@ public extension Lang {
 
             for lang in Lang.allCases {
                 guard let setting = style.settingOf(lang: lang) else {
-                    assert(!lang.canSpeak, "cannot speak \(lang)")
                     continue
                 }
 

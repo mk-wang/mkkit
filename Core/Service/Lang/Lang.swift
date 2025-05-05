@@ -26,10 +26,14 @@ public enum Lang: String, CaseIterable {
     case id
     case pl
     case uk
+    case ur
+    case hi
+    case pt
     case pt_BR = "pt-BR"
     case pt_PT = "pt-PT"
     case zh_Hans = "zh-Hans"
     case zh_Hant = "zh-Hant"
+    case ms_MY = "ms-MY"
 
     private static var configs = [Lang: Bundle]()
 
@@ -102,12 +106,19 @@ extension Lang: CustomStringConvertible {
             "Español (México)"
         case .ro:
             "Român"
-        case .pt_PT:
+        case .pt,
+             .pt_PT:
             "Português"
         case .pl:
             "Polski"
         case .uk:
             "Українська"
+        case .ur:
+            "اردو"
+        case .hi:
+            "हिन्दी"
+        case .ms_MY:
+            "Melayu"
         }
     }
 
@@ -135,6 +146,8 @@ public extension Lang {
         case .pl,
              .uk:
             rawValue // TODO:
+        case .ms_MY:
+            "ms"
         default:
             rawValue
         }
@@ -178,12 +191,19 @@ public extension Lang {
             "🇲🇽"
         case .ro:
             "🇷🇴"
-        case .pt_PT:
+        case .pt,
+             .pt_PT:
             "🇵🇹"
         case .pl:
             "🇵🇱"
         case .uk:
             "🇺🇦"
+        case .hi:
+            "🇮🇳"
+        case .ur:
+            "🇵🇰"
+        case .ms_MY:
+            "🇲🇾"
         }
     }
 }

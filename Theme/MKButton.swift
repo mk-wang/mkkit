@@ -13,7 +13,7 @@ open class MKButton: UIButton {
     open var tapExt: CGSize? = nil
 
     open var themeTintColor: UIColor?
-    open var themeCancellable: AnyCancellableType?
+    open var themeObs: AnyCancellableType?
 
     open var onLayout: VoidFunction?
     open var onCheckBackgroundColor: VoidFunction2<Bool, Bool>?
@@ -87,7 +87,7 @@ open class MKButton: UIButton {
     override public init(frame: CGRect) {
         super.init(frame: frame)
 
-        themeCancellable = subjectThemeChange()
+        themeObs = subjectThemeChange()
     }
 
     @available(*, unavailable)

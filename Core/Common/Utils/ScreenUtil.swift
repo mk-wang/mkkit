@@ -9,19 +9,19 @@ import UIKit
 
 // MARK: - ScreenUtil
 
-public enum ScreenUtil {
-    public static let screenSize: CGSize = UIScreen.main.bounds.size
-    public static let screenMin = min(screenSize.width, screenSize.height)
-    public static let screenMax = max(screenSize.width, screenSize.height)
+@objc public class ScreenUtil: NSObject {
+    @objc public static let screenSize: CGSize = UIScreen.main.bounds.size
+    @objc public static let screenMin = min(screenSize.width, screenSize.height)
+    @objc public static let screenMax = max(screenSize.width, screenSize.height)
 
-    public static let isSmall = screenMin < 321
-    public static let isFlat = !hasNotch || hwRatio < 1.8
+    @objc public static let isSmall = screenMin < 321
+    @objc public static let isFlat = !hasNotch || hwRatio < 1.8
 
-    public static let scale = UIScreen.main.scale
-    public static let hwRatio = screenSize.height / screenSize.width
+    @objc public static let scale = UIScreen.main.scale
+    @objc public static let hwRatio = screenSize.height / screenSize.width
 
-    private(set) static var ratio: CGPoint = .zero
-    private(set) static var minRatio: CGFloat = 0
+    @objc public private(set) static var ratio: CGPoint = .zero
+    @objc public private(set) static var minRatio: CGFloat = 0
 }
 
 public extension ScreenUtil {
@@ -34,59 +34,66 @@ public extension ScreenUtil {
         }
     }
 
-    private(set) static var window: UIWindow!
+    @objc private(set) static var window: UIWindow!
 
-    static var rootViewController: UIViewController? {
+    @objc static var rootViewController: UIViewController? {
         window.rootViewController
     }
 
-    static func setup(window: UIWindow, designSize: CGSize) {
+    @objc static func setup(window: UIWindow, designSize: CGSize) {
         self.window = window
         self.designSize = designSize
     }
 }
 
 public extension ScreenUtil {
-    static func float(_ normal: CGFloat, flat: CGFloat) -> CGFloat {
+    @objc static func float(_ normal: CGFloat, flat: CGFloat) -> CGFloat {
         isFlat ? flat : normal
     }
 
-    static func float(_ normal: CGFloat, small: CGFloat) -> CGFloat {
+    @objc static func float(_ normal: CGFloat, small: CGFloat) -> CGFloat {
         isSmall ? small : normal
     }
 
-    static func float(_ normal: CGFloat, small: CGFloat, flat: CGFloat) -> CGFloat {
+    @objc static func float(_ normal: CGFloat, small: CGFloat, flat: CGFloat) -> CGFloat {
         isSmall ? small : (isFlat ? flat : normal)
     }
 }
 
 public extension ScreenUtil {
-    static let navBarHeight: CGFloat = UINavigationBar().intrinsicContentSize.height
+    @objc static let navBarHeight: CGFloat = UINavigationBar().intrinsicContentSize.height
 
-    private static var _statusBarHeight: CGFloat?
+    private static var _statusBarSize: CGSize?
 
-    static var statusBarHeight: CGFloat {
-        if let _statusBarHeight {
-            return _statusBarHeight
-        }
-        var height: CGFloat?
-
-        if #available(iOS 13.0, *), let scene = window.windowScene {
-            height = scene.statusBarManager?.statusBarFrame.size.height
-        }
-
-        if height == nil || height == 0 {
-            height = UIApplication.shared.statusBarFrame.size.height
-        }
-
-        if let height, height > 0 {
-            _statusBarHeight = height
-        }
-
-        return height ?? 0
+    @objc static var statusBarWidth: CGFloat {
+        statusBarSize.width
     }
 
-    static var windowOrientation: UIInterfaceOrientation {
+    @objc static var statusBarHeight: CGFloat {
+        statusBarSize.height
+    }
+
+    @objc static var statusBarSize: CGSize {
+        if let _statusBarSize {
+            return _statusBarSize
+        }
+
+        var size: CGSize?
+        if #available(iOS 13.0, *), let scene = window?.windowScene {
+            size = scene.statusBarManager?.statusBarFrame.size
+        }
+
+        if size == nil || size!.height == 0 {
+            size = UIApplication.shared.statusBarFrame.size
+        }
+
+        if let size, size.height > 0 {
+            _statusBarSize = size
+        }
+        return _statusBarSize ?? .zero
+    }
+
+    @objc static var windowOrientation: UIInterfaceOrientation {
         if #available(iOS 13.0, *) {
             self.window?.windowScene?.interfaceOrientation ?? .unknown
         } else {
@@ -94,20 +101,20 @@ public extension ScreenUtil {
         }
     }
 
-    static var hasNotch: Bool {
+    @objc static var hasNotch: Bool {
         topSafeArea > 20
     }
 
-    static var topSafeArea: CGFloat {
+    @objc static var topSafeArea: CGFloat {
         safeAreaInsets.top
     }
 
-    static var bottomSafeArea: CGFloat {
+    @objc static var bottomSafeArea: CGFloat {
         safeAreaInsets.bottom
     }
 
     private static var _safeAreaInsets: UIEdgeInsets?
-    static var safeAreaInsets: UIEdgeInsets {
+    @objc static var safeAreaInsets: UIEdgeInsets {
         if let _safeAreaInsets {
             return _safeAreaInsets
         }
@@ -124,26 +131,14 @@ public extension ScreenUtil {
         return insets
     }
 
-    static let isPad = UIDevice.current.userInterfaceIdiom == .pad
-
-    static var isLandscape: Bool {
+    @objc static let isPad = UIDevice.current.userInterfaceIdiom == .pad
+    @objc static let isPhone = UIDevice.current.userInterfaceIdiom == .phone
+    @objc static var isLandscape: Bool {
         UIDevice.current.orientation.isLandscape
     }
 }
 
 public extension ScreenUtil {
-//    static func topHeight(safeArea h1: CGFloat, normal h2: CGFloat) -> CGFloat {
-//        hasNotch ? h1 : h2
-//    }
-//
-//    static func topSafeAreaOr(height: CGFloat) -> CGFloat {
-//        topHeight(safeArea: topSafeArea, normal: height)
-//    }
-//
-//    static func topSafeAreaMax(height: CGFloat) -> CGFloat {
-//        max(topSafeArea, height)
-//    }
-
     static func topHeightAddition(notch h1: CGFloat, normal h2: CGFloat) -> CGFloat {
         (hasNotch ? h1 : h2) + topSafeArea
     }
