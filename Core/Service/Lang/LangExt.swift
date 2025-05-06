@@ -46,7 +46,9 @@ public extension Lang {
 
 extension LangService: AppSerivce {
     public func initBeforeWindow() {
-        lang.configDirection()
+        if applyLangDirection {
+            lang.configDirection()
+        }
     }
 }
 

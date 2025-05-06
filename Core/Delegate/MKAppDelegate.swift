@@ -56,6 +56,8 @@ open class MKAppDelegate: UIResponder, UIApplicationDelegate {
     open func application(_ application: UIApplication,
                           didFinishLaunchingWithOptions opts: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
+        setupAppService()
+        
         for service in appServices {
             service.initBeforeWindow()
         }

@@ -8,6 +8,9 @@ import UIKit
 
 extension MKAppDelegate {
     public static let shared = UIApplication.shared.delegate as? MKAppDelegate
+    
+    @objc open func setupAppService() {
+    }
 
     @objc open func beforeWindow(_: UIApplication) {}
 

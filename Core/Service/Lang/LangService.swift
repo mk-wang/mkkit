@@ -17,6 +17,8 @@ open class LangService {
         system = Lang.system(list: list)
     }
 
+    public var applyLangDirection: Bool = true
+
     private let langSubject: CurrentValueSubjectType<Lang?, Never>
     public lazy var publisher = langSubject.eraseToAnyPublisher()
     public lazy var rltPublisher = langSubject.map { [weak self] in
@@ -43,7 +45,9 @@ public extension LangService {
         } set {
             if langSubject.value != newValue {
                 if langSubject.value?.isRTL != newValue.isRTL {
-                    newValue.configDirection()
+                    if applyLangDirection  {
+                        newValue.configDirection()
+                    }
                 }
                 langSubject.value = newValue
             }
