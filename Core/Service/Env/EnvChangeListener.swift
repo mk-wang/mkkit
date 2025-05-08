@@ -7,12 +7,6 @@
 
 import UIKit
 
-// MARK: - ThemeChangeListener
-
-public protocol ThemeChangeListener {
-    func onThemeChange(isDark: Bool)
-}
-
 // MARK: - KeyboardChangeListener
 
 public protocol KeyboardChangeListener {

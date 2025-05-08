@@ -87,7 +87,10 @@ open class MKButton: UIButton {
     override public init(frame: CGRect) {
         super.init(frame: frame)
 
-        themeObs = subjectThemeChange()
+        themeObs = AppTheme.darkPublisher
+            .sink { [weak self] isDark in
+                self?.onThemeChange(isDark: isDark)
+            }
     }
 
     @available(*, unavailable)
@@ -97,16 +100,14 @@ open class MKButton: UIButton {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
-        if let cb = onLayout {
-            cb()
-        }
+        onLayout?()
     }
 }
 
 // MARK: ThemeChangeListener
 
-extension MKButton: ThemeChangeListener {
-    public func onThemeChange(isDark _: Bool) {
+extension MKButton {
+    private func onThemeChange(isDark _: Bool) {
         guard !subviews.isEmpty,
               let tintColor = themeTintColor
         else {

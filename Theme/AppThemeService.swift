@@ -20,7 +20,10 @@ public class AppThemeService {
     private let themeSubject: CurrentValueSubjectType<AppTheme, Never>
 
     private let darkSubject = CurrentValueSubjectType<Bool?, Never>(nil)
-    public lazy var darkPublisher: AnyPublisherType<Bool?, Never> = darkSubject.removeDuplicates().eraseToAnyPublisher()
+    public lazy var darkPublisher: AnyPublisherType<Bool, Never> = darkSubject
+        .map { $0 ?? false }
+        .removeDuplicates()
+        .eraseToAnyPublisher()
 
     public var isDark: Bool? {
         get {
@@ -52,6 +55,7 @@ public extension AppThemeService {
                 weakSelf?.darkConfig(window: nil)
             }
         }
+
         DarkModeManager.setup(with: configuration)
         DarkModeManager.register(with: UIApplication.shared)
 

@@ -8,14 +8,13 @@
 import SwiftDraw
 import UIKit
 
-
 // MARK: - SVGImageView
 
 public class SVGImageView: UIImageView {
     let imageSize: CGSize
     let tintColorBuilder: ((Bool) -> UIColor?)?
 
-    private var cancellbale: AnyCancellableType?
+    private var themeObs: AnyCancellableType?
 
     public init(url: URL,
                 imageSize: CGSize,
@@ -32,7 +31,9 @@ public class SVGImageView: UIImageView {
         contentMode = aspectFit ? .scaleAspectFit : .scaleToFill
 
         if listenTheme, tintColorBuilder != nil {
-            cancellbale = subjectThemeChange()
+            themeObs = AppTheme.darkPublisher.sink(receiveValue: { [weak self] _ in
+                self?.tintColor = self?.makeTintColor()
+            })
         }
 
         var image = svgImage(url: url, size: imageSize, renderingMode: aspectFit ? .fit : .fill)
@@ -89,18 +90,12 @@ public class SVGImageView: UIImageView {
     }
 }
 
-// MARK: ThemeChangeListener
-
-extension SVGImageView: ThemeChangeListener {
+extension SVGImageView {
     private func makeTintColor() -> UIColor? {
-        if let builder = tintColorBuilder, let color = builder(AppTheme.current.isDark ?? false) {
+        if let builder = tintColorBuilder, let color = builder(AppTheme.isDark) {
             return color
         }
         return nil
-    }
-
-    public func onThemeChange(isDark _: Bool) {
-        tintColor = makeTintColor()
     }
 }
 
@@ -141,11 +136,11 @@ private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, r
     size.height = ceil(size.height)
 
     guard renderingMode != .fill else {
-#if canImport(MKKit13)
-        return svg.rasterize(size: size, scale: scale)
-#else
-        return svg.rasterize(with: size, scale: scale)
-#endif
+        #if canImport(MKKit13)
+            return svg.rasterize(size: size, scale: scale)
+        #else
+            return svg.rasterize(with: size, scale: scale)
+        #endif
     }
 
     let svgSize = svg.size
@@ -162,9 +157,9 @@ private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, r
         break
     }
 
-#if canImport(MKKit13)
-    return svg.rasterize(size: imageSize, scale: scale)
-#else
-    return svg.rasterize(with: imageSize, scale: scale, insets: insets)
-#endif
+    #if canImport(MKKit13)
+        return svg.rasterize(size: imageSize, scale: scale)
+    #else
+        return svg.rasterize(with: imageSize, scale: scale, insets: insets)
+    #endif
 }

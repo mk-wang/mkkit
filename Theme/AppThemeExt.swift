@@ -22,12 +22,16 @@ public extension AppTheme {
         }
     }
 
-    static var darkPublisher: AnyPublisherType<Bool?, Never> {
+    static var darkPublisher: AnyPublisherType<Bool, Never> {
         service.darkPublisher
+    }
+
+    static var isDark: Bool {
+        current.isDark ?? false
     }
 }
 
-public extension AppTheme {
+private extension AppTheme {
     var isDark: Bool? {
         switch self {
         case .light:
@@ -82,14 +86,6 @@ extension AppThemeService: AppSerivce {
 
     public func initAfterWindow(window: UIWindow) {
         darkConfig(window: window)
-    }
-}
-
-public extension ThemeChangeListener where Self: AnyObject {
-    func subjectThemeChange() -> AnyCancellableType {
-        AppTheme.darkPublisher.sink { [weak self] isDark in
-            self?.onThemeChange(isDark: isDark ?? false)
-        }
     }
 }
 

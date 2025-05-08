@@ -45,7 +45,7 @@ public extension LangService {
         } set {
             if langSubject.value != newValue {
                 if langSubject.value?.isRTL != newValue.isRTL {
-                    if applyLangDirection  {
+                    if applyLangDirection {
                         newValue.configDirection()
                     }
                 }
