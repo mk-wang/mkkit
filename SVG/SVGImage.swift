@@ -8,6 +8,7 @@
 import SwiftDraw
 import UIKit
 
+
 // MARK: - SVGImageView
 
 public class SVGImageView: UIImageView {
@@ -140,7 +141,11 @@ private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, r
     size.height = ceil(size.height)
 
     guard renderingMode != .fill else {
+#if canImport(MKKit13)
+        return svg.rasterize(size: size, scale: scale)
+#else
         return svg.rasterize(with: size, scale: scale)
+#endif
     }
 
     let svgSize = svg.size
@@ -157,5 +162,9 @@ private func svgImage(svg: SwiftDraw.SVG, size: CGSize? = nil, scale: CGFloat, r
         break
     }
 
+#if canImport(MKKit13)
+    return svg.rasterize(size: imageSize, scale: scale)
+#else
     return svg.rasterize(with: imageSize, scale: scale, insets: insets)
+#endif
 }

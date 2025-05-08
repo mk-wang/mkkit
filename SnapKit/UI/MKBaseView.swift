@@ -8,7 +8,6 @@
 import Foundation
 
 // MARK: - MKBaseView
-
 open class MKBaseView: UIView {
     open var readyToLayoutBlock: VoidFunction?
     open var isReady: Bool = false
