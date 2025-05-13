@@ -72,3 +72,17 @@ public extension CALayerWrapView {
                                   locations: locations)
     }
 }
+
+public extension CALayerWrapView {
+    func updateGradient(colors: [UIColor],
+                        locations: [CGFloat]? = nil)
+    {
+        guard let gradientLayer = wrapLayer as? CAGradientLayer else {
+            return
+        }
+        gradientLayer.colors = colors.map(\.cgColor)
+        if let locations {
+            gradientLayer.locations = locations.map { NSNumber(value: $0) }
+        }
+    }
+}

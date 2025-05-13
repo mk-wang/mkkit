@@ -36,3 +36,19 @@ public extension AppTheme {
         }
     }
 }
+
+public extension UIColor {
+    static func dm(light: UIColor, dark: UIColor) -> UIColor {
+        AppTheme.dmColor(light: light, dark: dark)
+    }
+}
+
+public extension UIImage {
+    static func dm(light: UIImage, dark: UIImage) -> UIImage {
+        AppTheme.dmImage(light: light, dark: dark)
+    }
+
+    static func dm(named name: String) -> UIImage? {
+        AppTheme.dmImage(named: name)
+    }
+}

@@ -12,8 +12,15 @@ import UIKit
 open class MKButton: UIButton {
     open var tapExt: CGSize? = nil
 
-    open var themeTintColor: UIColor?
-    open var themeObs: AnyCancellableType?
+    open private(set) var themeTintColor: ValueBuilder1<UIColor?, Bool>? {
+        didSet {
+            themeObs = AppTheme.darkPublisher.sink { [weak self] dark in
+                self?.onThemeChange(isDark: dark)
+            }
+        }
+    }
+
+    private var themeObs: AnyCancellableType?
 
     open var onLayout: VoidFunction?
     open var onCheckBackgroundColor: VoidFunction2<Bool, Bool>?
@@ -86,11 +93,6 @@ open class MKButton: UIButton {
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
-
-        themeObs = AppTheme.darkPublisher
-            .sink { [weak self] isDark in
-                self?.onThemeChange(isDark: isDark)
-            }
     }
 
     @available(*, unavailable)
@@ -107,18 +109,13 @@ open class MKButton: UIButton {
 // MARK: ThemeChangeListener
 
 extension MKButton {
-    private func onThemeChange(isDark _: Bool) {
-        guard !subviews.isEmpty,
-              let tintColor = themeTintColor
-        else {
+    private func onThemeChange(isDark: Bool) {
+        guard let tintColor = themeTintColor?(isDark) else {
             return
         }
 
-        // fix ios 11 - 12
-        if !AppTheme.isSytemSupported {
-            let image = image(for: .normal)?.tint(color: tintColor)
-            setImage(image, for: .normal)
-        }
+        let image = image(for: .normal)?.tint(color: tintColor)
+        setImage(image, for: .normal)
     }
 }
 
@@ -130,7 +127,8 @@ public extension MKButton {
                            image originImage: UIImage? = nil,
                            url: URL? = nil,
                            langFlip: Bool = false,
-                           tintColor: UIColor? = nil) -> MKButton
+                           tintColor: UIColor? = nil,
+                           themeTintColor: ValueBuilder1<UIColor?, Bool>? = nil) -> MKButton
     {
         let btn = style == nil ? MKButton(type: type) : MKButton(type: type, style: style!)
         btn.tapExt = tapExt
@@ -138,10 +136,6 @@ public extension MKButton {
         if image == nil, let url {
             image = svgImage(url: url,
                              size: size)
-        }
-
-        if image != nil, langFlip {
-            image = image?.langFlip
         }
 
         if let image {
@@ -163,6 +157,12 @@ public extension MKButton {
                 btn.setImage(tinted, for: .disabled)
             }
         }
+
+        if langFlip, Lang.current.isRTL {
+            btn.flip(vertically: false)
+        }
+
+        btn.themeTintColor = themeTintColor
 
         return btn
     }

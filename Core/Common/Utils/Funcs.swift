@@ -5,8 +5,6 @@
 //  Created by MK on 2022/3/18.
 //
 
-import UIKit
-
 public typealias ValueBuilder<R> = () -> R
 public typealias ValueBuilder1<R, T> = (T) -> R
 public typealias ValueBuilder2<R, T1, T2> = (T1, T2) -> R
@@ -39,20 +37,35 @@ public func len(_ object: (some Collection)?) -> Int {
 }
 
 @inline(__always)
-public func valueForEnvironment<T>(simulatorValue: T, deviceValue: T) -> T {
+public func valueFor<T>(simulator: @autoclosure ValueBuilder<T>,
+                        device: @autoclosure ValueBuilder<T>) -> T
+{
     #if targetEnvironment(simulator)
-        return simulatorValue
+        return simulator()
     #else
-        return deviceValue
+        return device()
     #endif
 }
 
 @inline(__always)
-public func valueForBuild<T>(debugValue: T, releaseValue: T) -> T {
+public func valueFor<T>(debugBuild value: @autoclosure ValueBuilder<T>,
+                        otherwise: @autoclosure ValueBuilder<T>) -> T
+{
     #if DEBUG_BUILD
-        return debugValue
+        return value()
     #else
-        return releaseValue
+        return otherwise()
+    #endif
+}
+
+@inline(__always)
+public func valueFor<T>(debug value: @autoclosure ValueBuilder<T>,
+                        otherwise: @autoclosure ValueBuilder<T>) -> T
+{
+    #if DEBUG
+        return value()
+    #else
+        return otherwise()
     #endif
 }
 

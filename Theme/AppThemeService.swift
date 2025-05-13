@@ -20,10 +20,12 @@ public class AppThemeService {
     private let themeSubject: CurrentValueSubjectType<AppTheme, Never>
 
     private let darkSubject = CurrentValueSubjectType<Bool?, Never>(nil)
-    public lazy var darkPublisher: AnyPublisherType<Bool, Never> = darkSubject
-        .map { $0 ?? false }
-        .removeDuplicates()
-        .eraseToAnyPublisher()
+
+    public var darkPublisher: AnyPublisherType<Bool, Never> {
+        darkSubject.map { $0 ?? false }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
 
     public var isDark: Bool? {
         get {
@@ -31,7 +33,9 @@ public class AppThemeService {
         }
 
         set {
-            darkSubject.value = newValue
+            if darkSubject.value != newValue {
+                darkSubject.value = newValue
+            }
         }
     }
 }
