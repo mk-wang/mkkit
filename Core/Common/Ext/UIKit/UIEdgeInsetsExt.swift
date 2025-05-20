@@ -24,6 +24,10 @@ public extension UIEdgeInsets {
         .init(top: value, left: left, bottom: value, right: right)
     }
 
+    static func onlyLR(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
+        UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+    }
+
     var verticalSize: CGFloat {
         top + bottom
     }

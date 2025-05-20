@@ -17,6 +17,8 @@ open class MKBaseView: UIView {
 
     open var extendHitInset: UIEdgeInsets?
 
+    private var addReadyToLayoutBlockList = [VoidFunction]()
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         doInit()
@@ -34,6 +36,8 @@ open class MKBaseView: UIView {
             isReady = true
             readyToLayout()
             readyToLayoutBlock?()
+
+            addReadyToLayoutBlockList.forEach { $0() }
         }
     }
 
@@ -68,6 +72,10 @@ open class MKBaseView: UIView {
         if isTouching, window == nil {
             touchesCancelled([], with: nil)
         }
+    }
+
+    public func addReadyToLayoutBlock(_ block: @escaping VoidFunction) {
+        addReadyToLayoutBlockList.append(block)
     }
 }
 

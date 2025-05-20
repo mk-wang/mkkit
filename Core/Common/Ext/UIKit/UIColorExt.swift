@@ -122,6 +122,10 @@ public extension Int {
     var rgb: UIColor {
         .init(rgb: Int64(self))
     }
+
+    func rgbAlpha(_ alpha: CGFloat) -> UIColor {
+        self.rgb.withAlphaComponent(alpha)
+    }
 }
 
 public extension UInt {
