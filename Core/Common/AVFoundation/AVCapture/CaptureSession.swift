@@ -235,10 +235,10 @@ public extension CaptureSession {
 
             isRunning = session.isRunning
 
-            let observation = session.observe(\.isRunning, options: .new) { _, change in
-                guard let isSessionRunning = change.newValue else {
-                    return
-                }
+            let observation = session.observe(\.isRunning,
+                                              options: [.new, .initial, .old])
+            { current, _ in
+                let isSessionRunning = current.isRunning
                 DispatchQueue.main.async { [weak self] in
                     self?.isRunning = isSessionRunning
                 }
