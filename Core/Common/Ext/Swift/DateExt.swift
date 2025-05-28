@@ -509,10 +509,10 @@ public extension Date {
         switch component {
         case .nanosecond:
             #if targetEnvironment(macCatalyst)
-            // The `Calendar` implementation in `macCatalyst` does not know that a nanosecond is 1/1,000,000,000th of a second
-            let allowedRange = 0 ..< 1_000_000_000
+                // The `Calendar` implementation in `macCatalyst` does not know that a nanosecond is 1/1,000,000,000th of a second
+                let allowedRange = 0 ..< 1_000_000_000
             #else
-            let allowedRange = calendar.range(of: .nanosecond, in: .second, for: self)!
+                let allowedRange = calendar.range(of: .nanosecond, in: .second, for: self)!
             #endif
             guard allowedRange.contains(value) else { return nil }
             let currentNanoseconds = calendar.component(.nanosecond, from: self)
@@ -566,51 +566,51 @@ public extension Date {
     }
 
     #if !os(Linux)
-    // swiftlint:enable cyclomatic_complexity, function_body_length
+        // swiftlint:enable cyclomatic_complexity, function_body_length
 
-    /// SwifterSwift: Data at the beginning of calendar component.
-    ///
-    ///     let date = Date() // "Jan 12, 2017, 7:14 PM"
-    ///     let date2 = date.beginning(of: .hour) // "Jan 12, 2017, 7:00 PM"
-    ///     let date3 = date.beginning(of: .month) // "Jan 1, 2017, 12:00 AM"
-    ///     let date4 = date.beginning(of: .year) // "Jan 1, 2017, 12:00 AM"
-    ///
-    /// - Parameter component: calendar component to get date at the beginning of.
-    /// - Returns: date at the beginning of calendar component (if applicable).
-    func beginning(_ calendar: Calendar = .current, of component: Calendar.Component) -> Date? {
-        if component == .day {
-            return calendar.startOfDay(for: self)
-        }
-
-        var components: Set<Calendar.Component> {
-            switch component {
-            case .second:
-                [.year, .month, .day, .hour, .minute, .second]
-
-            case .minute:
-                [.year, .month, .day, .hour, .minute]
-
-            case .hour:
-                [.year, .month, .day, .hour]
-
-            case .weekOfMonth,
-                 .weekOfYear:
-                [.yearForWeekOfYear, .weekOfYear]
-
-            case .month:
-                [.year, .month]
-
-            case .year:
-                [.year]
-
-            default:
-                []
+        /// SwifterSwift: Data at the beginning of calendar component.
+        ///
+        ///     let date = Date() // "Jan 12, 2017, 7:14 PM"
+        ///     let date2 = date.beginning(of: .hour) // "Jan 12, 2017, 7:00 PM"
+        ///     let date3 = date.beginning(of: .month) // "Jan 1, 2017, 12:00 AM"
+        ///     let date4 = date.beginning(of: .year) // "Jan 1, 2017, 12:00 AM"
+        ///
+        /// - Parameter component: calendar component to get date at the beginning of.
+        /// - Returns: date at the beginning of calendar component (if applicable).
+        func beginning(_ calendar: Calendar = .current, of component: Calendar.Component) -> Date? {
+            if component == .day {
+                return calendar.startOfDay(for: self)
             }
-        }
 
-        guard !components.isEmpty else { return nil }
-        return calendar.date(from: calendar.dateComponents(components, from: self))
-    }
+            var components: Set<Calendar.Component> {
+                switch component {
+                case .second:
+                    [.year, .month, .day, .hour, .minute, .second]
+
+                case .minute:
+                    [.year, .month, .day, .hour, .minute]
+
+                case .hour:
+                    [.year, .month, .day, .hour]
+
+                case .weekOfMonth,
+                     .weekOfYear:
+                    [.yearForWeekOfYear, .weekOfYear]
+
+                case .month:
+                    [.year, .month]
+
+                case .year:
+                    [.year]
+
+                default:
+                    []
+                }
+            }
+
+            guard !components.isEmpty else { return nil }
+            return calendar.date(from: calendar.dateComponents(components, from: self))
+        }
     #endif
 
     // swiftlint:disable function_body_length

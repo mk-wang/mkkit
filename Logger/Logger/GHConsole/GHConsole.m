@@ -232,6 +232,8 @@ typedef void (^readTextBlock)(void);
 
 - (void)minimizeAction:(UIButton *)sender
 {
+    [_searchBar resignFirstResponder];
+
     if (_minimizeActionBlock) {
         _minimizeActionBlock();
     }

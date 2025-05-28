@@ -48,6 +48,13 @@ public func valueFor<T>(simulator: @autoclosure ValueBuilder<T>,
 }
 
 @inline(__always)
+public func valueFor<T>(predicat: ValueBuilder<T?>,
+                        otherwise: @autoclosure ValueBuilder<T>) -> T
+{
+    predicat() ?? otherwise()
+}
+
+@inline(__always)
 public func valueFor<T>(debugBuild value: @autoclosure ValueBuilder<T>,
                         otherwise: @autoclosure ValueBuilder<T>) -> T
 {

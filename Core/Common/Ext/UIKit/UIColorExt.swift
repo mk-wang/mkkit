@@ -124,7 +124,7 @@ public extension Int {
     }
 
     func rgbAlpha(_ alpha: CGFloat) -> UIColor {
-        self.rgb.withAlphaComponent(alpha)
+        rgb.withAlphaComponent(alpha)
     }
 }
 

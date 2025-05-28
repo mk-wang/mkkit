@@ -178,7 +178,7 @@ public extension UIScrollView {
 }
 
 public extension UIScrollView {
-    var isStopped: Bool {
+    @objc var isStopped: Bool {
         !isDragging && !isDecelerating
     }
 }

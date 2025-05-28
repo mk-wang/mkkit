@@ -340,6 +340,19 @@ public extension UIView {
         let intersection = viewFrame.intersection(selfFrame)
         return intersection
     }
+
+    @objc func ocVisibleRect(of view: UIView, inset: UIEdgeInsets) -> CGRect {
+        guard let superview = view.superview else {
+            return .zero
+        }
+
+        let viewFrame = convert(view.frame, from: superview)
+        var selfFrame = bounds
+        selfFrame = selfFrame.inset(by: inset)
+
+        let intersection = viewFrame.intersection(selfFrame)
+        return intersection
+    }
 }
 
 public extension UIView {

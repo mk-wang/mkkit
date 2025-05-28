@@ -77,4 +77,10 @@ public extension Lang {
     static func makeIndex(_ index: Int) -> String {
         Lang.current.isRTL ? "· " : "\(index). "
     }
+
+    static func valueFor<T>(predicat: ValueBuilder1<T?, Lang>,
+                            otherwise: @autoclosure ValueBuilder<T>) -> T
+    {
+        predicat(Lang.current) ?? otherwise()
+    }
 }
