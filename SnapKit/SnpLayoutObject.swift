@@ -59,8 +59,8 @@ extension UIView: SnpLayoutObject {
     }
 
     public func apply(_ config: SnapKitConfigure) {
-        snp.makeConstraints { make in
-            config(self.superview, make)
+        snp.makeConstraints { [weak self] make in
+            config(self?.superview, make)
         }
     }
 
@@ -73,6 +73,11 @@ public extension UIView {
     func addSnpSubview(_ view: UIView) {
         addSubview(view)
         view.applySnpConfigs()
+    }
+
+    func addSnpSubview(_ view: UIView, config: @escaping SnapKitConfigure) {
+        view.addSnpConfig(config)
+        addSnpSubview(view)
     }
 
     func insertSnpSubview(_ view: UIView, at index: Int) {

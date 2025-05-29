@@ -206,13 +206,12 @@ public extension CaptureSession {
 
 public extension CaptureSession {
     func start() {
-        runInSessionQueue { [weak self] in
-            guard let self else {
-                return
-            }
+        assert(Thread.isMainThread, "CaptureSession.start() must be called on the main thread")
 
-            // Only setup observers and start the session running if setup succeeded.
-            addObservers()
+        addObservers()
+        runInSessionQueue { [weak self] in
+            guard let self else { return }
+
             session.startRunning()
         }
     }
@@ -228,30 +227,24 @@ public extension CaptureSession {
     }
 
     private func addObservers() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else {
-                return
+        isRunning = session.isRunning
+
+        let observation = session.observe(\.isRunning,
+                                          options: [.new, .initial, .old])
+        { current, _ in
+            let isSessionRunning = current.isRunning
+            DispatchQueue.main.async { [weak self] in
+                self?.isRunning = isSessionRunning
             }
-
-            isRunning = session.isRunning
-
-            let observation = session.observe(\.isRunning,
-                                              options: [.new, .initial, .old])
-            { current, _ in
-                let isSessionRunning = current.isRunning
-                DispatchQueue.main.async { [weak self] in
-                    self?.isRunning = isSessionRunning
-                }
-            }
-
-            kvObservations.append(observation)
-
-            let notificationCenter = NotificationCenter.default
-
-            notificationCenter.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: session)
-            notificationCenter.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: session)
-            notificationCenter.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
         }
+
+        kvObservations.append(observation)
+
+        let notificationCenter = NotificationCenter.default
+
+        notificationCenter.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: session)
+        notificationCenter.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: session)
+        notificationCenter.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: session)
     }
 
     private func removeObservers(resetRunning: Bool) {

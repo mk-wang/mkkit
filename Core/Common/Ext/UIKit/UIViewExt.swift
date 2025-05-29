@@ -274,7 +274,7 @@ public extension UIView {
 }
 
 public extension UIView {
-    func findFirstSuperView<T>(_: T.Type? = nil) -> T? {
+    func findFirstSuperView<T>() -> T? {
         var aView: UIView? = superview
 
         while aView != nil {
