@@ -6,7 +6,9 @@
 //
 
 import Foundation
-import UIKit
+#if canImport(UIKit)
+    import UIKit
+#endif
 
 public func rotNumber(_ value: UInt32, n: UInt8) -> UInt32 {
     var result = value
@@ -169,28 +171,32 @@ public extension String {
 }
 
 public extension String {
-    func textViewSize(font: UIFont, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
-        let attrString = NSAttributedString(string: self, attributes: [.font: font])
-        return attrString.textViewSize(font: font, fixBottomPadding: fixBottomPadding, width: width, height: height)
-    }
+    #if canImport(UIKit)
+        func textViewSize(font: UIFont, fixBottomPadding: Bool = false, width: CGFloat? = nil, height: CGFloat? = nil) -> CGSize {
+            let attrString = NSAttributedString(string: self, attributes: [.font: font])
+            return attrString.textViewSize(font: font, fixBottomPadding: fixBottomPadding, width: width, height: height)
+        }
+    #endif
 }
 
 public extension String {
-    var singleUnderline: NSAttributedString {
-        NSAttributedString(string: self, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
-    }
+    #if canImport(UIKit)
+        var singleUnderline: NSAttributedString {
+            NSAttributedString(string: self, attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+        }
 
-    var thickUnderline: NSAttributedString {
-        NSAttributedString(string: self, attributes: [.underlineStyle: NSUnderlineStyle.thick.rawValue])
-    }
+        var thickUnderline: NSAttributedString {
+            NSAttributedString(string: self, attributes: [.underlineStyle: NSUnderlineStyle.thick.rawValue])
+        }
 
-    var singleStruckthrough: NSAttributedString {
-        NSAttributedString(string: self, attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
-    }
+        var singleStruckthrough: NSAttributedString {
+            NSAttributedString(string: self, attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+        }
 
-    var thickStruckthrough: NSAttributedString {
-        NSAttributedString(string: self, attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue])
-    }
+        var thickStruckthrough: NSAttributedString {
+            NSAttributedString(string: self, attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue])
+        }
+    #endif
 
     func attributedString(range: Range<Self.Index>, attrs: [NSAttributedString.Key: Any]) -> NSAttributedString {
         NSAttributedString(string: String(self[range]), attributes: attrs)
@@ -211,10 +217,37 @@ public extension String {
             var start: Range<Self.Index>?
 
             for (key, attrs) in tagAttrs {
-                if let found = range(of: "<\(key)>", range: search) {
-                    if start == nil || start!.lowerBound > found.lowerBound {
-                        tag = key
-                        start = found
+                // Create regex pattern to match both <key> and <key attributes...>
+                let pattern = "<\(NSRegularExpression.escapedPattern(for: key))(\\s+[^>]*)?>?"
+
+                do {
+                    let regex = try NSRegularExpression(pattern: pattern, options: [])
+                    let searchString = String(self[search])
+                    let searchRange = NSRange(location: 0, length: searchString.utf16.count)
+
+                    if let match = regex.firstMatch(in: searchString, options: [], range: searchRange) {
+                        if let matchRange = Range(match.range, in: searchString) {
+                            // Convert substring range to full string range
+                            let startOffset = searchString.distance(from: searchString.startIndex, to: matchRange.lowerBound)
+                            let endOffset = searchString.distance(from: searchString.startIndex, to: matchRange.upperBound)
+
+                            let fullStringStart = index(search.lowerBound, offsetBy: startOffset)
+                            let fullStringEnd = index(search.lowerBound, offsetBy: endOffset)
+                            let fullStringRange = fullStringStart ..< fullStringEnd
+
+                            if start == nil || start!.lowerBound > fullStringRange.lowerBound {
+                                tag = key
+                                start = fullStringRange
+                            }
+                        }
+                    }
+                } catch {
+                    // Fallback to original behavior if regex fails
+                    if let found = range(of: "<\(key)>", range: search) {
+                        if start == nil || start!.lowerBound > found.lowerBound {
+                            tag = key
+                            start = found
+                        }
                     }
                 }
             }
@@ -500,135 +533,137 @@ public extension String {
 
 // from https://raw.githubusercontent.com/tbaranes/FittableFontLabel/master/Source/UILabelExtension.swift
 extension String {
-    public static func fontSizeThatFits(
-        texts: [String],
-        font: UIFont,
-        numberOfLines: Int,
-        rectSize: CGSize,
-        fitter: CGFloat,
-        maxFontSize: CGFloat,
-        minFontScale: CGFloat = 0.1
-    ) -> CGFloat {
-        var fontSize = maxFontSize
+    #if canImport(UIKit)
+        public static func fontSizeThatFits(
+            texts: [String],
+            font: UIFont,
+            numberOfLines: Int,
+            rectSize: CGSize,
+            fitter: CGFloat,
+            maxFontSize: CGFloat,
+            minFontScale: CGFloat = 0.1
+        ) -> CGFloat {
+            var fontSize = maxFontSize
 
-        for text in texts {
-            let value = text.fontSizeThatFits(font: font,
-                                              numberOfLines: numberOfLines,
-                                              rectSize: rectSize,
-                                              fitter: fitter,
-                                              maxFontSize: maxFontSize,
-                                              minFontScale: minFontScale)
-            if fontSize > value {
-                fontSize = value
+            for text in texts {
+                let value = text.fontSizeThatFits(font: font,
+                                                  numberOfLines: numberOfLines,
+                                                  rectSize: rectSize,
+                                                  fitter: fitter,
+                                                  maxFontSize: maxFontSize,
+                                                  minFontScale: minFontScale)
+                if fontSize > value {
+                    fontSize = value
+                }
             }
+
+            return fontSize
         }
 
-        return fontSize
-    }
+        /**
+         Returns a font size of a specific string in a specific font that fits a specific size
 
-    /**
-     Returns a font size of a specific string in a specific font that fits a specific size
-
-     - parameter text:         The text to use
-     - parameter maxFontSize:  The max font size available
-     - parameter minFontScale: The min font scale that the font will have
-     - parameter rectSize:     Rect size where the label must fit
-     */
-    public func fontSizeThatFits(font: UIFont,
-                                 numberOfLines: Int,
-                                 rectSize: CGSize,
-                                 fitter: CGFloat,
-                                 maxFontSize: CGFloat,
-                                 minFontScale: CGFloat = 0.1) -> CGFloat
-    {
-        let maxFontSize = maxFontSize.isNaN ? 100 : maxFontSize
-        let minFontScale = minFontScale.isNaN ? 0.1 : minFontScale
-        let minimumFontSize = maxFontSize * minFontScale
-
-        guard !isEmpty else {
-            return font.pointSize
-        }
-
-        let constraintSize = numberOfLines == 1 ?
-            CGSize(width: .greatestFiniteMagnitude, height: rectSize.height) :
-            CGSize(width: rectSize.width, height: .greatestFiniteMagnitude)
-
-        let calculatedFontSize = Self.binarySearch(string: self,
-                                                   font: font,
-                                                   numberOfLines: numberOfLines,
-                                                   fitter: fitter,
-                                                   minSize: minimumFontSize,
-                                                   maxSize: maxFontSize,
-                                                   size: rectSize,
-                                                   constraintSize: constraintSize)
-        return (calculatedFontSize * 10.0 - 2).rounded(.down) / 10.0
-    }
-
-    private static func binarySearch(string: String,
-                                     font: UIFont,
+         - parameter text:         The text to use
+         - parameter maxFontSize:  The max font size available
+         - parameter minFontScale: The min font scale that the font will have
+         - parameter rectSize:     Rect size where the label must fit
+         */
+        public func fontSizeThatFits(font: UIFont,
                                      numberOfLines: Int,
+                                     rectSize: CGSize,
                                      fitter: CGFloat,
-                                     minSize: CGFloat,
-                                     maxSize: CGFloat,
-                                     size: CGSize,
-                                     constraintSize: CGSize) -> CGFloat
-    {
-        let fontSize = (minSize + maxSize) / 2
-        let newFont = font.withSize(fontSize)
-        //        var attributes = currentAttributedStringAttributes()
-        //        attributes[Key.font] = font.withSize(fontSize)
-        //        let textSize = string.boundingRect(with: constraintSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil).size
-        let textSize = string.textViewSize(font: newFont, width: constraintSize.width, height: constraintSize.height)
-        let state = numberOfLines == 1 ? singleLineSizeState(rectSize: textSize, size: size, fitter: fitter)
-            : multiLineSizeState(rectSize: textSize, size: size, fitter: fitter)
+                                     maxFontSize: CGFloat,
+                                     minFontScale: CGFloat = 0.1) -> CGFloat
+        {
+            let maxFontSize = maxFontSize.isNaN ? 100 : maxFontSize
+            let minFontScale = minFontScale.isNaN ? 0.1 : minFontScale
+            let minimumFontSize = maxFontSize * minFontScale
 
-        // if the search range is smaller than 0.1 of a font size we stop
-        // returning either side of min or max depending on the state
-        let diff = maxSize - minSize
-        guard diff > 0.1 else {
+            guard !isEmpty else {
+                return font.pointSize
+            }
+
+            let constraintSize = numberOfLines == 1 ?
+                CGSize(width: .greatestFiniteMagnitude, height: rectSize.height) :
+                CGSize(width: rectSize.width, height: .greatestFiniteMagnitude)
+
+            let calculatedFontSize = Self.binarySearch(string: self,
+                                                       font: font,
+                                                       numberOfLines: numberOfLines,
+                                                       fitter: fitter,
+                                                       minSize: minimumFontSize,
+                                                       maxSize: maxFontSize,
+                                                       size: rectSize,
+                                                       constraintSize: constraintSize)
+            return (calculatedFontSize * 10.0 - 2).rounded(.down) / 10.0
+        }
+
+        private static func binarySearch(string: String,
+                                         font: UIFont,
+                                         numberOfLines: Int,
+                                         fitter: CGFloat,
+                                         minSize: CGFloat,
+                                         maxSize: CGFloat,
+                                         size: CGSize,
+                                         constraintSize: CGSize) -> CGFloat
+        {
+            let fontSize = (minSize + maxSize) / 2
+            let newFont = font.withSize(fontSize)
+            //        var attributes = currentAttributedStringAttributes()
+            //        attributes[Key.font] = font.withSize(fontSize)
+            //        let textSize = string.boundingRect(with: constraintSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil).size
+            let textSize = string.textViewSize(font: newFont, width: constraintSize.width, height: constraintSize.height)
+            let state = numberOfLines == 1 ? singleLineSizeState(rectSize: textSize, size: size, fitter: fitter)
+                : multiLineSizeState(rectSize: textSize, size: size, fitter: fitter)
+
+            // if the search range is smaller than 0.1 of a font size we stop
+            // returning either side of min or max depending on the state
+            let diff = maxSize - minSize
+            guard diff > 0.1 else {
+                switch state {
+                case .tooSmall:
+                    return maxSize
+                default:
+                    return minSize
+                }
+            }
+
             switch state {
-            case .tooSmall:
-                return maxSize
-            default:
-                return minSize
+            case .fit: return fontSize
+            case .tooBig: return binarySearch(string: string, font: font, numberOfLines: numberOfLines, fitter: fitter, minSize: minSize, maxSize: fontSize, size: size, constraintSize: constraintSize)
+            case .tooSmall: return binarySearch(string: string, font: font, numberOfLines: numberOfLines, fitter: fitter, minSize: fontSize, maxSize: maxSize, size: size, constraintSize: constraintSize)
             }
         }
 
-        switch state {
-        case .fit: return fontSize
-        case .tooBig: return binarySearch(string: string, font: font, numberOfLines: numberOfLines, fitter: fitter, minSize: minSize, maxSize: fontSize, size: size, constraintSize: constraintSize)
-        case .tooSmall: return binarySearch(string: string, font: font, numberOfLines: numberOfLines, fitter: fitter, minSize: fontSize, maxSize: maxSize, size: size, constraintSize: constraintSize)
+        private static func singleLineSizeState(rectSize: CGSize, size: CGSize, fitter: CGFloat) -> FontSizeState {
+            if rectSize.width >= size.width + fitter, rectSize.width <= size.width {
+                .fit
+            } else if rectSize.width > size.width {
+                .tooBig
+            } else {
+                .tooSmall
+            }
         }
-    }
 
-    private static func singleLineSizeState(rectSize: CGSize, size: CGSize, fitter: CGFloat) -> FontSizeState {
-        if rectSize.width >= size.width + fitter, rectSize.width <= size.width {
-            .fit
-        } else if rectSize.width > size.width {
-            .tooBig
-        } else {
-            .tooSmall
+        private static func multiLineSizeState(rectSize: CGSize, size: CGSize, fitter: CGFloat) -> FontSizeState {
+            // if rect within 10 of size
+            if rectSize.height < size.height + fitter &&
+                rectSize.height > size.height - fitter &&
+                rectSize.width > size.width + fitter &&
+                rectSize.width < size.width - fitter
+            {
+                .fit
+            } else if rectSize.height > size.height || rectSize.width > size.width {
+                .tooBig
+            } else {
+                .tooSmall
+            }
         }
-    }
 
-    private static func multiLineSizeState(rectSize: CGSize, size: CGSize, fitter: CGFloat) -> FontSizeState {
-        // if rect within 10 of size
-        if rectSize.height < size.height + fitter &&
-            rectSize.height > size.height - fitter &&
-            rectSize.width > size.width + fitter &&
-            rectSize.width < size.width - fitter
-        {
-            .fit
-        } else if rectSize.height > size.height || rectSize.width > size.width {
-            .tooBig
-        } else {
-            .tooSmall
+        private enum FontSizeState {
+            case fit
+            case tooBig
+            case tooSmall
         }
-    }
-
-    private enum FontSizeState {
-        case fit
-        case tooBig
-        case tooSmall
-    }
+    #endif
 }
