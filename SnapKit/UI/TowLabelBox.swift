@@ -39,9 +39,9 @@ open class TowLabelBox: MKBaseView {
         } else {
             addSnpStackSubviews(.vertical,
                                 builders: [
-                                    .view(topLbl, crossEdgesInset: 0),
+                                    .view(topLbl, crossInset: 0),
                                     .space(config.yPad),
-                                    .view(bottomLbl, crossEdgesInset: 0),
+                                    .view(bottomLbl, crossInset: 0),
                                 ])
         }
     }

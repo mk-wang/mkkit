@@ -34,7 +34,8 @@ public extension UIView {
                   minHeight: CGFloat? = nil,
                   size: CGSize? = nil,
                   crossCenter: Bool = false,
-                  crossEdgesInset: CGFloat? = nil,
+                  crossInset: CGFloat? = nil,
+                  crossInsets: UIEdgeInsets? = nil,
                   tight: Bool = false)
         case tight(UIView?)
         case builder((UIView, SnpLayoutObject?) -> UIView?)
@@ -96,24 +97,30 @@ public extension UIView {
                            minHeight,
                            size,
                            crossCenter,
-                           crossEdgesInset,
+                           crossInset,
+                           crossInsets,
                            tight):
                 aView?.addSnpConfig { _, make in
                     if let width {
                         make.width.equalTo(width)
                     }
+
                     if let height {
                         make.height.equalTo(height)
                     }
+
                     if let minWidth {
                         make.width.greaterThanOrEqualTo(minWidth)
                     }
+
                     if let minHeight {
                         make.height.greaterThanOrEqualTo(minHeight)
                     }
+
                     if let size {
                         make.size.equalTo(size)
                     }
+
                     if crossCenter {
                         if direction == .vertical {
                             make.centerX.equalToSuperview()
@@ -122,11 +129,19 @@ public extension UIView {
                         }
                     }
 
-                    if let crossEdgesInset {
+                    if let crossInset {
                         if direction == .vertical {
-                            make.horizontalEdges.equalToSuperview().inset(crossEdgesInset)
+                            make.horizontalEdges.equalToSuperview().inset(crossInset)
                         } else {
-                            make.verticalEdges.equalToSuperview().inset(crossEdgesInset)
+                            make.verticalEdges.equalToSuperview().inset(crossInset)
+                        }
+                    }
+
+                    if let crossInsets {
+                        if direction == .vertical {
+                            make.horizontalEdges.equalToSuperview().inset(crossInsets)
+                        } else {
+                            make.verticalEdges.equalToSuperview().inset(crossInsets)
                         }
                     }
                 }
