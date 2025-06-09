@@ -148,9 +148,10 @@ public extension UIView {
     ///   - colors: Array of UIColors for the gradient
     ///   - direction: Direction of the gradient
     ///   - locations: Optional locations for the colors (0.0 to 1.0)
+    @discardableResult
     func addGradient(direction: GradientDirection = .horizontal,
                      colors: [UIColor],
-                     locations: [CGFloat]? = nil)
+                     locations: [CGFloat]? = nil) -> CALayerWrapView?
     {
         // Create gradient layer
         let gradientLayer = CALayerWrapView.gradient(
@@ -165,7 +166,7 @@ public extension UIView {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
         guard let context = UIGraphicsGetCurrentContext() else {
             UIGraphicsEndImageContext()
-            return
+            return nil
         }
 
         layer.render(in: context)
@@ -181,5 +182,7 @@ public extension UIView {
             // Add gradient
             insertSnpSubview(gradientLayer, at: 0)
         }
+
+        return gradientLayer
     }
 }

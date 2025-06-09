@@ -7,75 +7,134 @@
 
 import UIKit
 
-// MARK: - CustomDashedView
+// MARK: - DashedView
 
 open class DashedView: UIView {
-    public struct Config {
-        var dashWidth: CGFloat = 0
-        var dashColor: UIColor = .clear
-        var dashFillColor: UIColor?
-        var dashLength: CGFloat = 0
-        var betweenDashesSpace: CGFloat = 0
-        var cornerRadius: CGFloat = 0
+    // MARK: - Constants
 
-        public init(dashWidth: CGFloat,
-                    dashColor: UIColor,
+    public static let DEFAULT_DASH_WIDTH: CGFloat = 1.0
+    public static let DEFAULT_DASH_LENGTH: CGFloat = 1.0
+    public static let DEFAULT_DASH_SPACE: CGFloat = 1.0
+    public static let MIN_DASH_WIDTH: CGFloat = 0.5
+    public static let MIN_DASH_LENGTH: CGFloat = 1.0
+    public static let MIN_DASH_SPACE: CGFloat = 1.0
+
+    // MARK: - Config
+
+    public struct Config {
+        var dashWidth: CGFloat
+        var dashColor: UIColor
+        var dashFillColor: UIColor?
+        var dashLength: CGFloat
+        var dashSpace: CGFloat
+        var horizontal: Bool
+
+        public init(dashWidth: CGFloat = DashedView.DEFAULT_DASH_WIDTH,
+                    dashColor: UIColor = .black,
                     dashFillColor: UIColor? = nil,
-                    dashLength: CGFloat,
-                    betweenDashesSpace: CGFloat,
-                    cornerRadius: CGFloat)
+                    dashLength: CGFloat = DashedView.DEFAULT_DASH_LENGTH,
+                    dashSpace: CGFloat = DashedView.DEFAULT_DASH_SPACE,
+                    horizontal: Bool = true)
         {
-            self.dashWidth = dashWidth
+            // Validate and set parameters with minimum values
+            self.dashWidth = max(dashWidth, DashedView.MIN_DASH_WIDTH)
             self.dashColor = dashColor
             self.dashFillColor = dashFillColor
-            self.dashLength = dashLength
-            self.betweenDashesSpace = betweenDashesSpace
-            self.cornerRadius = cornerRadius
+            self.dashLength = max(dashLength, DashedView.MIN_DASH_LENGTH)
+            self.dashSpace = max(dashSpace, DashedView.MIN_DASH_SPACE)
+            self.horizontal = horizontal
         }
     }
 
+    // MARK: - Properties
+
     public var config: Config? {
         didSet {
-            if dashBorder != nil {
+            if oldValue != nil {
                 setNeedsLayout()
             }
         }
     }
 
-    private weak var dashBorder: CAShapeLayer?
+    private var dashBorder: CAShapeLayer?
+
+    private var lastFrame: CGRect? = nil
+
+    // MARK: - Public Methods
 
     public func updateDashColor(color: UIColor) {
-        dashBorder?.strokeColor = color.cgColor
+        guard let dashBorder else { return }
 
+        dashBorder.strokeColor = color.cgColor
         config?.dashColor = color
     }
+
+    // MARK: - Layout
 
     override open func layoutSubviews() {
         super.layoutSubviews()
 
-        dashBorder?.removeFromSuperlayer()
-
-        guard let config else {
+        let currentFrame = bounds
+        // Validate bounds
+        guard let config,
+              currentFrame.width > 0,
+              currentFrame.height > 0,
+              dashBorder?.superlayer == nil || lastFrame != currentFrame
+        else {
             return
         }
 
-        let dashBorder = CAShapeLayer()
-        dashBorder.lineWidth = config.dashWidth
-        dashBorder.strokeColor = config.dashColor.cgColor
-        dashBorder.lineDashPattern = [config.dashLength, config.betweenDashesSpace] as [NSNumber]
-        dashBorder.lineJoin = .round
-        dashBorder.frame = bounds
-        dashBorder.fillColor = config.dashFillColor?.cgColor
+        lastFrame = currentFrame
+        // Remove existing dash border
+        dashBorder?.removeFromSuperlayer()
 
-        let rect = bounds.insetBy(dx: config.dashWidth / 2, dy: config.dashWidth / 2)
-        if config.cornerRadius > 0 {
-            dashBorder.path = UIBezierPath(roundedRect: rect, cornerRadius: config.cornerRadius).cgPath
+        // Create new dash border
+        let newDashBorder = CAShapeLayer()
+        setupDashLine(newDashBorder, with: config)
+
+        layer.addSublayer(newDashBorder)
+        dashBorder = newDashBorder
+    }
+
+    // MARK: - Private Methods
+
+    private func setupDashLine(_ shapeLayer: CAShapeLayer, with config: Config) {
+        shapeLayer.lineWidth = config.dashWidth
+        shapeLayer.strokeColor = config.dashColor.cgColor
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.lineDashPattern = [NSNumber(value: config.dashLength),
+                                      NSNumber(value: config.dashSpace)]
+        shapeLayer.lineJoin = .round
+        shapeLayer.lineCap = .round
+        shapeLayer.frame = bounds
+
+        // Create path for centered line
+        let path = createCenteredLinePath(config: config)
+        shapeLayer.path = path.cgPath
+    }
+
+    private func createCenteredLinePath(config: Config) -> UIBezierPath {
+        let path = UIBezierPath()
+        let inset = config.dashWidth / 2
+
+        if config.horizontal {
+            // Horizontal centered line
+            let centerY = bounds.midY
+            let startX = bounds.minX + inset
+            let endX = bounds.maxX - inset
+
+            path.move(to: CGPoint(x: startX, y: centerY))
+            path.addLine(to: CGPoint(x: endX, y: centerY))
         } else {
-            dashBorder.path = UIBezierPath(rect: rect).cgPath
+            // Vertical centered line
+            let centerX = bounds.midX
+            let startY = bounds.minY + inset
+            let endY = bounds.maxY - inset
+
+            path.move(to: CGPoint(x: centerX, y: startY))
+            path.addLine(to: CGPoint(x: centerX, y: endY))
         }
 
-        layer.addSublayer(dashBorder)
-
-        self.dashBorder = dashBorder
+        return path
     }
 }
