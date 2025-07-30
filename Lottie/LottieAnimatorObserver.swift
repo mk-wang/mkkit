@@ -5,7 +5,6 @@
 //
 
 import Lottie
-import MKKit
 import UIKit
 
 #if Lottie_3
