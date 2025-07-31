@@ -16,8 +16,11 @@ public extension MKAVSpeech {
     enum VoiceStyle {
         case old
         case ios16
+        case ios26
 
-        public static let current: Self = if #available(iOS 16.0, *) {
+        public static let current: Self = if #available(iOS 26.0, *) {
+            .ios26
+        } else if #available(iOS 16.0, *) {
             .ios16
         } else {
             .old
@@ -56,6 +59,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Samantha-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.en-US.Samantha"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.en-US.Samantha"
             }
         case .uk:
             language = "en-GB"
@@ -65,6 +70,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Daniel-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.en-GB.Daniel"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.en-GB.Daniel"
             }
         case .fr:
             language = "fr-CA"
@@ -74,6 +81,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Amelie-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.fr-CA.Amelie"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.fr-CA.Amelie"
             }
         case .zh_Hans:
             language = "zh-CN"
@@ -83,6 +92,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Ting-Ting-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.zh-CN.Tingting"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.zh-CN.Tingting"
             }
         case .zh_Hant:
             language = "zh-TW"
@@ -92,6 +103,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Mei-Jia-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.zh-TW.Meijia"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.zh-TW.Meijia"
             }
         case .it:
             language = "it-IT"
@@ -101,6 +114,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Alice-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.it-IT.Alice"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.it-IT.Alice"
             }
         case .es:
             language = "es-ES"
@@ -110,6 +125,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Monica-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.es-ES.Monica"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.es-ES.Monica"
             }
         case .es_mx:
             language = "es-MX"
@@ -119,6 +136,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Paulina-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.es-MX.Paulina"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.es-MX.Paulina"
             }
         case .de:
             language = "de-DE"
@@ -128,6 +147,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Anna-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.de-DE.Anna"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.de-DE.Anna"
             }
         case .pt_BR:
             language = "pt-BR"
@@ -137,6 +158,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Luciana-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.pt-BR.Luciana"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.pt-BR.Luciana"
             }
         case .pt,
              .pt_PT:
@@ -147,6 +170,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Joana-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.pt-PT.Joana"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.pt-PT.Joana"
             }
         case .ru:
             language = "ru-RU"
@@ -155,6 +180,8 @@ public extension MKAVSpeech.VoiceStyle {
             case .old:
                 identifier = "com.apple.ttsbundle.Milena-compact"
             case .ios16:
+                identifier = "com.apple.voice.compact.ru-RU.Milena"
+            case .ios26:
                 identifier = "com.apple.voice.compact.ru-RU.Milena"
             }
         case .ja:
@@ -165,6 +192,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Kyoko-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.ja-JP.Kyoko"
+            case .ios26:
+                identifier = "com.apple.voice.compact.ja-JP.Kyoko"
             }
         case .ko:
             language = "ko-KR"
@@ -174,6 +203,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Yuna-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.ko-KR.Yuna"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.ko-KR.Yuna"
             }
         case .tr:
             language = "tr-TR"
@@ -183,6 +214,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Yelda-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.tr-TR.Yelda"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.tr-TR.Yelda"
             }
         case .ar:
             switch style {
@@ -192,6 +225,8 @@ public extension MKAVSpeech.VoiceStyle {
             case .ios16:
                 language = "ar-001"
                 identifier = "com.apple.voice.compact.ar-001.Maged"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.ar-001.Maged"
             }
         case .id:
             language = "id-ID"
@@ -201,6 +236,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Damayanti-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.id-ID.Damayanti"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.id-ID.Damayanti"
             }
         case .pl:
             language = "pl-PL"
@@ -210,6 +247,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Zosia-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.pl-PL.Zosia"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.pl-PL.Zosia"
             }
         case .ro:
             language = "ro-RO"
@@ -219,6 +258,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Ioana-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.ro-RO.Ioana"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.ro-RO.Ioana"
             }
         case .hi:
             language = "hi-IN"
@@ -227,6 +268,8 @@ public extension MKAVSpeech.VoiceStyle {
                 identifier = "com.apple.ttsbundle.Lekha-compact"
             case .ios16:
                 identifier = "com.apple.voice.compact.hi-IN.Lekha"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.hi-IN.Lekha"
             }
         case .ms_MY:
             language = "ms-MY"
@@ -236,6 +279,8 @@ public extension MKAVSpeech.VoiceStyle {
 //                identifier = nil
             case .ios16:
                 identifier = "com.apple.voice.compact.ms-MY.Amira"
+            case .ios26:
+                identifier = "com.apple.voice.super-compact.ms-MY.Amira"
             }
         default:
             assert(!lang.canSpeak, "cannot speak \(lang)")
