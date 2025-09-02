@@ -29,7 +29,7 @@ public class DDPrinter {
         fileLogger.rollingFrequency = 60 * 60 * 24 * 15 // 15 days
         fileLogger.maximumFileSize = 1024 * 1024 * 2 // 2M
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        DDLog.add(fileLogger)
+        DDLog.add(fileLogger, with: .info)
     }
 }
 
@@ -49,9 +49,6 @@ public extension DDPrinter {
 
 extension DDPrinter: Printer {
     public func write(level: Logger.Level, message: String, tag: String?, function: String, file: String, line: UInt) {
-        guard level != .debug else {
-            return
-        }
         let content = formatMessage(level: level,
                                     message: message,
                                     tag: tag,
@@ -66,6 +63,10 @@ extension DDPrinter: Printer {
         } else if level == .error {
             DispatchQueue.global(qos: .background).async {
                 DDLogError(format, level: .error)
+            }
+        } else if level == .debug {
+            DispatchQueue.global(qos: .background).async {
+                DDLogDebug(format, level: .debug)
             }
         }
     }
