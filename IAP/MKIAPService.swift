@@ -173,15 +173,31 @@ open class MKIAPService {
             return
         }
 
-        guard !isPremium else {
-            if !hasValidatePurchase {
-                validatePurchase(forceRefresh: true)
-                hasValidatePurchase = true
-            }
+        loadProducts()
+
+        guard !hasValidatePurchase else {
             return
         }
 
-        loadProducts()
+        hasValidatePurchase = true
+
+        validatePurchase(forceRefresh: true) { [weak self] error, _, _ in
+            if case .networkError(_) = error {
+                self?.hasValidatePurchase = false
+
+            } else if case .verifyReceipt(let error) = error, let err = error as? ReceiptError {
+                switch error as? ReceiptError {
+                case .networkError(_): fallthrough
+                case .jsonDecodeError(_): fallthrough
+                case .receiptInvalid(_, _): fallthrough
+                case .requestBodyEncodeError(_):
+                    self?.hasValidatePurchase = false
+
+                default:
+                    break
+                }
+            }
+        }
     }
 
     open func restorePurchase(completion: ((RestoreError?, RestoreInfo) -> Void)? = nil) {
