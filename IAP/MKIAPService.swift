@@ -297,8 +297,8 @@ open class MKIAPService {
         }
     }
 
-    func validatePurchase(forceRefresh: Bool,
-                          callback: ((RestoreError?, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
+    open func validatePurchase(forceRefresh: Bool,
+                               callback: ((RestoreError?, ReceiptInfo?, IAPHelper.PurchaseResult?) -> Void)? = nil)
     {
         let environment = iapEnv
         var products = [String]()
