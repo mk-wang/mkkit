@@ -139,7 +139,7 @@ public extension MKModalView {
         }
     }
 
-    func hide(animated: Bool = true, by object: AnyObject? = nil) {
+    func hide(animated: Bool = true, by object: Any? = nil) {
         willHideCallback?(self, object)
 
         let hideBlock: VoidFunction = { [weak self] in
