@@ -226,6 +226,7 @@ public extension MKAVSpeech.VoiceStyle {
                 language = "ar-001"
                 identifier = "com.apple.voice.compact.ar-001.Maged"
             case .ios26:
+                language = "ar-001"
                 identifier = "com.apple.voice.super-compact.ar-001.Maged"
             }
         case .id:
